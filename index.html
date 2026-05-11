@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Heart Rate Visualizer</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:#06090f;color:#dde8f5;
+  font-family:'Courier New',monospace;
+  height:100vh;display:flex;flex-direction:column;overflow:hidden;
+}
+header{
+  display:flex;align-items:center;gap:20px;
+  padding:10px 22px;
+  background:rgba(255,255,255,0.025);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  flex-shrink:0;
+}
+.title{font-size:.65rem;letter-spacing:3px;text-transform:uppercase;opacity:.4}
+.bpm-num{font-size:2.6rem;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:2px;line-height:1}
+.zone{
+  padding:4px 13px;border-radius:20px;
+  font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+}
+.controls{display:flex;align-items:center;gap:14px;margin-left:auto}
+input[type=range]{width:180px;accent-color:#00ff88;cursor:pointer}
+input[type=number]{
+  width:60px;background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.12);color:inherit;
+  padding:4px 8px;border-radius:4px;font-family:inherit;font-size:.9rem;
+}
+label{font-size:.78rem;opacity:.6;display:flex;align-items:center;gap:6px;cursor:pointer}
+main{flex:1;display:flex;overflow:hidden}
+
+/* 3D heart panel */
+#heartWrap{
+  flex:0 0 62%;position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 40%,#0e1a2a 0%,#04070d 100%);
+}
+#heartWrap canvas{position:absolute;top:0;left:0}
+.legend{
+  position:absolute;top:14px;left:14px;
+  display:flex;flex-direction:column;gap:5px;
+  font-size:.68rem;opacity:.72;pointer-events:none;z-index:10;
+}
+.li{display:flex;align-items:center;gap:7px}
+.ld{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.hint{
+  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+  font-size:.68rem;opacity:.3;letter-spacing:1px;pointer-events:none;z-index:10;
+  white-space:nowrap;
+}
+
+/* EKG panel */
+.ekg-panel{
+  flex:1;display:flex;flex-direction:column;
+  border-left:1px solid rgba(255,255,255,0.07);
+}
+.ekg-label{
+  padding:8px 16px;font-size:.65rem;letter-spacing:2.5px;text-transform:uppercase;
+  opacity:.4;border-bottom:1px solid rgba(255,255,255,0.04);flex-shrink:0;
+}
+#ekgCanvas{flex:1;width:100%;display:block}
+.status{
+  display:flex;justify-content:space-between;
+  padding:6px 16px;font-size:.68rem;opacity:.38;
+  border-top:1px solid rgba(255,255,255,0.04);flex-shrink:0;
+}
+
+/* CSS2D labels injected by Three.js */
+.label3d{
+  color:#fff;font-size:.6rem;font-family:'Courier New',monospace;
+  background:rgba(0,0,0,0.55);padding:2px 6px;
+  border-radius:3px;letter-spacing:1px;white-space:nowrap;
+  pointer-events:none;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="title">Heart Rate</div>
+    <div class="bpm-num" id="bpmNum">72</div>
+  </div>
+  <div class="zone" id="zone">Normal</div>
+  <div class="controls">
+    <span style="font-size:.78rem;opacity:.5">BPM</span>
+    <input type="range" id="slider" min="30" max="220" value="72">
+    <input type="number"  id="numInput" min="30" max="220" value="72">
+    <label><input type="checkbox" id="autoRot" checked> Auto-rotate</label>
+    <label><input type="checkbox" id="showLbls" checked> Labels</label>
+  </div>
+</header>
+
+<main>
+  <div id="heartWrap">
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#ee2200"></div>Arteries (oxygenated)</div>
+      <div class="li"><div class="ld" style="background:#2255cc"></div>Veins (deoxygenated)</div>
+      <div class="li"><div class="ld" style="background:#cc2200"></div>Pulmonary veins</div>
+      <div class="li"><div class="ld" style="background:#ff6633"></div>Coronary arteries</div>
+      <div class="li"><div class="ld" style="background:#d4a850"></div>Epicardial fat</div>
+    </div>
+    <div class="hint">Drag · Scroll · Right-drag to pan</div>
+  </div>
+
+  <div class="ekg-panel">
+    <div class="ekg-label">ECG — Lead II</div>
+    <canvas id="ekgCanvas"></canvas>
+    <div class="status">
+      <span id="phaseLabel">Diastole</span>
+      <span id="rrLabel">RR: 833 ms</span>
+    </div>
+  </div>
+</main>
+
+<script type="importmap">
+{
+  "imports": {
+    "three":          "https://unpkg.com/three@0.165.0/build/three.module.js",
+    "three/addons/":  "https://unpkg.com/three@0.165.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls }    from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer }   from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass }       from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass }  from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+/* ================================================================
+   ZONES
+================================================================ */
+const ZONES = [
+  { max:60,       color:'#4488ff', name:'Bradycardia' },
+  { max:100,      color:'#00ff88', name:'Normal'      },
+  { max:140,      color:'#ffaa00', name:'Elevated'    },
+  { max:Infinity, color:'#ff3344', name:'Critical'    },
+];
+const zoneOf = bpm => ZONES.find(z => bpm < z.max);
+
+/* ================================================================
+   BPM CONTROLS
+================================================================ */
+let bpm = 72;
+let zoneColor = '#00ff88';
+const $slider   = document.getElementById('slider');
+const $numInput = document.getElementById('numInput');
+const $bpmNum   = document.getElementById('bpmNum');
+const $zone     = document.getElementById('zone');
+const $autoRot  = document.getElementById('autoRot');
+const $showLbls = document.getElementById('showLbls');
+
+function applyBPM(v) {
+  bpm = Math.max(30, Math.min(220, Math.round(+v)));
+  $slider.value = $numInput.value = bpm;
+  $bpmNum.textContent = bpm;
+  const z = zoneOf(bpm);
+  zoneColor = z.color;
+  $zone.textContent = z.name;
+  $zone.style.cssText = `background:${z.color}22;color:${z.color};border:1px solid ${z.color}44`;
+}
+$slider.addEventListener('input',  e => applyBPM(e.target.value));
+$numInput.addEventListener('input', e => applyBPM(e.target.value));
+applyBPM(72);
+
+/* ================================================================
+   EKG SYSTEM
+================================================================ */
+const ekgCanvas = document.getElementById('ekgCanvas');
+const ectx = ekgCanvas.getContext('2d');
+let samples = [];
+
+const Gf = (t, mu, s) => Math.exp(-0.5 * ((t - mu) / s) ** 2);
+
+function ekgY(t) {
+  return (
+     Gf(t, 0.12, 0.025) *  0.20   // P
+   - Gf(t, 0.27, 0.010) *  0.12   // Q
+   + Gf(t, 0.30, 0.013) *  1.40   // R
+   - Gf(t, 0.345,0.010) *  0.28   // S
+   + Gf(t, 0.52, 0.055) *  0.38   // T
+  );
+}
+
+function renderEKG() {
+  const cw = ekgCanvas.width, ch = ekgCanvas.height;
+  ectx.clearRect(0, 0, cw, ch);
+
+  // grid
+  ectx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ectx.lineWidth = 1;
+  for (let x = 0; x < cw; x += 40) { ectx.beginPath(); ectx.moveTo(x,0); ectx.lineTo(x,ch); ectx.stroke(); }
+  for (let y = 0; y < ch; y += 40) { ectx.beginPath(); ectx.moveTo(0,y); ectx.lineTo(cw,y); ectx.stroke(); }
+
+  if (samples.length < 2) return;
+  const mid = ch * 0.55, amp = ch * 0.34;
+
+  ectx.beginPath();
+  for (let i = 0; i < samples.length; i++) {
+    const x = i, y = mid - samples[i] * amp;
+    i === 0 ? ectx.moveTo(x, y) : ectx.lineTo(x, y);
+  }
+  const g = ectx.createLinearGradient(0, 0, cw, 0);
+  g.addColorStop(0, 'transparent');
+  g.addColorStop(0.25, zoneColor + '33');
+  g.addColorStop(1, zoneColor);
+  ectx.strokeStyle = g;
+  ectx.lineWidth = 2;
+  ectx.shadowBlur = 10;
+  ectx.shadowColor = zoneColor;
+  ectx.stroke();
+  ectx.shadowBlur = 0;
+}
+
+function resizeEKG() {
+  ekgCanvas.width  = ekgCanvas.offsetWidth;
+  ekgCanvas.height = ekgCanvas.offsetHeight;
+  samples = [];
+}
+new ResizeObserver(resizeEKG).observe(ekgCanvas);
+resizeEKG();
+
+/* ================================================================
+   THREE.JS SETUP
+================================================================ */
+const wrap = document.getElementById('heartWrap');
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+wrap.prepend(renderer.domElement);
+
+const labelRenderer = new CSS2DRenderer();
+labelRenderer.domElement.style.position = 'absolute';
+labelRenderer.domElement.style.top = '0';
+labelRenderer.domElement.style.pointerEvents = 'none';
+wrap.appendChild(labelRenderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x06090f);
+scene.fog = new THREE.Fog(0x06090f, 20, 35);
+
+const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 60);
+camera.position.set(1.5, 0.8, 8.5);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.07;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.6;
+controls.minDistance = 3.5;
+controls.maxDistance = 18;
+controls.target.set(0.1, 0.1, 0);
+
+$autoRot.addEventListener('change', () => controls.autoRotate = $autoRot.checked);
+
+// Post-processing
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(1,1), 0.45, 0.38, 0.82);
+composer.addPass(bloom);
+
+function resize3D() {
+  const w = wrap.clientWidth, h = wrap.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+  composer.setSize(w, h);
+  labelRenderer.setSize(w, h);
+}
+new ResizeObserver(resize3D).observe(wrap);
+resize3D();
+
+/* ================================================================
+   LIGHTING
+================================================================ */
+scene.add(new THREE.AmbientLight(0x18203a, 2.2));
+
+const keyL = new THREE.DirectionalLight(0xffe0cc, 2.2);
+keyL.position.set(4, 5, 6);
+keyL.castShadow = true;
+keyL.shadow.mapSize.width = keyL.shadow.mapSize.height = 1024;
+scene.add(keyL);
+
+const fillL = new THREE.DirectionalLight(0xaabbff, 0.55);
+fillL.position.set(-5, 2, -4);
+scene.add(fillL);
+
+const rimL = new THREE.DirectionalLight(0xff6644, 0.5);
+rimL.position.set(0, -4, -5);
+scene.add(rimL);
+
+const glow = new THREE.PointLight(0xff3300, 2.5, 5.5, 2);
+glow.position.set(0, 0, 0);
+scene.add(glow);
+
+/* ================================================================
+   PROCEDURAL BUMP TEXTURE (muscle fiber look)
+================================================================ */
+const bumpC = document.createElement('canvas');
+bumpC.width = bumpC.height = 512;
+const bc = bumpC.getContext('2d');
+bc.fillStyle = '#888'; bc.fillRect(0,0,512,512);
+for (let i = 0; i < 350; i++) {
+  const x = Math.random()*512, y = Math.random()*512;
+  const a = Math.random()*Math.PI, l = 15+Math.random()*55;
+  bc.beginPath();
+  bc.moveTo(x, y);
+  bc.lineTo(x+Math.cos(a)*l, y+Math.sin(a)*l);
+  const v = 100+Math.floor(Math.random()*60);
+  bc.strokeStyle = `rgba(${v},${v},${v},0.45)`;
+  bc.lineWidth = 1+Math.random()*2.5;
+  bc.stroke();
+}
+const bumpTex = new THREE.CanvasTexture(bumpC);
+
+/* ================================================================
+   MATERIALS
+================================================================ */
+function mstd(hex, rough=0.75, metal=0.04, emissHex=null, emissI=0) {
+  const m = new THREE.MeshStandardMaterial({
+    color: hex, roughness: rough, metalness: metal,
+    bumpMap: bumpTex, bumpScale: 0.25,
+  });
+  if (emissHex != null) { m.emissive.set(emissHex); m.emissiveIntensity = emissI; }
+  return m;
+}
+
+const myoMat   = mstd(0x8B1818, 0.78, 0.04);
+const rvMat    = mstd(0x962222, 0.76, 0.04);
+const laMat    = mstd(0x7a1414, 0.80, 0.03);
+const raMat    = mstd(0x8a1c1c, 0.78, 0.04);
+const aortaMat = mstd(0xcc1100, 0.50, 0.10, 0x330400, 0.22);
+const veinMat  = mstd(0x1e3b99, 0.58, 0.08, 0x050a1e, 0.15);
+const pvMat    = mstd(0xbb2200, 0.58, 0.08, 0x280400, 0.18);
+const coronMat = mstd(0xdd4411, 0.52, 0.10, 0x3a0800, 0.25);
+const fatMat   = new THREE.MeshStandardMaterial({ color:0xd4a853, roughness:0.92, metalness:0 });
+
+/* ================================================================
+   GEOMETRY HELPERS
+================================================================ */
+const heartGroup = new THREE.Group();
+scene.add(heartGroup);
+
+// Tracked meshes for animation
+let lvMesh, rvMesh, laMesh, raMesh, lAur, rAur;
+
+function addSphere(cx,cy,cz, sx,sy,sz, mat) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(1,48,32), mat.clone());
+  m.scale.set(sx,sy,sz);
+  m.position.set(cx,cy,cz);
+  m.castShadow = true; m.receiveShadow = true;
+  heartGroup.add(m);
+  return m;
+}
+
+function addTube(pts, r, seg=30, radSeg=14, mat) {
+  const curve = new THREE.CatmullRomCurve3(pts);
+  const geo   = new THREE.TubeGeometry(curve, seg, r, radSeg, false);
+  const m     = new THREE.Mesh(geo, mat.clone());
+  m.castShadow = true; m.receiveShadow = true;
+  heartGroup.add(m);
+  return { mesh:m, curve };
+}
+
+function v3(x,y,z){ return new THREE.Vector3(x,y,z); }
+
+/* ================================================================
+   HEART CHAMBERS
+================================================================ */
+// Left Ventricle — dominant, elongated cone-ish shape
+lvMesh = addSphere(-0.10,-0.12,-0.04, 1.05,1.42,1.02, myoMat);
+
+// LV apex extension
+addSphere(0.13,-1.42,0.14, 0.52,0.62,0.50, myoMat);
+
+// Right Ventricle — crescent, wraps anterior-right of LV
+rvMesh = addSphere(0.82,-0.04,0.46, 0.82,1.12,0.56, rvMat);
+
+// RV outflow (conus arteriosus)
+addSphere(0.55,0.78,0.62, 0.44,0.54,0.42, rvMat);
+
+// Left Atrium — posterior-superior
+laMesh = addSphere(-0.52,1.32,-0.54, 1.01,0.82,0.90, laMat);
+
+// Right Atrium
+raMesh = addSphere(0.88,1.16,0.06, 0.72,0.82,0.72, raMat);
+
+// Left Auricle
+lAur = addSphere(-0.20,1.70,0.32, 0.38,0.28,0.30, laMat);
+lAur.rotation.z = 0.35;
+
+// Right Auricle
+rAur = addSphere(0.68,1.64,0.48, 0.42,0.28,0.32, raMat);
+rAur.rotation.z = -0.25;
+
+// AV groove fat
+const fg = new THREE.Mesh(new THREE.SphereGeometry(1,16,12), fatMat);
+fg.scale.set(2.2,0.50,0.90); fg.position.set(0.30,0.88,0.22); fg.rotation.z=0.15;
+heartGroup.add(fg);
+
+/* ================================================================
+   GREAT VESSELS
+================================================================ */
+// Ascending aorta → arch → descending
+const { curve: aortaCurve } = addTube([
+  v3(-0.30,1.28,0.14),
+  v3(-0.28,1.85,0.04),
+  v3(-0.16,2.34,-0.18),
+  v3( 0.10,2.72,-0.40),
+  v3( 0.56,2.62,-0.52),
+  v3( 0.90,2.24,-0.48),
+  v3( 1.02,1.60,-0.52),
+  v3( 1.05,0.58,-0.55),
+], 0.23, 55, 18, aortaMat);
+
+// Brachiocephalic trunk
+addTube([v3(0.08,2.65,-0.38), v3(0.24,2.92,-0.16), v3(0.44,3.22,-0.02)], 0.13,12,10, aortaMat);
+
+// Left common carotid
+addTube([v3(-0.02,2.72,-0.40), v3(-0.18,3.02,-0.28), v3(-0.32,3.30,-0.16)], 0.10,10,10, aortaMat);
+
+// Left subclavian
+addTube([v3(-0.14,2.65,-0.44), v3(-0.50,2.86,-0.30), v3(-0.84,2.90,-0.10)], 0.09,10,10, aortaMat);
+
+// Pulmonary trunk
+const { curve: ptCurve } = addTube([
+  v3(0.52,1.28,0.62), v3(0.38,1.82,0.60), v3(0.12,2.28,0.50),
+], 0.20, 22, 16, veinMat);
+
+// Left PA
+addTube([v3(0.12,2.28,0.50),v3(-0.26,2.38,0.34),v3(-0.64,2.30,0.18),v3(-1.02,2.16,0.04)], 0.155,22,12, veinMat);
+
+// Right PA
+addTube([v3(0.12,2.28,0.50),v3(0.50,2.30,0.22),v3(0.90,2.18,0.02),v3(1.30,2.04,-0.06)], 0.155,22,12, veinMat);
+
+// SVC
+addTube([v3(0.90,3.22,-0.08),v3(0.90,2.60,-0.04),v3(0.90,1.88,0.02),v3(0.88,1.28,0.06)], 0.185,26,14, veinMat);
+
+// IVC
+addTube([v3(0.92,-2.12,-0.12),v3(0.90,-1.42,-0.08),v3(0.90,-0.60,-0.02),v3(0.88,0.42,0.02)], 0.205,26,14, veinMat);
+
+// Pulmonary veins (4)
+addTube([v3(-1.22,2.22,-0.50),v3(-0.90,1.82,-0.62),v3(-0.62,1.52,-0.65)], 0.13,12,10, pvMat);
+addTube([v3(-1.12,1.55,-0.62),v3(-0.82,1.22,-0.65),v3(-0.60,1.08,-0.65)], 0.11,12,10, pvMat);
+addTube([v3( 0.22,2.18,-0.80),v3(-0.08,1.92,-0.70),v3(-0.32,1.62,-0.65)], 0.12,12,10, pvMat);
+addTube([v3( 0.20,1.62,-0.80),v3(-0.08,1.35,-0.70),v3(-0.30,1.12,-0.65)], 0.10,12,10, pvMat);
+
+/* ================================================================
+   CORONARY ARTERIES
+================================================================ */
+// Left Main → LAD (anterior interventricular groove)
+const { curve: ladCurve } = addTube([
+  v3(-0.18,1.22,0.42),v3(-0.12,0.92,0.78),v3(-0.08,0.48,0.98),
+  v3( 0.02,-0.18,1.04),v3(0.08,-0.72,1.00),v3(0.12,-1.18,0.88),
+  v3( 0.14,-1.42,0.62),v3(0.14,-1.55,0.32),
+], 0.060, 38, 10, coronMat);
+
+// LAD Diagonal 1
+addTube([v3(-0.08,0.38,0.98),v3(-0.40,0.14,0.88),v3(-0.72,0.02,0.72)], 0.040,12,8, coronMat);
+
+// LAD Diagonal 2
+addTube([v3(0.02,-0.24,1.02),v3(-0.32,-0.44,0.90),v3(-0.62,-0.54,0.72)], 0.034,10,8, coronMat);
+
+// RCA (right AV groove)
+const { curve: rcaCurve } = addTube([
+  v3(0.32,1.18,0.52),v3(0.86,0.92,0.68),v3(1.02,0.52,0.42),
+  v3(1.05,0.02,0.22),v3(1.02,-0.48,0.06),v3(0.85,-0.90,-0.12),
+  v3(0.60,-1.20,-0.18),v3(0.32,-1.42,-0.14),
+], 0.056, 40, 10, coronMat);
+
+// RCA posterior descending
+addTube([v3(0.32,-1.42,-0.14),v3(0.10,-1.50,-0.02),v3(-0.05,-1.52,0.12)], 0.034,10,8, coronMat);
+
+// Left Circumflex (LCx)
+addTube([
+  v3(-0.18,1.18,0.40),v3(-0.52,1.08,0.18),v3(-0.88,0.82,-0.08),
+  v3(-1.08,0.42,-0.22),v3(-1.02,0.00,-0.28),v3(-0.88,-0.38,-0.20),
+], 0.050, 30, 10, coronMat);
+
+// LCx obtuse marginal
+addTube([v3(-1.05,0.32,-0.18),v3(-1.15,0.02,0.12),v3(-1.10,-0.28,0.25)], 0.036,10,8, coronMat);
+
+/* ================================================================
+   CSS2D LABELS
+================================================================ */
+const labelObjects = [];
+function addLabel(text, pos, color='#ffffff') {
+  const div = document.createElement('div');
+  div.className = 'label3d';
+  div.textContent = text;
+  div.style.borderLeft = `2px solid ${color}`;
+  div.style.color = color;
+  const obj = new CSS2DObject(div);
+  obj.position.copy(pos);
+  heartGroup.add(obj);
+  labelObjects.push(obj);
+}
+
+addLabel('LV',  v3(-0.10, 0.00, 1.25), '#ff4422');
+addLabel('RV',  v3( 0.85,-0.10, 0.92), '#cc4444');
+addLabel('LA',  v3(-0.75, 1.55, 0.40), '#bb2222');
+addLabel('RA',  v3( 1.10, 1.42, 0.40), '#cc3333');
+addLabel('Ao',  v3(-0.52, 2.55, 0.12), '#ff2200');
+addLabel('PA',  v3( 0.56, 2.10, 0.80), '#4466ee');
+addLabel('SVC', v3( 1.15, 2.55, 0.02), '#3355cc');
+addLabel('IVC', v3( 1.16,-1.10, 0.02), '#3355cc');
+addLabel('LAD', v3(-0.36,-0.32, 1.28), '#ff6633');
+addLabel('RCA', v3( 1.28, 0.35, 0.52), '#ff6633');
+addLabel('LCx', v3(-1.28, 0.60,-0.18), '#ff6633');
+addLabel('Arch',v3( 0.10, 2.88,-0.42), '#ff4411');
+
+$showLbls.addEventListener('change', () => {
+  labelObjects.forEach(o => o.visible = $showLbls.checked);
+});
+
+/* ================================================================
+   BLOOD PARTICLE SYSTEM
+================================================================ */
+const streamDefs = [
+  // Venous return → RA (diastole fill)
+  {
+    pts: [v3(0.90,2.50,-0.05),v3(0.90,1.88,0.02),v3(0.88,1.28,0.06),v3(0.88,0.55,0.25),v3(0.80,-0.04,0.46)],
+    color: new THREE.Color(0x2244cc), pStart:0.52, pEnd:1.0, count:14,
+  },
+  // RV ejection → Pulmonary trunk → LPA
+  {
+    pts: [v3(0.80,0.35,0.56),v3(0.55,1.00,0.62),v3(0.38,1.82,0.60),v3(0.12,2.28,0.50),v3(-0.60,2.30,0.20)],
+    color: new THREE.Color(0x2255ee), pStart:0.28, pEnd:0.55, count:11,
+  },
+  // Pulmonary veins → LA → LV (oxygenated return)
+  {
+    pts: [v3(-0.90,1.88,-0.60),v3(-0.62,1.38,-0.62),v3(-0.52,1.02,-0.30),v3(-0.28,0.55,-0.08),v3(-0.10,0.05,-0.02)],
+    color: new THREE.Color(0xff3311), pStart:0.52, pEnd:1.0, count:11,
+  },
+  // LV ejection → ascending aorta
+  {
+    pts: [v3(-0.10,0.65,0.06),v3(-0.28,1.30,0.12),v3(-0.25,1.88,0.04),v3(-0.10,2.40,-0.22),v3(0.12,2.72,-0.40),v3(0.56,2.62,-0.50),v3(0.90,2.24,-0.46)],
+    color: new THREE.Color(0xff1100), pStart:0.27, pEnd:0.54, count:16,
+  },
+  // Coronary flow (LAD)
+  {
+    pts: [v3(-0.18,1.22,0.42),v3(-0.12,0.58,0.90),v3(0.02,-0.18,1.04),v3(0.14,-1.18,0.88),v3(0.14,-1.52,0.34)],
+    color: new THREE.Color(0xff5522), pStart:0.38, pEnd:0.76, count:7,
+  },
+  // Coronary flow (RCA)
+  {
+    pts: [v3(0.32,1.18,0.52),v3(0.86,0.92,0.68),v3(1.02,0.52,0.42),v3(1.02,-0.48,0.06),v3(0.60,-1.20,-0.18)],
+    color: new THREE.Color(0xff5522), pStart:0.38, pEnd:0.76, count:6,
+  },
+];
+
+// Precompute curves and particle metadata
+const streamCurves = streamDefs.map(sd => new THREE.CatmullRomCurve3(sd.pts));
+const particles = [];
+for (let s = 0; s < streamDefs.length; s++) {
+  for (let i = 0; i < streamDefs[s].count; i++) {
+    particles.push({ s, offset: i / streamDefs[s].count });
+  }
+}
+
+const NPART = particles.length;
+const pPos = new Float32Array(NPART * 3);
+const pCol = new Float32Array(NPART * 3);
+const pGeo = new THREE.BufferGeometry();
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+pGeo.setAttribute('color',    new THREE.BufferAttribute(pCol, 3));
+const pMat = new THREE.PointsMaterial({
+  size:0.11, sizeAttenuation:true, vertexColors:true,
+  transparent:true, opacity:0.92,
+  blending:THREE.AdditiveBlending, depthWrite:false,
+});
+scene.add(new THREE.Points(pGeo, pMat));
+
+function updateParticles(beatPhase) {
+  for (let i = 0; i < NPART; i++) {
+    const { s, offset } = particles[i];
+    const sd = streamDefs[s];
+    const curve = streamCurves[s];
+    const ps = sd.pStart, pe = sd.pEnd;
+    let localT;
+    const span = ps < pe ? (pe - ps) : (1 - ps + pe);
+    if (ps < pe) {
+      if (beatPhase < ps || beatPhase >= pe) { localT = -1; }
+      else { localT = (beatPhase - ps) / span; }
+    } else {
+      if (beatPhase >= ps) { localT = (beatPhase - ps) / span; }
+      else if (beatPhase < pe) { localT = (beatPhase + 1 - ps) / span; }
+      else { localT = -1; }
+    }
+    if (localT < 0) {
+      // hide with black (additive blending = invisible)
+      pCol[i*3]=pCol[i*3+1]=pCol[i*3+2]=0;
+      pPos[i*3]=0; pPos[i*3+1]=0; pPos[i*3+2]=0;
+    } else {
+      const t = (localT + offset) % 1.0;
+      const pt = curve.getPoint(t);
+      pPos[i*3+0] = pt.x; pPos[i*3+1] = pt.y; pPos[i*3+2] = pt.z;
+      pCol[i*3+0] = sd.color.r; pCol[i*3+1] = sd.color.g; pCol[i*3+2] = sd.color.b;
+    }
+  }
+  pGeo.attributes.position.needsUpdate = true;
+  pGeo.attributes.color.needsUpdate = true;
+}
+
+/* ================================================================
+   ORIGINAL SCALE SNAPSHOTS (for animation)
+================================================================ */
+const LV0 = lvMesh.scale.clone();
+const RV0 = rvMesh.scale.clone();
+const LA0 = laMesh.scale.clone();
+const RA0 = raMesh.scale.clone();
+
+/* ================================================================
+   CARDIAC ANIMATION
+================================================================ */
+const phaseNames = [
+  [0.05, 'P Wave — Atrial depolarization'],
+  [0.22, 'PR Interval — AV conduction'],
+  [0.36, 'QRS — Ventricular depolarization'],
+  [0.46, 'ST Segment — Ventricular systole'],
+  [0.64, 'T Wave — Ventricular repolarization'],
+  [1.00, 'Diastole — Ventricular filling'],
+];
+
+function updateHeart(beatPhase) {
+  const vSys  = Gf(beatPhase, 0.30, 0.055);
+  const aSys  = Gf(beatPhase, 0.12, 0.032) * 0.82;
+  const eject = Math.max(0, Gf(beatPhase, 0.38, 0.09));
+
+  // LV contracts during systole
+  const lvc = 1.0 - vSys * 0.11;
+  lvMesh.scale.set(LV0.x*lvc, LV0.y*lvc, LV0.z*lvc);
+
+  // RV contracts slightly less
+  const rvc = 1.0 - vSys * 0.09;
+  rvMesh.scale.set(RV0.x*rvc, RV0.y*rvc, RV0.z*rvc);
+
+  // Atria expand during P wave (filling) then contract
+  const ac = 1.0 + aSys * 0.08;
+  laMesh.scale.set(LA0.x*ac, LA0.y*ac, LA0.z*ac);
+  raMesh.scale.set(RA0.x*ac, RA0.y*ac, RA0.z*ac);
+
+  // Interior glow
+  glow.intensity = 1.2 + eject * 3.8;
+  glow.color.setHSL(0.02, 1.0, 0.38 + eject*0.38);
+
+  // Bloom pulses with each beat
+  bloom.strength = 0.35 + vSys*0.55 + eject*0.30;
+
+  // Particles
+  updateParticles(beatPhase);
+
+  // Phase label
+  const pn = phaseNames.find(([t]) => beatPhase < t)?.[1] ?? 'Diastole';
+  document.getElementById('phaseLabel').textContent = pn;
+  document.getElementById('rrLabel').textContent = `RR: ${Math.round(60000/bpm)} ms`;
+}
+
+/* ================================================================
+   MAIN LOOP
+================================================================ */
+const PPB = 200; // pixels per beat
+let ekgPhase = 0, accum = 0, lastTs = 0;
+
+function animate(ts) {
+  requestAnimationFrame(animate);
+  if (!lastTs) lastTs = ts;
+  const dt = Math.min((ts - lastTs) / 1000, 0.05);
+  lastTs = ts;
+
+  // Advance EKG
+  accum += PPB * (bpm / 60) * dt;
+  const n = Math.floor(accum);
+  accum -= n;
+  for (let i = 0; i < n; i++) {
+    ekgPhase = (ekgPhase + 1 / PPB) % 1;
+    samples.push(ekgY(ekgPhase));
+  }
+  const cw = ekgCanvas.width;
+  if (samples.length > cw) samples.splice(0, samples.length - cw);
+
+  // Update 3D
+  updateHeart(ekgPhase);
+
+  // Render
+  controls.update();
+  composer.render();
+  labelRenderer.render(scene, camera);
+
+  // EKG
+  renderEKG();
+}
+
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>
