@@ -76,7 +76,8 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose
 .how-cell:last-child{border-right:none}
 .how-cell:hover{background:#0e1525}
 .how-n{font-size:5rem;font-weight:900;letter-spacing:-.05em;color:rgba(255,255,255,.03);line-height:1;position:absolute;top:16px;right:20px}
-.how-icon{font-size:2rem;margin-bottom:18px;display:block}
+.how-icon{width:48px;height:48px;border-radius:12px;background:rgba(225,29,72,.08);border:1px solid rgba(225,29,72,.18);display:flex;align-items:center;justify-content:center;margin-bottom:20px;color:var(--rose);transition:background .3s,border-color .3s}
+.how-cell:hover .how-icon{background:rgba(225,29,72,.15);border-color:rgba(225,29,72,.35)}
 .how-cell h4{font-size:1.05rem;font-weight:700;margin-bottom:10px;letter-spacing:-.02em}
 .how-cell p{font-size:.88rem;line-height:1.72;color:var(--sub)}
 
@@ -188,9 +189,9 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
     <p class="s-body">Enter any BPM and watch a live 3D anatomical heart respond in real time, chambers contracting, blood flowing, EKG synchronized to every beat. Drag to rotate. See the LAD artery. See the aortic arch. Understand what your heart is doing.</p>
   </div>
   <div class="how-grid reveal d1">
-    <div class="how-cell"><span class="how-n">01</span><span class="how-icon">🔢</span><h4>Enter your BPM</h4><p>Type or drag the slider from 30–220 BPM. The entire 3D simulation responds instantly.</p></div>
-    <div class="how-cell"><span class="how-n">02</span><span class="how-icon">🫀</span><h4>Watch the 3D heart</h4><p>Anatomical chambers, coronary arteries, great vessels, beating at your rate. Rotate 360°.</p></div>
-    <div class="how-cell"><span class="how-n">03</span><span class="how-icon">📈</span><h4>Read the EKG</h4><p>Real-time PQRST waveform color-coded by zone: Bradycardia · Normal · Elevated · Critical.</p></div>
+    <div class="how-cell"><span class="how-n">01</span><div class="how-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="11" cy="18" r="2" fill="currentColor" stroke="none"/></svg></div><h4>Enter your BPM</h4><p>Type or drag the slider from 30–220 BPM. The entire 3D simulation responds instantly.</p></div>
+    <div class="how-cell"><span class="how-n">02</span><div class="how-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><h4>Watch the 3D heart</h4><p>Anatomical chambers, coronary arteries, great vessels, beating at your rate. Rotate 360°.</p></div>
+    <div class="how-cell"><span class="how-n">03</span><div class="how-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><h4>Read the EKG</h4><p>Real-time PQRST waveform color-coded by zone: Bradycardia · Normal · Elevated · Critical.</p></div>
   </div>
   <div class="product-frame reveal" style="margin-top:44px">
     <div class="chrome">
@@ -267,7 +268,7 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
     <h3>See the full patient journey →</h3>
     <p>From ER confusion to calm, informed decision-making, one step at a time.</p>
   </div>
-  <div class="sb-arrow">🫀</div>
+  <div class="sb-arrow"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
 </a>
 
 <footer>

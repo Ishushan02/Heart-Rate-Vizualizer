@@ -100,7 +100,8 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose
 .why-card:nth-child(3n){border-right:none}
 .why-card:nth-child(4),.why-card:nth-child(5),.why-card:nth-child(6){border-bottom:none}
 .why-card:hover{background:#0e1525}
-.why-icon{font-size:2rem;margin-bottom:16px;display:block}
+.why-icon{width:48px;height:48px;border-radius:12px;background:rgba(225,29,72,.08);border:1px solid rgba(225,29,72,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--rose);transition:background .3s,border-color .3s}
+.why-card:hover .why-icon{background:rgba(225,29,72,.15);border-color:rgba(225,29,72,.35)}
 .why-card h4{font-size:.95rem;font-weight:700;margin-bottom:10px;letter-spacing:-.02em}
 .why-card p{font-size:.85rem;line-height:1.72;color:var(--sub)}
 
@@ -119,7 +120,7 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose
 .lim-card p{font-size:.9rem;line-height:1.75;color:var(--sub)}
 
 .disclaimer{margin:0 80px 80px;padding:28px 36px;border-radius:16px;background:rgba(225,29,72,.04);border:1px solid rgba(225,29,72,.16);display:flex;gap:18px;align-items:flex-start}
-.disc-icon{font-size:1.4rem;flex-shrink:0;margin-top:2px}
+.disc-icon{flex-shrink:0;margin-top:2px;color:var(--rose)}
 .disclaimer p{font-size:.88rem;line-height:1.75;color:var(--sub)}
 .disclaimer strong{color:var(--text)}
 @media(max-width:768px){.disclaimer{margin:0 24px 60px;padding:22px 22px}}
@@ -294,32 +295,32 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
   </div>
   <div class="why-grid">
     <div class="why-card reveal">
-      <div class="why-icon">👁️</div>
+      <div class="why-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
       <h4>Visual First</h4>
       <p>A live EKG waveform makes the abstract BPM number tangible. You see the rhythm, not just the count.</p>
     </div>
     <div class="why-card reveal d1">
-      <div class="why-icon">🎨</div>
+      <div class="why-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
       <h4>Color-Coded Zones</h4>
       <p>Blue, Green, Orange and Red zone indicators give instant, pre-attentive understanding without reading a word.</p>
     </div>
     <div class="why-card reveal d2">
-      <div class="why-icon">🔒</div>
+      <div class="why-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
       <h4>No Data, No Risk</h4>
       <p>HeartWise requires no login, no health records, and no backend. Patient privacy is preserved by design.</p>
     </div>
     <div class="why-card reveal">
-      <div class="why-icon">🗣️</div>
+      <div class="why-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
       <h4>Plain Language</h4>
       <p>All explanations are written for a general audience: calm, clear, and free of medical jargon.</p>
     </div>
     <div class="why-card reveal d1">
-      <div class="why-icon">⚡</div>
+      <div class="why-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
       <h4>Instant Response</h4>
       <p>Every change in BPM updates the waveform and interpretation in real time. No loading, no friction.</p>
     </div>
     <div class="why-card reveal d2">
-      <div class="why-icon">🧠</div>
+      <div class="why-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
       <h4>Supports, Not Replaces, Clinicians</h4>
       <p>HeartWise is explicit that it is educational. It guides users toward clinical care, not away from it.</p>
     </div>
@@ -366,7 +367,7 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 
 <!-- DISCLAIMER -->
 <div class="disclaimer reveal">
-  <div class="disc-icon">⚠️</div>
+  <div class="disc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
   <p><strong>Design Disclaimer:</strong> HeartWise is an educational prototype and does not provide medical diagnosis. Users should seek urgent care if they experience severe or worsening symptoms such as chest pain, fainting, severe shortness of breath, or sudden weakness. Heart rate numbers alone are not sufficient to determine the severity of a cardiac event.</p>
 </div>
 

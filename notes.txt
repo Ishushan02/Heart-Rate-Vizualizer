@@ -1,6 +1,0 @@
-You mentioned EKG mapping and heart rate levels. Build a basic web page that takes 
-a heart rate number as input and shows a simulated EKG waveform animation using simple 
-SVG or Canvas. Add color zones (normal, elevated, critical). No real data needed just math-generated 
-sine waves shaped like EKG patterns. Looks impressive, teaches signal basics, and is very buildable.
-
-
