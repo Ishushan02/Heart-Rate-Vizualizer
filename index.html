@@ -152,14 +152,14 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
     <div style="position:absolute;left:0;right:0;height:1px;z-index:5;pointer-events:none;background:linear-gradient(to right,transparent,rgba(0,255,65,.55),transparent);animation:scanSweep 6s linear infinite"></div>
     <div style="position:absolute;top:0;left:0;bottom:0;width:1px;z-index:6;pointer-events:none;background:linear-gradient(to bottom,transparent,rgba(0,255,65,.22),transparent)"></div>
     <div style="position:absolute;top:22px;left:22px;z-index:7;font-family:monospace;font-size:.58rem;color:#00ff41;opacity:.48;pointer-events:none;line-height:1.9;letter-spacing:.6px">
-      <div>SYS://HEARTWISE.v1</div>
+      <!-- <div>SYS://HEARTWISE.v1</div>
       <div>STATUS: ACTIVE</div>
       <div>MODE: 3D_PARTICLE</div>
-      <div>BEAT: 72 BPM</div>
+      <div>BEAT: 72 BPM</div> -->
     </div>
     <div style="position:absolute;bottom:22px;right:22px;z-index:7;font-family:monospace;font-size:.55rem;color:#00ff41;opacity:.35;pointer-events:none;text-align:right;line-height:1.9;letter-spacing:.6px">
-      <div>PARTICLES: 4100</div>
-      <div>CARDIAC: SYNC</div>
+      <!-- <div>PARTICLES: 4100</div> -->
+      <!-- <div>CARDIAC: SYNC</div> -->
       <div>DRAG: ROTATE</div>
     </div>
   </div>
@@ -338,141 +338,129 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.165.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.165.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass }     from 'three/addons/postprocessing/RenderPass.js';
-import { UnrealBloomPass }from 'three/addons/postprocessing/UnrealBloomPass.js';
 
-const wrap = document.getElementById('hero3d');
-const W = () => wrap.clientWidth, H = () => wrap.clientHeight;
+window.addEventListener('load', () => {
+  const wrap = document.getElementById('hero3d');
+  if (!wrap) return;
 
-const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.setSize(W(), H());
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.1;
-wrap.appendChild(renderer.domElement);
-Object.assign(renderer.domElement.style, { position:'absolute', inset:'0', width:'100%', height:'100%', zIndex:'3' });
+  const W = () => Math.max(wrap.clientWidth, 10);
+  const H = () => Math.max(wrap.clientHeight, 10);
 
-const scene  = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(44, W()/H(), 0.1, 100);
-camera.position.set(0, 0.15, 5.2);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+  renderer.setSize(W(), H());
+  wrap.appendChild(renderer.domElement);
+  Object.assign(renderer.domElement.style, {
+    position: 'absolute', inset: '0', width: '100%', height: '100%', zIndex: '3',
+    filter: 'drop-shadow(0 0 10px #00ff41) drop-shadow(0 0 28px #00cc33) drop-shadow(0 0 55px #009922)'
+  });
 
-const comp  = new EffectComposer(renderer);
-comp.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(W(), H()), 1.8, 0.65, 0.18);
-comp.addPass(bloom);
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(44, W() / H(), 0.1, 100);
+  camera.position.set(0, 0.25, 5.4);
+  camera.lookAt(0, -0.1, 0);
 
-new ResizeObserver(() => {
-  camera.aspect = W()/H(); camera.updateProjectionMatrix();
-  renderer.setSize(W(), H()); comp.setSize(W(), H());
-}).observe(wrap);
+  new ResizeObserver(() => {
+    camera.aspect = W() / H();
+    camera.updateProjectionMatrix();
+    renderer.setSize(W(), H());
+  }).observe(wrap);
 
-// ── 3D Heart: surface of revolution of the 2D parametric heart ──────────
-// Rotate x=16sin³t, y=13cost-5cos2t-2cos3t-cos4t around the Y axis
-function buildHeartGeo(uSegs, vSegs, sc) {
-  const pos = [];
-  for (let ui = 0; ui <= uSegs; ui++) {
-    const t = (ui / uSegs) * Math.PI;
-    const xH = 16 * Math.pow(Math.sin(t), 3);
-    const yH = 13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
-    for (let vi = 0; vi <= vSegs; vi++) {
-      const s = (vi / vSegs) * Math.PI * 2;
-      pos.push(xH*sc*Math.cos(s), yH*sc, xH*sc*Math.sin(s));
+  // 3D heart: surface of revolution of the 2D heart parametric curve
+  // x=16sin^3(t), y=13cos(t)-5cos(2t)-2cos(3t)-cos(4t), rotated around Y axis
+  function buildHeartGeo(uSegs, vSegs, sc) {
+    const pos = [];
+    const Y_CENTER = 0.24; // shift up to center the heart vertically
+    for (let ui = 0; ui <= uSegs; ui++) {
+      const t = (ui / uSegs) * Math.PI;
+      const xH = 16 * Math.pow(Math.sin(t), 3);
+      const yH = 13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
+      for (let vi = 0; vi <= vSegs; vi++) {
+        const s = (vi / vSegs) * Math.PI * 2;
+        pos.push(xH * sc * Math.cos(s), yH * sc + Y_CENTER, xH * sc * Math.sin(s));
+      }
     }
-  }
-  const idx = [];
-  for (let ui = 0; ui < uSegs; ui++) {
-    for (let vi = 0; vi < vSegs; vi++) {
-      const a = ui*(vSegs+1)+vi, b = a+vSegs+1;
-      idx.push(a, b, a+1, b, b+1, a+1);
+    const idx = [];
+    for (let ui = 0; ui < uSegs; ui++) {
+      for (let vi = 0; vi < vSegs; vi++) {
+        const a = ui * (vSegs + 1) + vi, b = a + vSegs + 1;
+        idx.push(a, b, a + 1, b, b + 1, a + 1);
+      }
     }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geo.setIndex(idx);
+    return geo;
   }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  geo.setIndex(idx);
-  return geo;
-}
 
-const SC = 0.088;
+  const SC = 0.092;
 
-// Outer ghost shell
-const outerMesh = new THREE.LineSegments(
-  new THREE.WireframeGeometry(buildHeartGeo(18, 28, SC * 1.10)),
-  new THREE.LineBasicMaterial({ color:0x003a0f, transparent:true, opacity:0.28 })
-);
-scene.add(outerMesh);
+  // Outer ghost shell (faint, slightly larger)
+  const outerMesh = new THREE.LineSegments(
+    new THREE.WireframeGeometry(buildHeartGeo(16, 24, SC * 1.12)),
+    new THREE.LineBasicMaterial({ color: 0x003d12, transparent: true, opacity: 0.32 })
+  );
+  scene.add(outerMesh);
 
-// Main wireframe heart
-const mainMat  = new THREE.LineBasicMaterial({ color:0x00ff41, transparent:true, opacity:0.72 });
-const mainMesh = new THREE.LineSegments(
-  new THREE.WireframeGeometry(buildHeartGeo(40, 60, SC)),
-  mainMat
-);
-scene.add(mainMesh);
+  // Main wireframe heart
+  const mainMat = new THREE.LineBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.80 });
+  const mainMesh = new THREE.LineSegments(
+    new THREE.WireframeGeometry(buildHeartGeo(38, 56, SC)),
+    mainMat
+  );
+  scene.add(mainMesh);
 
-// Inner bright core
-const innerMat  = new THREE.LineBasicMaterial({ color:0x88ffaa, transparent:true, opacity:0.50 });
-const innerMesh = new THREE.LineSegments(
-  new THREE.WireframeGeometry(buildHeartGeo(20, 30, SC * 0.68)),
-  innerMat
-);
-scene.add(innerMesh);
+  // Inner bright core
+  const innerMat = new THREE.LineBasicMaterial({ color: 0xaaffbb, transparent: true, opacity: 0.55 });
+  const innerMesh = new THREE.LineSegments(
+    new THREE.WireframeGeometry(buildHeartGeo(18, 26, SC * 0.66)),
+    innerMat
+  );
+  scene.add(innerMesh);
 
-// Equatorial ring accent (bright horizontal slice at y=0)
-const ringGeo = new THREE.BufferGeometry();
-const ringPts = [];
-const R_SC = 16 * SC;
-for (let i = 0; i <= 128; i++) {
-  const a = (i / 128) * Math.PI * 2;
-  ringPts.push(R_SC * Math.cos(a), 0, R_SC * Math.sin(a));
-}
-ringGeo.setAttribute('position', new THREE.Float32BufferAttribute(ringPts, 3));
-const ringMesh = new THREE.Line(ringGeo, new THREE.LineBasicMaterial({ color:0x00ff88, transparent:true, opacity:0.55 }));
-scene.add(ringMesh);
+  // Beat timing (72 BPM)
+  const BEAT = 60 / 72;
+  function beatScale(t) {
+    const p = (t % BEAT) / BEAT;
+    return 1.0 + Math.exp(-0.5 * Math.pow((p - 0.30) / 0.055, 2)) * 0.14;
+  }
 
-// ── Beat sync (72 BPM) ──────────────────────────────────────
-const BEAT = 60 / 72;
-function beatScale(t) {
-  const p = (t % BEAT) / BEAT;
-  return 1.0 + Math.exp(-0.5 * Math.pow((p - 0.30) / 0.055, 2)) * 0.14;
-}
+  // Drag to rotate
+  let dragging = false, lastX = 0, rotY = 0, autoAngle = 0;
+  renderer.domElement.addEventListener('mousedown', e => { dragging = true; lastX = e.clientX; });
+  renderer.domElement.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    rotY += (e.clientX - lastX) * 0.007;
+    lastX = e.clientX;
+  });
+  window.addEventListener('mouseup', () => dragging = false);
 
-// ── Drag to rotate ──────────────────────────────────────────
-let dragging = false, lastX = 0, rotY = 0, autoAngle = 0;
-renderer.domElement.addEventListener('mousedown', e => { dragging = true; lastX = e.clientX; });
-renderer.domElement.addEventListener('mousemove', e => {
-  if (!dragging) return;
-  rotY += (e.clientX - lastX) * 0.007;
-  lastX = e.clientX;
+  // Animate
+  const allMeshes = [mainMesh, innerMesh, outerMesh];
+  let last = 0, t = 0;
+  (function animate(now) {
+    requestAnimationFrame(animate);
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now; t += dt;
+
+    const bs = beatScale(t);
+    const beat = Math.exp(-0.5 * Math.pow(((t % BEAT) / BEAT - 0.30) / 0.055, 2));
+    const tilt = Math.sin(t * 0.12) * 0.04 + 0.10;
+
+    if (!dragging) autoAngle += dt * 0.18;
+    allMeshes.forEach(m => { m.rotation.y = autoAngle + rotY; m.rotation.x = tilt; });
+
+    mainMesh.scale.setScalar(bs);
+    innerMesh.scale.setScalar(bs * 0.68);
+    outerMesh.scale.setScalar(bs * 1.06 + 0.02);
+
+    mainMat.opacity  = 0.68 + beat * 0.25;
+    innerMat.opacity = 0.45 + beat * 0.38;
+
+    renderer.render(scene, camera);
+  })();
 });
-window.addEventListener('mouseup', () => dragging = false);
-
-// ── Animate ─────────────────────────────────────────────────
-const meshes = [mainMesh, innerMesh, outerMesh, ringMesh];
-let last = 0, t = 0;
-(function animate(now) {
-  requestAnimationFrame(animate);
-  const dt = Math.min((now - last) / 1000, 0.05);
-  last = now; t += dt;
-
-  const bs = beatScale(t);
-  const beat = Math.exp(-0.5 * Math.pow(((t % BEAT) / BEAT - 0.30) / 0.055, 2));
-  const tilt = Math.sin(t * 0.12) * 0.04 + 0.10;
-
-  if (!dragging) autoAngle += dt * 0.18;
-
-  meshes.forEach(m => { m.rotation.y = autoAngle + rotY; m.rotation.x = tilt; });
-  mainMesh.scale.setScalar(bs);
-  innerMesh.scale.setScalar(bs * 0.70);
-  outerMesh.scale.setScalar(bs * 1.06 + 0.02);
-  ringMesh.scale.setScalar(bs);
-
-  bloom.strength = 1.4 + beat * 1.8;
-  mainMat.opacity  = 0.60 + beat * 0.30;
-  innerMat.opacity = 0.40 + beat * 0.35;
-
-  comp.render();
-})();
 </script>
 </body>
 </html>
