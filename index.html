@@ -3,663 +3,408 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CardioView   About</title>
+<title>HeartWise    Turning Numbers Into Understanding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* ── Reset & Base ────────────────────────────────────────── */
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --red:#ff3355;
-  --red2:#ff6680;
-  --blue:#4488ff;
-  --green:#00ff88;
-  --bg:#05080f;
-  --bg2:#080d18;
-  --card:#0c1422;
-  --border:rgba(255,255,255,0.07);
-  --text:#d8e8f8;
-  --muted:rgba(255,255,255,0.38);
-}
+:root{--bg:#030508;--card:#080d18;--border:rgba(255,255,255,0.06);--br2:rgba(255,255,255,0.12);--rose:#e11d48;--rose2:#fb7185;--text:#f1f5f9;--sub:#94a3b8;--dim:#475569;--r:cubic-bezier(.16,1,.3,1)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{
-  background:var(--bg);color:var(--text);
-  font-family:'Segoe UI',system-ui,sans-serif;
-  overflow-x:hidden;
-}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
-/* ── Nav ──────────────────────────────────────────────── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 48px;
-  background:rgba(5,8,15,0.82);
-  backdrop-filter:blur(18px);
-  border-bottom:1px solid var(--border);
-}
-.nav-logo{
-  font-size:1.15rem;font-weight:700;letter-spacing:3px;
-  text-transform:uppercase;color:var(--red);
-}
-.nav-logo span{color:var(--text);opacity:.6}
-.nav-links{display:flex;gap:32px}
-.nav-links a{
-  color:var(--muted);text-decoration:none;font-size:.85rem;
-  letter-spacing:1.5px;text-transform:uppercase;
-  transition:color .25s;
-}
-.nav-links a:hover{color:var(--text)}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:64px;background:rgba(3,5,8,0.78);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid var(--border)}
+.n-logo{font-size:1rem;font-weight:800;letter-spacing:-.3px;color:var(--text);display:flex;align-items:center;gap:10px}
+.n-dot{width:8px;height:8px;border-radius:50%;background:var(--rose);box-shadow:0 0 10px var(--rose);animation:hb-dot 1.2s ease-in-out infinite}
+@keyframes hb-dot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.7}}
+.n-links{display:flex;align-items:center;gap:4px}
+.n-links a{padding:6px 14px;border-radius:8px;font-size:.82rem;font-weight:500;color:var(--sub);text-decoration:none;transition:color .2s,background .2s}
+.n-links a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.n-cta{background:var(--rose)!important;color:#fff!important;font-weight:700!important;box-shadow:0 0 0 1px rgba(225,29,72,.5),0 4px 20px rgba(225,29,72,.3);transition:box-shadow .2s,transform .2s!important}
+.n-cta:hover{box-shadow:0 0 0 1px rgba(225,29,72,.7),0 8px 30px rgba(225,29,72,.45)!important;transform:translateY(-1px)!important;background:var(--rose)!important}
+@media(max-width:768px){nav{padding:0 20px}.n-links{display:none}}
 
-/* ── Hero ─────────────────────────────────────────────── */
-.hero{
-  min-height:100vh;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  position:relative;text-align:center;padding:0 24px;
-  overflow:hidden;
-}
-.hero-bg{
-  position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 60%, rgba(255,51,85,0.10) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 40% at 20% 30%, rgba(68,136,255,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 80% 80%, rgba(0,255,136,0.05) 0%, transparent 60%);
-  animation:bgPulse 6s ease-in-out infinite alternate;
-}
-@keyframes bgPulse{
-  0%{opacity:.7} 100%{opacity:1}
-}
+.hero{position:relative;min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;overflow:hidden;padding-top:64px}
+.hero-left{position:relative;z-index:10;padding:80px 48px 80px 80px;display:flex;flex-direction:column}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:20px;border:1px solid rgba(225,29,72,.28);background:rgba(225,29,72,.06);font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose2);margin-bottom:32px;width:fit-content;animation:fadeUp .7s var(--r) both}
+.b-dot{width:6px;height:6px;border-radius:50%;background:var(--rose2)}
+h1{font-size:clamp(2.8rem,4.8vw,4.6rem);font-weight:900;letter-spacing:-.05em;line-height:.96;animation:fadeUp .7s .1s var(--r) both}
+h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose2),#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{margin-top:26px;font-size:1.05rem;font-weight:400;line-height:1.75;color:var(--sub);max-width:400px;animation:fadeUp .7s .18s var(--r) both}
+.hero-actions{margin-top:44px;display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp .7s .26s var(--r) both}
+.btn-solid{padding:13px 26px;border-radius:10px;background:var(--rose);color:#fff;font-size:.88rem;font-weight:700;letter-spacing:-.2px;text-decoration:none;box-shadow:0 4px 24px rgba(225,29,72,.4),0 0 0 1px rgba(225,29,72,.5);transition:transform .2s var(--r),box-shadow .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-solid:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(225,29,72,.55),0 0 0 1px rgba(225,29,72,.7)}
+.btn-outline{padding:12px 24px;border-radius:10px;border:1px solid var(--br2);color:var(--text);font-size:.88rem;font-weight:600;text-decoration:none;background:rgba(255,255,255,.03);transition:background .2s,border-color .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-outline:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.22)}
+.hero-3d-wrap{position:absolute;right:0;top:0;width:55%;height:100%;pointer-events:auto;z-index:5}
+.hero-3d-wrap canvas{width:100%!important;height:100%!important}
+.hero-scroll{position:absolute;bottom:36px;left:80px;z-index:10;display:flex;align-items:center;gap:12px;font-size:.7rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);animation:fadeUp .7s .5s var(--r) both}
+.hero-scroll-line{width:40px;height:1px;background:linear-gradient(90deg,var(--rose),transparent)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.hero-left{padding:80px 24px}.hero-3d-wrap{display:none}.hero-scroll{left:24px}}
 
-/* animated grid */
-.hero-grid{
-  position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-  background-size:60px 60px;
-  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
-}
+.section{padding:120px 80px;max-width:1280px;margin:0 auto}
+@media(max-width:768px){.section{padding:80px 24px}}
+.s-eye{font-size:.7rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose);margin-bottom:14px}
+.s-title{font-size:clamp(2rem,3.2vw,2.8rem);font-weight:800;letter-spacing:-.04em;line-height:1.08;margin-bottom:18px}
+.s-body{font-size:1.02rem;line-height:1.78;color:var(--sub);max-width:580px}
+.rule{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0 80px}
+@media(max-width:768px){.rule{margin:0 24px}}
 
-/* EKG line SVG across hero */
-.hero-ekg{
-  position:absolute;bottom:28%;left:0;right:0;
-  opacity:0.12;pointer-events:none;
-}
+.prob-wrap{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+@media(max-width:900px){.prob-wrap{grid-template-columns:1fr}}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;border-radius:20px;overflow:hidden;border:1px solid var(--border)}
+.stat-cell{background:var(--card);padding:36px 28px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:background .25s}
+.stat-cell:nth-child(even){border-right:none}
+.stat-cell:nth-child(3),.stat-cell:nth-child(4){border-bottom:none}
+.stat-cell:hover{background:#0e1525}
+.stat-big{font-size:2.8rem;font-weight:900;letter-spacing:-.05em;line-height:1;background:linear-gradient(135deg,var(--rose),var(--rose2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.stat-lbl{font-size:.8rem;font-weight:500;color:var(--sub);line-height:1.5}
+.quote-block{margin-top:32px;padding:28px 32px;background:var(--card);border-radius:16px;border:1px solid var(--border);border-left:3px solid var(--rose);font-size:1rem;line-height:1.75;color:var(--sub);font-style:italic}
+.quote-block strong{color:var(--text);font-style:normal}
 
-.hero-tag{
-  display:inline-block;
-  padding:5px 16px;border-radius:20px;
-  border:1px solid rgba(255,51,85,0.4);
-  background:rgba(255,51,85,0.08);
-  font-size:.72rem;letter-spacing:2.5px;text-transform:uppercase;
-  color:var(--red2);margin-bottom:28px;
-  animation:fadeUp .8s ease both;
-}
-.hero h1{
-  font-size:clamp(2.8rem,7vw,5.5rem);
-  font-weight:800;letter-spacing:-1px;line-height:1.05;
-  animation:fadeUp .8s .1s ease both;
-}
-.hero h1 .accent{
-  background:linear-gradient(135deg,var(--red),var(--red2),#ff9966);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-.hero-sub{
-  max-width:620px;margin:22px auto 0;
-  font-size:1.08rem;line-height:1.7;color:var(--muted);
-  animation:fadeUp .8s .2s ease both;
-}
-.hero-cta{
-  display:flex;gap:16px;margin-top:40px;flex-wrap:wrap;justify-content:center;
-  animation:fadeUp .8s .3s ease both;
-}
-.btn{
-  padding:12px 30px;border-radius:8px;font-size:.88rem;
-  font-weight:600;letter-spacing:1px;text-decoration:none;
-  cursor:pointer;transition:transform .2s,box-shadow .2s;
-  display:inline-flex;align-items:center;gap:8px;
-}
-.btn:hover{transform:translateY(-2px)}
-.btn-primary{
-  background:linear-gradient(135deg,var(--red),#cc2244);
-  color:#fff;box-shadow:0 4px 24px rgba(255,51,85,0.35);
-}
-.btn-primary:hover{box-shadow:0 8px 32px rgba(255,51,85,0.5)}
-.btn-ghost{
-  border:1px solid var(--border);color:var(--text);
-  background:rgba(255,255,255,0.04);
-}
-.btn-ghost:hover{background:rgba(255,255,255,0.09)}
+.product-frame{margin-top:52px;border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 0 0 1px rgba(225,29,72,.06),0 40px 100px rgba(0,0,0,.8),0 0 120px rgba(225,29,72,.08)}
+.chrome{display:flex;align-items:center;gap:10px;padding:14px 20px;background:#0a0f1c;border-bottom:1px solid var(--border)}
+.c-dot{width:11px;height:11px;border-radius:50%}
+.c-bar{flex:1;text-align:center;font-size:.72rem;color:var(--dim);letter-spacing:.5px}
+.product-iframe{width:100%;height:580px;border:none;display:block}
+.product-open{display:flex;justify-content:center;padding:20px;background:#0a0f1c;border-top:1px solid var(--border)}
 
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(24px)}
-  to{opacity:1;transform:translateY(0)}
-}
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:52px;border:1px solid var(--border);border-radius:20px;overflow:hidden}
+@media(max-width:768px){.how-grid{grid-template-columns:1fr}}
+.how-cell{background:var(--card);padding:40px 32px;border-right:1px solid var(--border);transition:background .3s;position:relative}
+.how-cell:last-child{border-right:none}
+.how-cell:hover{background:#0e1525}
+.how-n{font-size:5rem;font-weight:900;letter-spacing:-.05em;color:rgba(255,255,255,.03);line-height:1;position:absolute;top:16px;right:20px}
+.how-icon{font-size:2rem;margin-bottom:18px;display:block}
+.how-cell h4{font-size:1.05rem;font-weight:700;margin-bottom:10px;letter-spacing:-.02em}
+.how-cell p{font-size:.88rem;line-height:1.72;color:var(--sub)}
 
-/* scroll indicator */
-.scroll-hint{
-  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  color:var(--muted);font-size:.65rem;letter-spacing:2px;text-transform:uppercase;
-  animation:fadeUp 1s .6s ease both;
-}
-.scroll-dot{
-  width:1px;height:40px;background:linear-gradient(to bottom,transparent,var(--red));
-  animation:scrollDot 1.8s ease-in-out infinite;
-}
-@keyframes scrollDot{0%,100%{opacity:0;transform:scaleY(0.3)}50%{opacity:1;transform:scaleY(1)}}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:52px}
+@media(max-width:900px){.team-grid{grid-template-columns:1fr}}
+.team-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:transform .35s var(--r),border-color .35s,box-shadow .35s}
+.team-card:hover{transform:translateY(-6px);border-color:rgba(225,29,72,.2);box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 40px rgba(225,29,72,.06)}
+.t-photo{position:relative;overflow:hidden;height:280px}
+.t-photo img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;transition:transform .5s var(--r);filter:grayscale(15%) contrast(1.05)}
+.team-card:hover .t-photo img{transform:scale(1.04)}
+.t-overlay{position:absolute;inset:0;background:linear-gradient(to top,var(--card) 0%,transparent 55%)}
+.t-chip{position:absolute;bottom:14px;left:14px;padding:4px 12px;border-radius:20px;font-size:.65rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;background:rgba(225,29,72,.15);border:1px solid rgba(225,29,72,.3);color:var(--rose2)}
+.t-info{padding:26px 26px 30px}
+.t-name{font-size:1.2rem;font-weight:800;letter-spacing:-.03em;margin-bottom:12px}
+.t-bio{font-size:.87rem;line-height:1.75;color:var(--sub)}
+.t-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.tag{padding:3px 10px;border-radius:20px;font-size:.67rem;font-weight:500;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--dim)}
 
-/* ── Sections ─────────────────────────────────────────── */
-section{padding:100px 48px;max-width:1200px;margin:0 auto}
-.section-label{
-  font-size:.68rem;letter-spacing:3px;text-transform:uppercase;
-  color:var(--red);margin-bottom:14px;
-}
-.section-title{
-  font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;
-  letter-spacing:-.5px;line-height:1.15;margin-bottom:18px;
-}
-.section-body{
-  font-size:1.02rem;line-height:1.8;color:var(--muted);max-width:680px;
-}
+.sb-banner{margin:0 80px 120px;padding:52px 56px;border-radius:24px;background:linear-gradient(135deg,rgba(225,29,72,.07) 0%,rgba(251,113,133,.04) 100%);border:1px solid rgba(225,29,72,.16);display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;text-decoration:none;transition:border-color .3s,transform .3s var(--r),box-shadow .3s}
+.sb-banner:hover{border-color:rgba(225,29,72,.36);transform:translateY(-3px);box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 40px rgba(225,29,72,.08)}
+.sb-text .t-eye2{font-size:.68rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--rose);margin-bottom:10px}
+.sb-text h3{font-size:1.65rem;font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:8px}
+.sb-text p{font-size:.93rem;color:var(--sub);line-height:1.65;max-width:420px}
+.sb-arrow{font-size:2rem;flex-shrink:0;background:rgba(225,29,72,.1);border:1px solid rgba(225,29,72,.22);border-radius:16px;width:76px;height:76px;display:flex;align-items:center;justify-content:center;transition:background .3s}
+.sb-banner:hover .sb-arrow{background:rgba(225,29,72,.2)}
+@media(max-width:768px){.sb-banner{margin:0 24px 80px;padding:32px 26px}}
 
-/* divider */
-.divider{
-  height:1px;
-  background:linear-gradient(90deg,transparent,var(--border),transparent);
-  margin:0 48px;
-}
+footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.f-logo{font-size:.9rem;font-weight:800;letter-spacing:-.02em}
+.f-logo span{color:var(--rose)}
+.f-links{display:flex;gap:22px}
+.f-links a{font-size:.8rem;color:var(--dim);text-decoration:none;transition:color .2s}
+.f-links a:hover{color:var(--text)}
+.f-copy{font-size:.77rem;color:var(--dim)}
+@media(max-width:768px){footer{padding:32px 24px;flex-direction:column}}
 
-/* ── Problem / Solution cards ─────────────────────────── */
-.ps-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:24px;margin-top:52px;
-}
-.ps-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:16px;padding:36px;
-  position:relative;overflow:hidden;
-  transition:border-color .3s,transform .3s;
-}
-.ps-card:hover{border-color:rgba(255,51,85,0.3);transform:translateY(-4px)}
-.ps-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--red),var(--red2));
-  opacity:0;transition:opacity .3s;
-}
-.ps-card:hover::before{opacity:1}
-.ps-icon{
-  width:48px;height:48px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.5rem;margin-bottom:22px;
-}
-.ps-card h3{font-size:1.15rem;font-weight:700;margin-bottom:12px;letter-spacing:-.2px}
-.ps-card p{font-size:.92rem;line-height:1.75;color:var(--muted)}
-
-/* ── Stats row ────────────────────────────────────────── */
-.stats{
-  display:flex;flex-wrap:wrap;gap:0;
-  border:1px solid var(--border);border-radius:16px;
-  overflow:hidden;margin-top:52px;
-  background:var(--card);
-}
-.stat{
-  flex:1;min-width:180px;padding:36px 28px;text-align:center;
-  border-right:1px solid var(--border);
-}
-.stat:last-child{border-right:none}
-.stat-num{
-  font-size:2.6rem;font-weight:800;letter-spacing:-1px;
-  background:linear-gradient(135deg,var(--red),var(--red2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-.stat-label{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:6px}
-
-/* ── Demo section ─────────────────────────────────────── */
-#demo{padding:0 48px 100px;max-width:1200px;margin:0 auto}
-.demo-wrap{
-  border:1px solid var(--border);border-radius:20px;
-  overflow:hidden;position:relative;
-  background:var(--card);
-}
-.demo-header{
-  display:flex;align-items:center;gap:10px;
-  padding:14px 22px;border-bottom:1px solid var(--border);
-  background:rgba(255,255,255,0.02);
-}
-.demo-dot{width:12px;height:12px;border-radius:50%}
-.demo-title-bar{
-  flex:1;text-align:center;font-size:.75rem;
-  letter-spacing:1px;color:var(--muted);
-}
-.demo-iframe{
-  width:100%;height:560px;border:none;
-  display:block;
-}
-.demo-open{
-  display:flex;justify-content:center;padding:20px;
-  border-top:1px solid var(--border);
-  background:rgba(255,255,255,0.01);
-}
-
-/* ── Team ─────────────────────────────────────────────── */
-.team-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-  gap:28px;margin-top:52px;
-}
-.team-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:20px;overflow:hidden;
-  transition:transform .3s,border-color .3s;
-  position:relative;
-}
-.team-card:hover{transform:translateY(-6px);border-color:rgba(255,51,85,0.25)}
-.team-photo{
-  width:100%;height:220px;
-  background:linear-gradient(135deg,#0e1624,#141f34);
-  display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;
-}
-.team-photo-inner{
-  width:100px;height:100px;border-radius:50%;
-  background:linear-gradient(135deg,rgba(255,51,85,0.15),rgba(68,136,255,0.15));
-  border:2px dashed rgba(255,255,255,0.12);
-  display:flex;align-items:center;justify-content:center;
-  font-size:.65rem;letter-spacing:2px;text-transform:uppercase;
-  color:var(--muted);flex-direction:column;gap:6px;
-}
-.team-photo-inner svg{opacity:.3}
-.team-photo-line{
-  position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--red),transparent);
-  opacity:0;transition:opacity .3s;
-}
-.team-card:hover .team-photo-line{opacity:1}
-.team-info{padding:28px}
-.team-num{
-  font-size:.65rem;letter-spacing:2px;text-transform:uppercase;
-  color:var(--red);margin-bottom:10px;opacity:.7;
-}
-.team-name{font-size:1.12rem;font-weight:700;letter-spacing:-.2px;margin-bottom:6px}
-.team-role{
-  font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;
-  color:var(--muted);margin-bottom:18px;
-}
-.team-tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{
-  padding:3px 10px;border-radius:20px;font-size:.7rem;
-  border:1px solid rgba(255,255,255,0.1);
-  background:rgba(255,255,255,0.04);color:var(--muted);
-  letter-spacing:.5px;
-}
-
-/* ── Methods / Timeline ───────────────────────────────── */
-.timeline{margin-top:48px;display:flex;flex-direction:column;gap:0}
-.tl-item{
-  display:grid;grid-template-columns:48px 1fr;gap:24px;
-  position:relative;
-}
-.tl-item:not(:last-child)::before{
-  content:'';position:absolute;left:24px;top:52px;bottom:0;
-  width:1px;background:var(--border);transform:translateX(-50%);
-}
-.tl-num{
-  width:48px;height:48px;border-radius:50%;
-  border:1px solid rgba(255,51,85,0.35);
-  background:rgba(255,51,85,0.08);
-  display:flex;align-items:center;justify-content:center;
-  font-size:.8rem;font-weight:700;color:var(--red);
-  flex-shrink:0;margin-top:4px;
-}
-.tl-body{padding-bottom:40px}
-.tl-body h4{font-size:1.02rem;font-weight:700;margin-bottom:8px}
-.tl-body p{font-size:.9rem;line-height:1.75;color:var(--muted)}
-
-/* ── Footer ───────────────────────────────────────────── */
-footer{
-  border-top:1px solid var(--border);
-  padding:36px 48px;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:16px;
-}
-.footer-left{font-size:.8rem;color:var(--muted)}
-.footer-logo{font-size:.9rem;font-weight:700;letter-spacing:3px;color:var(--red);text-transform:uppercase}
-
-/* ── Pulse badge ──────────────────────────────────────── */
-.pulse-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:6px 14px;border-radius:20px;
-  background:rgba(0,255,136,0.06);
-  border:1px solid rgba(0,255,136,0.2);
-  font-size:.72rem;letter-spacing:1.5px;
-  text-transform:uppercase;color:#00ff88;
-  margin-bottom:32px;
-}
-.pulse-dot{
-  width:7px;height:7px;border-radius:50%;
-  background:#00ff88;
-  animation:pulseDot 1.4s ease-in-out infinite;
-}
-@keyframes pulseDot{
-  0%,100%{box-shadow:0 0 0 0 rgba(0,255,136,0.5)}
-  50%{box-shadow:0 0 0 6px rgba(0,255,136,0)}
-}
-
-/* ── Fade-in on scroll ────────────────────────────────── */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
-.reveal.visible{opacity:1;transform:none}
-
-/* ── Responsive ───────────────────────────────────────── */
-@media(max-width:768px){
-  nav{padding:14px 20px}
-  .nav-links{display:none}
-  section,#demo{padding-left:20px;padding-right:20px}
-  footer{padding:24px 20px;flex-direction:column;text-align:center}
-  .stat{padding:24px 16px}
-  .demo-iframe{height:340px}
-}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--r),transform .7s var(--r)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}
 </style>
 </head>
 <body>
 
-<!-- ── NAV ────────────────────────────────────────────── -->
 <nav>
-  <div class="nav-logo">Cardio<span>View</span></div>
-  <div class="nav-links">
-    <a href="#project">Project</a>
-    <a href="#demo">Demo</a>
-    <a href="#methods">Methods</a>
+  <div class="n-logo"><div class="n-dot"></div>HeartWise</div>
+  <div class="n-links">
+    <a href="#problem">Problem</a>
+    <a href="#product">Product</a>
     <a href="#team">Team</a>
+    <a href="../storyBoard/index.html">Storyboard</a>
+    <a href="../index.html" target="_blank" class="n-cta">Live Demo ↗</a>
   </div>
 </nav>
 
-<!-- ── HERO ───────────────────────────────────────────── -->
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-
-  <!-- decorative EKG SVG -->
-  <svg class="hero-ekg" viewBox="0 0 1400 80" preserveAspectRatio="none" fill="none">
-    <polyline stroke="#ff3355" stroke-width="1.5"
-      points="0,40 140,40 180,40 200,12 220,72 240,8 260,60 280,40 400,40 440,40 460,20 480,60 500,40 700,40 740,40 760,12 780,72 800,8 820,60 840,40 1000,40 1040,40 1060,20 1080,60 1100,40 1200,40 1400,40"/>
-  </svg>
-
-  <div style="position:relative;z-index:2">
-    <div class="hero-tag">&#9829;&nbsp;&nbsp;Biomedical Informatics Project</div>
-    <h1>Real-Time <span class="accent">Cardiac</span><br>Visualization</h1>
-    <p class="hero-sub">
-      An interactive 3D heart rate monitor that brings the cardiac cycle to life  
-      EKG waveforms, anatomical chambers, and blood flow, all synchronized in real time.
-    </p>
-    <div class="hero-cta">
-      <a href="#demo" class="btn btn-primary">
+  <div class="hero-3d-wrap" id="hero3d"></div>
+  <div class="hero-left">
+    <div class="hero-badge"><div class="b-dot"></div>Biomedical Informatics · 2025</div>
+    <h1>Turn a number<br>into <em>understanding.</em></h1>
+    <p class="hero-sub">Patients leave hospitals staring at a BPM reading with no context. HeartWise changes that    real-time 3D cardiac visualization that makes the heartbeat legible for everyone.</p>
+    <div class="hero-actions">
+      <a href="#product" class="btn-solid">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Live Demo
+        See the product
       </a>
-      <a href="#project" class="btn btn-ghost">Learn More</a>
+      <a href="#team" class="btn-outline">Meet the team</a>
     </div>
   </div>
+  <div class="hero-scroll"><div class="hero-scroll-line"></div>Scroll to explore</div>
+</section>
 
-  <div class="scroll-hint">
-    <span>Scroll</span>
-    <div class="scroll-dot"></div>
+<!-- PROBLEM -->
+<section class="section" id="problem">
+  <div class="prob-wrap">
+    <div class="reveal">
+      <div class="s-eye">The Problem</div>
+      <h2 class="s-title">A number without context is just noise.</h2>
+      <p class="s-body">Millions leave the ER with heart rate data and zero ability to interpret it. 118 BPM on a smartwatch could mean stress, dehydration    or something urgent. Without context, patients panic or ignore it. Both outcomes are dangerous.</p>
+      <div class="quote-block">"I didn't know if <strong>118 BPM</strong> was going to kill me or if I just needed to sit down. I searched online for 40 minutes and felt worse." <br><br>   Simulated patient narrative</div>
+    </div>
+    <div class="stat-grid reveal d1">
+      <div class="stat-cell"><div class="stat-big">36M</div><div class="stat-lbl">ED visits yearly involving cardiac monitoring</div></div>
+      <div class="stat-cell"><div class="stat-big">72%</div><div class="stat-lbl">Patients who can't interpret their own heart rate zone</div></div>
+      <div class="stat-cell"><div class="stat-big">3D</div><div class="stat-lbl">Anatomical heart    chambers, vessels, real-time blood flow</div></div>
+      <div class="stat-cell"><div class="stat-big">0</div><div class="stat-lbl">Personal health data required    private by design</div></div>
+    </div>
   </div>
 </section>
 
-<!-- ── STATS ───────────────────────────────────────────── -->
-<div style="max-width:1200px;margin:0 auto;padding:0 48px" class="reveal">
-  <div class="stats">
-    <div class="stat"><div class="stat-num">3D</div><div class="stat-label">Anatomical Heart</div></div>
-    <div class="stat"><div class="stat-num">6</div><div class="stat-label">Blood Flow Streams</div></div>
-    <div class="stat"><div class="stat-num">12+</div><div class="stat-label">Vessels Modeled</div></div>
-    <div class="stat"><div class="stat-num">Real‑time</div><div class="stat-label">EKG Sync</div></div>
-  </div>
-</div>
+<div class="rule"></div>
 
-<div class="divider" style="margin-top:80px"></div>
-
-<!-- ── PROJECT ─────────────────────────────────────────── -->
-<section id="project">
+<!-- PRODUCT -->
+<section class="section" id="product">
   <div class="reveal">
-    <div class="section-label">The Project</div>
-    <h2 class="section-title">Understanding the heart<br>through interactive visualization</h2>
-    <p class="section-body">
-      Cardiac conditions affect millions worldwide, yet the inner workings of the heart remain
-      opaque to most patients, students, and even clinicians outside cardiology. Our project
-      bridges that gap with a real-time, interactive visualization tool.
-    </p>
+    <div class="s-eye">The Product</div>
+    <h2 class="s-title">HeartWise    your heart rate, made visible.</h2>
+    <p class="s-body">Enter any BPM and watch a live 3D anatomical heart respond in real time    chambers contracting, blood flowing, EKG synchronized to every beat. Drag to rotate. See the LAD artery. See the aortic arch. Understand what your heart is doing.</p>
   </div>
-
-  <div class="ps-grid">
-    <div class="ps-card reveal">
-      <div class="ps-icon" style="background:rgba(255,51,85,0.1)">🫀</div>
-      <h3>Problem Space</h3>
-      <p>
-        Clinical EKG readings are abstract waveforms that are difficult to interpret without
-        years of training. Patients receiving cardiac diagnoses often cannot visualize what
-        is happening inside their heart, leading to poor health literacy and treatment adherence.
-        Educational tools that exist today are static, 2D, and disconnected from real physiological timing.
-      </p>
-    </div>
-    <div class="ps-card reveal">
-      <div class="ps-icon" style="background:rgba(68,136,255,0.1)">💡</div>
-      <h3>Solution Space</h3>
-      <p>
-        CardioView renders a fully animated 3D anatomical heart   chambers, great vessels,
-        and coronary arteries   synchronized frame-by-frame to a PQRST EKG waveform.
-        Users input any heart rate (30–220 BPM) and watch the cardiac cycle unfold in real
-        time: atrial kick, ventricular systole, ejection, and diastolic filling, all visible
-        from any angle via 3D rotation.
-      </p>
-    </div>
-    <div class="ps-card reveal">
-      <div class="ps-icon" style="background:rgba(0,255,136,0.1)">🎯</div>
-      <h3>Why This Approach</h3>
-      <p>
-        Simpler 2D animations fail to convey spatial relationships between chambers and vessels.
-        A generative/procedural 3D model (Three.js) with physics-based lighting and
-        particle-based blood flow is necessary because no pre-built static model can respond
-        dynamically to arbitrary BPM inputs while preserving anatomical accuracy across all viewing angles.
-      </p>
-    </div>
+  <div class="how-grid reveal d1">
+    <div class="how-cell"><span class="how-n">01</span><span class="how-icon">🔢</span><h4>Enter your BPM</h4><p>Type or drag the slider from 30–220 BPM. The entire 3D simulation responds instantly.</p></div>
+    <div class="how-cell"><span class="how-n">02</span><span class="how-icon">🫀</span><h4>Watch the 3D heart</h4><p>Anatomical chambers, coronary arteries, great vessels    beating at your rate. Rotate 360°.</p></div>
+    <div class="how-cell"><span class="how-n">03</span><span class="how-icon">📈</span><h4>Read the EKG</h4><p>Real-time PQRST waveform color-coded by zone: Bradycardia · Normal · Elevated · Critical.</p></div>
   </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ── DEMO ────────────────────────────────────────────── -->
-<div id="demo" style="padding:80px 48px 100px;max-width:1200px;margin:0 auto">
-  <div class="reveal" style="margin-bottom:40px">
-    <div class="section-label">Interactive Demo</div>
-    <h2 class="section-title">Try it yourself</h2>
-    <p class="section-body">
-      Drag to rotate the 3D heart, scroll to zoom, and adjust the BPM slider to see
-      how the cardiac cycle changes at different heart rates.
-    </p>
-  </div>
-  <div class="pulse-badge reveal">
-    <div class="pulse-dot"></div>
-    Live &nbsp;·&nbsp; Adjust BPM to interact
-  </div>
-  <div class="demo-wrap reveal">
-    <div class="demo-header">
-      <div class="demo-dot" style="background:#ff5f57"></div>
-      <div class="demo-dot" style="background:#febc2e"></div>
-      <div class="demo-dot" style="background:#28c840"></div>
-      <div class="demo-title-bar">CardioView   3D Heart Rate Visualizer</div>
+  <div class="product-frame reveal" style="margin-top:44px">
+    <div class="chrome">
+      <div class="c-dot" style="background:#ff5f57"></div>
+      <div class="c-dot" style="background:#febc2e"></div>
+      <div class="c-dot" style="background:#28c840"></div>
+      <div class="c-bar">HeartWise    3D Heart Rate Visualizer</div>
     </div>
-    <iframe
-      class="demo-iframe"
-      src="../HearWise/"
-      title="CardioView 3D Heart Rate Visualizer"
-      loading="lazy"
-      allow="accelerometer"
-    ></iframe>
-    <div class="demo-open">
-      <a href="../HearWise/" target="_blank" class="btn btn-primary" style="font-size:.82rem">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    <iframe class="product-iframe" src="../index.html" title="HeartWise Demo" loading="lazy"></iframe>
+    <div class="product-open">
+      <a href="../index.html" target="_blank" class="btn-solid" style="font-size:.83rem">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         Open Full Screen
       </a>
     </div>
   </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- ── METHODS ─────────────────────────────────────────── -->
-<section id="methods">
-  <div class="reveal">
-    <div class="section-label">Methodology</div>
-    <h2 class="section-title">How we're refining<br>the solution</h2>
-    <p class="section-body">
-      Our development follows an iterative, human-centered design process, combining
-      technical prototyping with clinical and educational feedback.
-    </p>
-  </div>
-
-  <div class="timeline" style="margin-top:52px">
-    <div class="tl-item reveal">
-      <div class="tl-num">01</div>
-      <div class="tl-body">
-        <h4>Mathematical Modeling of the Cardiac Cycle</h4>
-        <p>We model the PQRST waveform using Gaussian basis functions, with each cardiac phase (P wave, QRS complex, T wave) precisely parameterized. All 3D animations derive directly from this model   ensuring physiological accuracy at any BPM.</p>
-      </div>
-    </div>
-    <div class="tl-item reveal">
-      <div class="tl-num">02</div>
-      <div class="tl-body">
-        <h4>Anatomical Prototyping with 3D Web Technologies</h4>
-        <p>Using Three.js, we procedurally generate chambers (LV, RV, LA, RA), great vessels (aorta, pulmonary trunk, SVC, IVC), pulmonary veins, and coronary arteries (LAD, RCA, LCx) as parametric tube geometries   enabling rotation, zoom, and inspection from any angle.</p>
-      </div>
-    </div>
-    <div class="tl-item reveal">
-      <div class="tl-num">03</div>
-      <div class="tl-body">
-        <h4>Physician & Educator Feedback</h4>
-        <p>We plan structured interviews with cardiologists and medical educators to validate anatomical accuracy, correct vessel positioning, and assess whether the visualization aids clinical explanation. Feedback will inform geometry refinement and label placement.</p>
-      </div>
-    </div>
-    <div class="tl-item reveal">
-      <div class="tl-num">04</div>
-      <div class="tl-body">
-        <h4>Patient-Facing Usability Testing</h4>
-        <p>Usability studies with non-clinical participants will evaluate comprehension: can a patient understand their arrhythmia or tachycardia by interacting with the tool? We will use think-aloud protocols and pre/post knowledge assessments.</p>
-      </div>
-    </div>
-    <div class="tl-item reveal">
-      <div class="tl-num">05</div>
-      <div class="tl-body">
-        <h4>Integration & Iteration</h4>
-        <p>Based on feedback, we will add valve animations, pathology modes (AFib, bradycardia, tachycardia waveforms), and potentially connect to real BPM data from wearables via the Web Bluetooth API for live patient monitoring scenarios.</p>
-      </div>
-    </div>
-  </div>
 </section>
 
-<div class="divider"></div>
+<div class="rule"></div>
 
-<!-- ── TEAM ─────────────────────────────────────────────── -->
-<section id="team">
+<!-- TEAM -->
+<section class="section" id="team">
   <div class="reveal">
-    <div class="section-label">The Team</div>
-    <h2 class="section-title">Building the future<br>of cardiac education</h2>
-    <p class="section-body">
-      Three graduate students from the intersection of computer science,
-      biomedical informatics, and human-computer interaction.
-    </p>
+    <div class="s-eye">The Team</div>
+    <h2 class="s-title">Built by three people who believe<br>clarity is a clinical tool.</h2>
   </div>
-
   <div class="team-grid">
 
-    <!-- Member 1 -->
     <div class="team-card reveal">
-      <div class="team-photo">
-        <div class="team-photo-inner">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          Photo
-        </div>
-        <div class="team-photo-line"></div>
+      <div class="t-photo">
+        <img src="../Images/img1.png" alt="Ishan Anand" loading="lazy">
+        <div class="t-overlay"></div>
+        <!-- <div class="t-chip">Clinical Informatics</div> -->
       </div>
-      <div class="team-info">
-        <div class="team-num">Member 01</div>
-        <div class="team-name">Ishan Kumar Anand</div>
-        <div class="team-role">Lead Developer &amp; Visualization Engineer</div>
-        <div class="team-tags">
-          <span class="tag">3D Graphics</span>
-          <span class="tag">WebGL / Three.js</span>
-          <span class="tag">Biomedical Systems</span>
-          <span class="tag">HCI</span>
-        </div>
+      <div class="t-info">
+        <div class="t-name">Ishan Anand</div>
+        <p class="t-bio">Ishan is interested in clinical workflows, health informatics, and usability evaluation. For this project, he will help assess whether the tool communicates heart rate information safely and effectively, and will support testing and documentation.</p>
+        <div class="t-tags"><span class="tag">Health Informatics</span><span class="tag">Usability</span><span class="tag">Clinical Workflows</span></div>
       </div>
     </div>
 
-    <!-- Member 2 -->
-    <div class="team-card reveal">
-      <div class="team-photo">
-        <div class="team-photo-inner">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          Photo
-        </div>
-        <div class="team-photo-line"></div>
+    <div class="team-card reveal d1">
+      <div class="t-photo">
+        <img src="../Images/img2.jpeg" alt="Abhiraj Yogesh Srivastava" loading="lazy">
+        <div class="t-overlay"></div>
+        <!-- <div class="t-chip">Prototype & Design</div> -->
       </div>
-      <div class="team-info">
-        <div class="team-num">Member 02</div>
-        <div class="team-name">Abhiraj Yogesh Srivastava</div>
-        <div class="team-role">Clinical Research &amp; Cardiac Modeling</div>
-        <div class="team-tags">
-          <span class="tag">Cardiology</span>
-          <span class="tag">Signal Processing</span>
-          <span class="tag">EKG Analysis</span>
-          <span class="tag">ML in Health</span>
-        </div>
+      <div class="t-info">
+        <div class="t-name">Abhiraj Yogesh Srivastava</div>
+        <p class="t-bio">Abhiraj is interested in human-centered healthcare technology, patient-facing interfaces, and systems that make clinical information easier to understand. He is contributing to prototype design, web implementation, and user-centered framing of the problem.</p>
+        <div class="t-tags"><span class="tag">Patient Interfaces</span><span class="tag">Web Dev</span><span class="tag">Human-Centered</span></div>
       </div>
     </div>
 
-    <!-- Member 3 -->
-    <div class="team-card reveal">
-      <div class="team-photo">
-        <div class="team-photo-inner">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          Photo
-        </div>
-        <div class="team-photo-line"></div>
+    <div class="team-card reveal d2">
+      <div class="t-photo">
+        <img src="../Images/img3.jpeg" alt="Rammya Sakpal" loading="lazy">
+        <div class="t-overlay"></div>
+        <!-- <div class="t-chip">UX & Patient Research</div> -->
       </div>
-      <div class="team-info">
-        <div class="team-num">Member 03</div>
-        <div class="team-name">Rammya Rohit Sakpal</div>
-        <div class="team-role">UX Research &amp; Patient Engagement</div>
-        <div class="team-tags">
-          <span class="tag">UX Design</span>
-          <span class="tag">Health Informatics</span>
-          <span class="tag">User Testing</span>
-          <span class="tag">Accessibility</span>
-        </div>
+      <div class="t-info">
+        <div class="t-name">Rammya Sakpal</div>
+        <p class="t-bio">Rammya is interested in healthcare communication, patient education, and designing tools that reduce confusion around medical data. She will help refine the storyboard, evaluate interface clarity, and gather feedback from potential users.</p>
+        <div class="t-tags"><span class="tag">Healthcare Comms</span><span class="tag">Patient Education</span><span class="tag">UX Research</span></div>
       </div>
     </div>
 
   </div>
 </section>
 
-<!-- ── FOOTER ──────────────────────────────────────────── -->
+<a href="../storyBoard/index.html" class="sb-banner reveal">
+  <div class="sb-text">
+    <div class="t-eye2">Use Case &amp; Storyboard</div>
+    <h3>See the full patient journey →</h3>
+    <p>From ER confusion to calm, informed decision-making    one step at a time.</p>
+  </div>
+  <div class="sb-arrow">🫀</div>
+</a>
+
 <footer>
-  <div class="footer-left">
-    &copy; 2025 CardioView &nbsp;·&nbsp; Biomedical Informatics Group Project
+  <div class="f-logo">Heart<span>Wise</span></div>
+  <div class="f-links">
+    <a href="#problem">Problem</a>
+    <a href="#product">Product</a>
+    <a href="#team">Team</a>
+    <a href="../storyBoard/index.html">Storyboard</a>
+    <a href="../index.html" target="_blank">Demo ↗</a>
   </div>
-  <div class="footer-logo">CardioView</div>
-  <div class="footer-left">
-    <a href="../HearWise/" style="color:var(--red);text-decoration:none">Open Demo ↗</a>
-  </div>
+  <div class="f-copy">&copy; 2025 · Biomedical Informatics Group Project</div>
 </footer>
 
-<!-- ── SCROLL REVEAL ───────────────────────────────────── -->
 <script>
-const observer = new IntersectionObserver(
-  entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }),
-  { threshold: 0.12 }
-);
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('in') }), { threshold:.10 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.165.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.165.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass }     from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass }from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+const wrap = document.getElementById('hero3d');
+const W = () => wrap.clientWidth, H = () => wrap.clientHeight;
+
+const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(W(), H());
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+wrap.appendChild(renderer.domElement);
+Object.assign(renderer.domElement.style, { position:'absolute', inset:'0', width:'100%', height:'100%' });
+
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, W()/H(), 0.1, 100);
+camera.position.set(0, 0.3, 6.5);
+
+const comp  = new EffectComposer(renderer);
+comp.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(W(), H()), 1.4, 0.55, 0.28);
+comp.addPass(bloom);
+
+new ResizeObserver(() => {
+  camera.aspect = W()/H(); camera.updateProjectionMatrix();
+  renderer.setSize(W(), H()); comp.setSize(W(), H());
+}).observe(wrap);
+
+// ── Particle heart ──────────────────────────────────────────
+const N_EDGE = 1800, N_FILL = 2000, N_AMB = 300, TOTAL = N_EDGE + N_FILL + N_AMB;
+const pos = new Float32Array(TOTAL*3), col = new Float32Array(TOTAL*3), sz = new Float32Array(TOTAL);
+
+// 2D heart curve: x=16sin³t, y=13cost−5cos2t−2cos3t−cos4t
+function hxy(t){ const s=Math.sin(t),c=Math.cos(t); return [16*s*s*s, 13*c-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)]; }
+const SC = 0.115;
+
+// Edge particles (on the curve)
+for(let i=0;i<N_EDGE;i++){
+  const t=Math.random()*Math.PI*2, [hx,hy]=hxy(t);
+  const j=0.04, dmax=0.32*(1-Math.abs(hx/18));
+  pos[i*3]  =hx*SC+(Math.random()-.5)*j;
+  pos[i*3+1]=hy*SC+(Math.random()-.5)*j;
+  pos[i*3+2]=(Math.random()-.5)*dmax*2;
+  const f=(hy+10)/25;
+  col[i*3]=0.88+f*0.12; col[i*3+1]=0.10+f*0.25; col[i*3+2]=0.16+f*0.04;
+  sz[i]=0.045+Math.random()*0.04;
+}
+
+// Fill particles (inside, dimmer)    implicit 2D heart: (x²+y²−1)³ ≤ x²y³
+let j=0, att=0;
+while(j<N_FILL && att<500000){
+  att++;
+  const rx=(Math.random()-.5)*3.8, ry=(Math.random()-.5)*3.8;
+  const x=rx/(16*SC), y=ry/(13*SC);
+  const a=x*x+y*y-1;
+  if(a*a*a-x*x*y*y*y<0){
+    const b=N_EDGE+j, dm=0.45*(1-Math.abs(rx/(16*SC))*0.6);
+    pos[b*3]=rx+(Math.random()-.5)*0.04; pos[b*3+1]=ry+(Math.random()-.5)*0.04; pos[b*3+2]=(Math.random()-.5)*dm;
+    const br=0.22+Math.random()*0.3;
+    col[b*3]=br*0.9; col[b*3+1]=br*0.1; col[b*3+2]=br*0.13;
+    sz[b]=0.018+Math.random()*0.03; j++;
+  }
+}
+
+// Ambient dust
+for(let i=0;i<N_AMB;i++){
+  const b=N_EDGE+N_FILL+i, r=2.5+Math.random()*2, th=Math.random()*Math.PI*2, ph=Math.random()*Math.PI;
+  pos[b*3]=r*Math.sin(ph)*Math.cos(th); pos[b*3+1]=r*Math.sin(ph)*Math.sin(th)*0.6; pos[b*3+2]=r*Math.cos(ph)*0.4;
+  const br=0.05+Math.random()*0.09;
+  col[b*3]=br; col[b*3+1]=br*0.04; col[b*3+2]=br*0.07;
+  sz[b]=0.012+Math.random()*0.022;
+}
+
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+geo.setAttribute('color',   new THREE.BufferAttribute(col,3));
+geo.setAttribute('size',    new THREE.BufferAttribute(sz,1));
+
+const mat = new THREE.ShaderMaterial({
+  uniforms:{},
+  vertexShader:`
+    attribute float size; attribute vec3 color; varying vec3 vColor;
+    void main(){
+      vColor=color;
+      vec4 mv=modelViewMatrix*vec4(position,1.0);
+      gl_Position=projectionMatrix*mv;
+      gl_PointSize=size*580.0/-mv.z;
+    }`,
+  fragmentShader:`
+    varying vec3 vColor;
+    void main(){
+      float d=length(gl_PointCoord-.5);
+      if(d>.5) discard;
+      float a=1.0-smoothstep(.18,.5,d);
+      gl_FragColor=vec4(vColor,a);
+    }`,
+  transparent:true, blending:THREE.AdditiveBlending, depthWrite:false, vertexColors:true,
+});
+
+const pts = new THREE.Points(geo, mat);
+scene.add(pts);
+
+// ── Beat sync (72 BPM) ──────────────────────────────────────
+const BEAT = 60/72;
+function beatScale(t){ const p=(t%BEAT)/BEAT; return 1.0-Math.exp(-0.5*Math.pow((p-.30)/.055,2))*0.08; }
+
+// ── Mouse drag to rotate ────────────────────────────────────
+let dragging=false, lastX=0, rotY=0, autoAngle=0;
+renderer.domElement.addEventListener('mousedown',e=>{dragging=true;lastX=e.clientX});
+renderer.domElement.addEventListener('mousemove',e=>{if(!dragging)return;rotY+=(e.clientX-lastX)*.007;lastX=e.clientX});
+window.addEventListener('mouseup',()=>dragging=false);
+
+// ── Loop ────────────────────────────────────────────────────
+let last=0, t=0;
+(function animate(now){
+  requestAnimationFrame(animate);
+  const dt=Math.min((now-last)/1000,.05); last=now; t+=dt;
+  pts.scale.setScalar(beatScale(t));
+  if(!dragging) autoAngle+=dt*0.20;
+  pts.rotation.y=autoAngle+rotY;
+  pts.rotation.x=Math.sin(t*.10)*.05+0.06;
+  const beat=Math.exp(-0.5*Math.pow(((t%BEAT)/BEAT-.30)/.055,2));
+  bloom.strength=1.1+beat*0.9;
+  comp.render();
+})();
+</script>
 </body>
 </html>
