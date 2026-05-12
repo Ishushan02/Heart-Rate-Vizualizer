@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HeartWise    Turning Numbers Into Understanding</title>
+<title>HeartWise · Turning Numbers Into Understanding</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -116,9 +116,20 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--r),transform .7s var(--r)}
 .reveal.in{opacity:1;transform:none}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}
+
+.bg-mesh{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(110px)}
+.bg-o1{width:700px;height:700px;top:-200px;left:-150px;background:radial-gradient(circle,rgba(225,29,72,.10) 0%,transparent 70%);animation:oFloat 22s ease-in-out infinite}
+.bg-o2{width:500px;height:500px;bottom:-100px;right:-100px;background:radial-gradient(circle,rgba(124,58,237,.08) 0%,transparent 70%);animation:oFloat 28s ease-in-out infinite reverse}
+.bg-o3{width:450px;height:450px;top:35%;left:50%;background:radial-gradient(circle,rgba(225,29,72,.05) 0%,transparent 70%);animation:oFloat 18s ease-in-out infinite;animation-delay:-9s}
+@keyframes oFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.06)}66%{transform:translate(-25px,35px) scale(.95)}}
+.bg-grid-l{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse 100% 80% at 50% 0%,black 10%,transparent 80%);mask-image:radial-gradient(ellipse 100% 80% at 50% 0%,black 10%,transparent 80%)}
 </style>
 </head>
 <body>
+
+<div class="bg-mesh" aria-hidden="true"><div class="bg-orb bg-o1"></div><div class="bg-orb bg-o2"></div><div class="bg-orb bg-o3"></div></div>
+<div class="bg-grid-l" aria-hidden="true"></div>
 
 <nav>
   <div class="n-logo"><div class="n-dot"></div>HeartWise</div>
@@ -126,8 +137,8 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
     <a href="#problem">Problem</a>
     <a href="#product">Product</a>
     <a href="#team">Team</a>
-    <a href="../storyBoard/index.html">Storyboard</a>
-    <a href="../index.html" target="_blank" class="n-cta">Live Demo ↗</a>
+    <a href="./storyBoard/index.html">Storyboard</a>
+    <a href="./Heartwise/index.html" target="_blank" class="n-cta">Live Demo ↗</a>
   </div>
 </nav>
 
@@ -137,7 +148,7 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
   <div class="hero-left">
     <div class="hero-badge"><div class="b-dot"></div>Biomedical Informatics · 2025</div>
     <h1>Turn a number<br>into <em>understanding.</em></h1>
-    <p class="hero-sub">Patients leave hospitals staring at a BPM reading with no context. HeartWise changes that    real-time 3D cardiac visualization that makes the heartbeat legible for everyone.</p>
+    <p class="hero-sub">Patients leave hospitals staring at a BPM reading with no context. HeartWise changes that with real-time 3D cardiac visualization that makes the heartbeat legible for everyone.</p>
     <div class="hero-actions">
       <a href="#product" class="btn-solid">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -155,14 +166,14 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
     <div class="reveal">
       <div class="s-eye">The Problem</div>
       <h2 class="s-title">A number without context is just noise.</h2>
-      <p class="s-body">Millions leave the ER with heart rate data and zero ability to interpret it. 118 BPM on a smartwatch could mean stress, dehydration    or something urgent. Without context, patients panic or ignore it. Both outcomes are dangerous.</p>
-      <div class="quote-block">"I didn't know if <strong>118 BPM</strong> was going to kill me or if I just needed to sit down. I searched online for 40 minutes and felt worse." <br><br>   Simulated patient narrative</div>
+      <p class="s-body">Millions leave the ER with heart rate data and zero ability to interpret it. 118 BPM on a smartwatch could mean stress, dehydration, or something urgent. Without context, patients panic or ignore it. Both outcomes are dangerous.</p>
+      <div class="quote-block">"I didn't know if <strong>118 BPM</strong> was going to kill me or if I just needed to sit down. I searched online for 40 minutes and felt worse." <br><br><em style="font-size:.84rem;font-style:normal;opacity:.6">Simulated patient narrative</em></div>
     </div>
     <div class="stat-grid reveal d1">
       <div class="stat-cell"><div class="stat-big">36M</div><div class="stat-lbl">ED visits yearly involving cardiac monitoring</div></div>
       <div class="stat-cell"><div class="stat-big">72%</div><div class="stat-lbl">Patients who can't interpret their own heart rate zone</div></div>
-      <div class="stat-cell"><div class="stat-big">3D</div><div class="stat-lbl">Anatomical heart    chambers, vessels, real-time blood flow</div></div>
-      <div class="stat-cell"><div class="stat-big">0</div><div class="stat-lbl">Personal health data required    private by design</div></div>
+      <div class="stat-cell"><div class="stat-big">3D</div><div class="stat-lbl">Anatomical heart with chambers, vessels, real-time blood flow</div></div>
+      <div class="stat-cell"><div class="stat-big">0</div><div class="stat-lbl">Personal health data required. Private by design.</div></div>
     </div>
   </div>
 </section>
@@ -173,12 +184,12 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 <section class="section" id="product">
   <div class="reveal">
     <div class="s-eye">The Product</div>
-    <h2 class="s-title">HeartWise    your heart rate, made visible.</h2>
-    <p class="s-body">Enter any BPM and watch a live 3D anatomical heart respond in real time    chambers contracting, blood flowing, EKG synchronized to every beat. Drag to rotate. See the LAD artery. See the aortic arch. Understand what your heart is doing.</p>
+    <h2 class="s-title">HeartWise: your heart rate, made visible.</h2>
+    <p class="s-body">Enter any BPM and watch a live 3D anatomical heart respond in real time, chambers contracting, blood flowing, EKG synchronized to every beat. Drag to rotate. See the LAD artery. See the aortic arch. Understand what your heart is doing.</p>
   </div>
   <div class="how-grid reveal d1">
     <div class="how-cell"><span class="how-n">01</span><span class="how-icon">🔢</span><h4>Enter your BPM</h4><p>Type or drag the slider from 30–220 BPM. The entire 3D simulation responds instantly.</p></div>
-    <div class="how-cell"><span class="how-n">02</span><span class="how-icon">🫀</span><h4>Watch the 3D heart</h4><p>Anatomical chambers, coronary arteries, great vessels    beating at your rate. Rotate 360°.</p></div>
+    <div class="how-cell"><span class="how-n">02</span><span class="how-icon">🫀</span><h4>Watch the 3D heart</h4><p>Anatomical chambers, coronary arteries, great vessels, beating at your rate. Rotate 360°.</p></div>
     <div class="how-cell"><span class="how-n">03</span><span class="how-icon">📈</span><h4>Read the EKG</h4><p>Real-time PQRST waveform color-coded by zone: Bradycardia · Normal · Elevated · Critical.</p></div>
   </div>
   <div class="product-frame reveal" style="margin-top:44px">
@@ -186,11 +197,11 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
       <div class="c-dot" style="background:#ff5f57"></div>
       <div class="c-dot" style="background:#febc2e"></div>
       <div class="c-dot" style="background:#28c840"></div>
-      <div class="c-bar">HeartWise    3D Heart Rate Visualizer</div>
+      <div class="c-bar">HeartWise · 3D Heart Rate Visualizer</div>
     </div>
-    <iframe class="product-iframe" src="../index.html" title="HeartWise Demo" loading="lazy"></iframe>
+    <iframe class="product-iframe" src="./Heartwise/index.html" title="HeartWise Demo" loading="lazy"></iframe>
     <div class="product-open">
-      <a href="../index.html" target="_blank" class="btn-solid" style="font-size:.83rem">
+      <a href="./Heartwise/index.html" target="_blank" class="btn-solid" style="font-size:.83rem">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         Open Full Screen
       </a>
@@ -210,7 +221,7 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 
     <div class="team-card reveal">
       <div class="t-photo">
-        <img src="../Images/img1.png" alt="Ishan Anand" loading="lazy">
+        <img src="./Images/img1.png" alt="Ishan Anand" loading="lazy">
         <div class="t-overlay"></div>
         <!-- <div class="t-chip">Clinical Informatics</div> -->
       </div>
@@ -223,7 +234,7 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 
     <div class="team-card reveal d1">
       <div class="t-photo">
-        <img src="../Images/img2.jpeg" alt="Abhiraj Yogesh Srivastava" loading="lazy">
+        <img src="./Images/img2.jpeg" alt="Abhiraj Yogesh Srivastava" loading="lazy">
         <div class="t-overlay"></div>
         <!-- <div class="t-chip">Prototype & Design</div> -->
       </div>
@@ -236,7 +247,7 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 
     <div class="team-card reveal d2">
       <div class="t-photo">
-        <img src="../Images/img3.jpeg" alt="Rammya Sakpal" loading="lazy">
+        <img src="./Images/img3.jpeg" alt="Rammya Sakpal" loading="lazy">
         <div class="t-overlay"></div>
         <!-- <div class="t-chip">UX & Patient Research</div> -->
       </div>
@@ -250,11 +261,11 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
   </div>
 </section>
 
-<a href="../storyBoard/index.html" class="sb-banner reveal">
+<a href="./storyBoard/index.html" class="sb-banner reveal">
   <div class="sb-text">
     <div class="t-eye2">Use Case &amp; Storyboard</div>
     <h3>See the full patient journey →</h3>
-    <p>From ER confusion to calm, informed decision-making    one step at a time.</p>
+    <p>From ER confusion to calm, informed decision-making, one step at a time.</p>
   </div>
   <div class="sb-arrow">🫀</div>
 </a>
@@ -265,8 +276,8 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
     <a href="#problem">Problem</a>
     <a href="#product">Product</a>
     <a href="#team">Team</a>
-    <a href="../storyBoard/index.html">Storyboard</a>
-    <a href="../index.html" target="_blank">Demo ↗</a>
+    <a href="./storyBoard/index.html">Storyboard</a>
+    <a href="./Heartwise/index.html" target="_blank">Demo ↗</a>
   </div>
   <div class="f-copy">&copy; 2025 · Biomedical Informatics Group Project</div>
 </footer>
