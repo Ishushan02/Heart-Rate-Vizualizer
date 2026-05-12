@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HeartWise — Use Case & Storyboard</title>
+<style>
+/* ── Reset ───────────────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --red:#ff3355;--red2:#ff6680;
+  --blue:#4488ff;--green:#00ff88;--orange:#ffaa00;
+  --bg:#05080f;--bg2:#080d18;--card:#0c1422;
+  --border:rgba(255,255,255,0.07);
+  --text:#d8e8f8;--muted:rgba(255,255,255,0.42);
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Segoe UI',system-ui,sans-serif;
+  overflow-x:hidden;
+}
+
+/* ── Nav ─────────────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 48px;
+  background:rgba(5,8,15,0.85);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{font-size:1.1rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red)}
+.nav-logo span{color:var(--text);opacity:.6}
+.nav-links{display:flex;gap:28px}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.82rem;letter-spacing:1.5px;text-transform:uppercase;transition:color .25s}
+.nav-links a:hover{color:var(--text)}
+@media(max-width:768px){nav{padding:14px 20px}.nav-links{display:none}}
+
+/* ── Hero ────────────────────────────────────────────────── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:120px 24px 80px;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 55%,rgba(255,51,85,0.10) 0%,transparent 65%),
+    radial-gradient(ellipse 50% 40% at 15% 25%,rgba(68,136,255,0.07) 0%,transparent 60%),
+    radial-gradient(ellipse 45% 45% at 85% 75%,rgba(255,170,0,0.06) 0%,transparent 60%);
+  animation:bgPulse 7s ease-in-out infinite alternate;
+}
+@keyframes bgPulse{0%{opacity:.6}100%{opacity:1}}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.022) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 85% 85% at 50% 50%,black 40%,transparent 100%);
+}
+.hero-ekg{position:absolute;bottom:22%;left:0;right:0;opacity:.10;pointer-events:none}
+
+.hero-tag{
+  display:inline-block;padding:5px 16px;border-radius:20px;
+  border:1px solid rgba(255,51,85,0.4);background:rgba(255,51,85,0.08);
+  font-size:.72rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--red2);
+  margin-bottom:28px;animation:fadeUp .8s ease both;
+}
+.hero h1{
+  font-size:clamp(2.6rem,6.5vw,5rem);font-weight:800;letter-spacing:-1px;line-height:1.06;
+  animation:fadeUp .8s .1s ease both;
+}
+.hero h1 .accent{
+  background:linear-gradient(135deg,var(--red),var(--red2),#ff9966);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  max-width:640px;margin:22px auto 0;font-size:1.05rem;line-height:1.75;color:var(--muted);
+  animation:fadeUp .8s .2s ease both;
+}
+.hero-cta{
+  display:flex;gap:14px;margin-top:38px;justify-content:center;flex-wrap:wrap;
+  animation:fadeUp .8s .3s ease both;
+}
+.btn{
+  padding:12px 28px;border-radius:8px;font-size:.86rem;font-weight:600;
+  letter-spacing:.8px;text-decoration:none;cursor:pointer;
+  transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:8px;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:linear-gradient(135deg,var(--red),#cc2244);color:#fff;box-shadow:0 4px 24px rgba(255,51,85,0.35)}
+.btn-primary:hover{box-shadow:0 8px 32px rgba(255,51,85,0.5)}
+.btn-ghost{border:1px solid var(--border);color:var(--text);background:rgba(255,255,255,0.04)}
+.btn-ghost:hover{background:rgba(255,255,255,0.09)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+/* ── Section base ────────────────────────────────────────── */
+.section{padding:96px 48px;max-width:1160px;margin:0 auto}
+@media(max-width:768px){.section{padding:72px 20px}}
+.section-label{font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:12px}
+.section-title{font-size:clamp(1.8rem,3.5vw,2.7rem);font-weight:700;letter-spacing:-.4px;line-height:1.15;margin-bottom:16px}
+.section-body{font-size:1rem;line-height:1.82;color:var(--muted);max-width:700px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0 48px}
+
+/* ── Use Case highlight box ──────────────────────────────── */
+.use-case-box{
+  margin-top:44px;padding:40px 44px;
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  position:relative;overflow:hidden;
+}
+.use-case-box::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(to bottom,var(--red),var(--red2));
+}
+.use-case-box h3{font-size:1.1rem;font-weight:700;margin-bottom:14px;color:var(--red2)}
+.use-case-box p{font-size:.97rem;line-height:1.82;color:var(--muted)}
+@media(max-width:768px){.use-case-box{padding:28px 24px}}
+
+/* ── Scenario journey cards ──────────────────────────────── */
+.journey{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:20px;margin-top:48px;
+}
+.j-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:30px 26px;
+  position:relative;overflow:hidden;
+  transition:transform .3s,border-color .3s;
+}
+.j-card:hover{transform:translateY(-5px);border-color:rgba(255,51,85,0.28)}
+.j-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--red),var(--red2));
+  opacity:0;transition:opacity .3s;
+}
+.j-card:hover::after{opacity:1}
+.j-step{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;font-weight:800;margin-bottom:18px;
+  background:rgba(255,51,85,0.10);color:var(--red);border:1px solid rgba(255,51,85,0.22);
+}
+.j-card h4{font-size:1rem;font-weight:700;margin-bottom:10px}
+.j-card p{font-size:.88rem;line-height:1.72;color:var(--muted)}
+
+/* ── Q&A blocks ──────────────────────────────────────────── */
+.qa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:44px}
+.qa-block{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 30px}
+.qa-q{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:10px}
+.qa-block h4{font-size:1.05rem;font-weight:700;margin-bottom:14px}
+.qa-block p{font-size:.9rem;line-height:1.78;color:var(--muted)}
+
+/* ── Storyboard image ────────────────────────────────────── */
+.storyboard-wrap{
+  margin-top:52px;border:1px solid var(--border);border-radius:20px;
+  overflow:hidden;background:var(--card);
+}
+.sb-header{
+  display:flex;align-items:center;gap:10px;padding:14px 22px;
+  border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);
+}
+.sb-dot{width:11px;height:11px;border-radius:50%}
+.sb-title{flex:1;text-align:center;font-size:.75rem;letter-spacing:1px;color:var(--muted)}
+.storyboard-img{
+  width:100%;display:block;
+  background:#0a1020;
+}
+.sb-caption{
+  padding:20px 28px;border-top:1px solid var(--border);
+  font-size:.85rem;line-height:1.72;color:var(--muted);font-style:italic;
+  text-align:center;
+}
+
+/* ── Why it works ────────────────────────────────────────── */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-top:44px}
+.why-card{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:28px 24px;text-align:center;
+  transition:transform .3s,border-color .3s;
+}
+.why-card:hover{transform:translateY(-4px);border-color:rgba(68,136,255,0.28)}
+.why-icon{font-size:2rem;margin-bottom:16px}
+.why-card h4{font-size:.95rem;font-weight:700;margin-bottom:10px}
+.why-card p{font-size:.85rem;line-height:1.72;color:var(--muted)}
+
+/* ── Limitations ─────────────────────────────────────────── */
+.lim-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:44px}
+@media(max-width:640px){.lim-grid{grid-template-columns:1fr}}
+.lim-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 28px;position:relative;overflow:hidden}
+.lim-card.risk::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--orange)}
+.lim-card.resp::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--green)}
+.lim-badge{
+  display:inline-block;padding:3px 10px;border-radius:20px;font-size:.68rem;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;font-weight:600;
+}
+.lim-card.risk .lim-badge{background:rgba(255,170,0,0.12);color:var(--orange);border:1px solid rgba(255,170,0,0.25)}
+.lim-card.resp .lim-badge{background:rgba(0,255,136,0.08);color:var(--green);border:1px solid rgba(0,255,136,0.2)}
+.lim-card h4{font-size:1rem;font-weight:700;margin-bottom:12px}
+.lim-card p{font-size:.9rem;line-height:1.75;color:var(--muted)}
+
+/* ── Disclaimer ──────────────────────────────────────────── */
+.disclaimer{
+  margin:0 48px 80px;padding:28px 36px;
+  border-radius:16px;
+  background:rgba(255,51,85,0.04);border:1px solid rgba(255,51,85,0.18);
+  display:flex;gap:18px;align-items:flex-start;
+}
+.disc-icon{font-size:1.4rem;flex-shrink:0;margin-top:2px}
+.disclaimer p{font-size:.88rem;line-height:1.75;color:var(--muted)}
+.disclaimer strong{color:var(--text)}
+@media(max-width:768px){.disclaimer{margin:0 20px 60px;padding:22px 22px}}
+
+/* ── Footer ──────────────────────────────────────────────── */
+footer{
+  border-top:1px solid var(--border);padding:32px 48px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+}
+.footer-left{font-size:.8rem;color:var(--muted)}
+.footer-logo{font-size:.9rem;font-weight:700;letter-spacing:3px;color:var(--red);text-transform:uppercase}
+@media(max-width:768px){footer{padding:24px 20px;flex-direction:column;text-align:center}}
+
+/* ── Reveal animations ───────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:none}
+
+/* ── Pulse dot ───────────────────────────────────────────── */
+.pulse-badge{
+  display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:20px;
+  background:rgba(255,170,0,0.07);border:1px solid rgba(255,170,0,0.22);
+  font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);
+  margin-bottom:28px;
+}
+.pulse-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--orange);
+  animation:pDot 1.5s ease-in-out infinite;
+}
+@keyframes pDot{0%,100%{box-shadow:0 0 0 0 rgba(255,170,0,.5)}50%{box-shadow:0 0 0 6px rgba(255,170,0,0)}}
+
+/* ── BPM number hero accent ──────────────────────────────── */
+.bpm-hero{
+  display:inline-flex;align-items:baseline;gap:6px;
+  font-size:5rem;font-weight:900;
+  background:linear-gradient(135deg,var(--red),var(--red2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:-3px;margin:20px 0;
+  animation:fadeUp .8s .15s ease both;
+}
+.bpm-hero sub{font-size:1.4rem;font-weight:600;letter-spacing:0;-webkit-text-fill-color:var(--muted);color:var(--muted)}
+
+</style>
+</head>
+<body>
+
+<!-- ── NAV ─────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-logo">Heart<span>Wise</span></div>
+  <div class="nav-links">
+    <a href="#overview">Overview</a>
+    <a href="#scenario">Scenario</a>
+    <a href="#storyboard">Storyboard</a>
+    <a href="#why">Why It Works</a>
+    <a href="#limits">Limitations</a>
+  </div>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <svg class="hero-ekg" viewBox="0 0 1400 80" preserveAspectRatio="none" fill="none">
+    <polyline stroke="#ff3355" stroke-width="1.5"
+      points="0,40 120,40 160,40 178,15 196,68 214,6 232,62 250,40 380,40 420,40 438,20 456,62 474,40 680,40 720,40 738,15 756,68 774,6 792,62 810,40 960,40 1000,40 1018,20 1036,62 1054,40 1200,40 1400,40"/>
+  </svg>
+
+  <div style="position:relative;z-index:2;max-width:760px">
+    <div class="hero-tag">&#9829;&nbsp;&nbsp;Use Case &amp; Storyboard</div>
+    <h1>When a <span class="accent">Number</span><br>Isn't Enough</h1>
+    <div class="bpm-hero">118<sub>bpm</sub></div>
+    <p class="hero-sub">
+      A patient leaves the ER with more questions than answers. Their smartwatch shows 118 BPM.
+      Is that dangerous? Should they call someone? HeartWise turns that number into understanding.
+    </p>
+    <div class="hero-cta">
+      <a href="#storyboard" class="btn btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        View Storyboard
+      </a>
+      <a href="../index.html" target="_blank" class="btn btn-ghost">Open Demo ↗</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── OVERVIEW ─────────────────────────────────────────────── -->
+<section class="section" id="overview">
+  <div class="reveal">
+    <div class="section-label">Use Case Overview</div>
+    <h2 class="section-title">HeartWise — bridging the gap<br>between data and understanding</h2>
+    <p class="section-body">
+      HeartWise is designed for patients who see heart rate numbers after a clinical visit or
+      through a wearable device but don't know how to interpret them. Raw BPM readings without
+      context create anxiety, confusion, and poor decision-making. HeartWise replaces guesswork
+      with clear, visual, plain-language guidance.
+    </p>
+  </div>
+
+  <div class="use-case-box reveal">
+    <h3>User Story</h3>
+    <p>
+      As a patient recovering at home after an ED visit, I want to understand what my heart
+      rate number means in simple language — so that I can decide whether to rest, keep
+      monitoring, contact a clinician, or seek urgent care — without needing medical training
+      or wading through conflicting search results.
+    </p>
+  </div>
+
+  <div class="qa-grid">
+    <div class="qa-block reveal">
+      <div class="qa-q">Who is the user?</div>
+      <h4>The Anxious Patient or Caregiver</h4>
+      <p>A patient or family member without medical training who encounters raw BPM numbers from hospital monitors, wearables, or discharge paperwork — and feels overwhelmed by what they see.</p>
+    </div>
+    <div class="qa-block reveal">
+      <div class="qa-q">What do they need?</div>
+      <h4>Simple, Visual Interpretation</h4>
+      <p>A way to understand whether a reading is low, normal, elevated, or critical — and what general next steps might be appropriate — without being buried in technical jargon or alarming clinical language.</p>
+    </div>
+    <div class="qa-block reveal">
+      <div class="qa-q">How does HeartWise help?</div>
+      <h4>Number → Waveform → Context</h4>
+      <p>Users enter a BPM value and instantly see a live EKG-style waveform, a color-coded zone indicator, and calm plain-language guidance. The visual connection between the number and the signal makes interpretation intuitive.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── SCENARIO ─────────────────────────────────────────────── -->
+<section class="section" id="scenario">
+  <div class="reveal">
+    <div class="section-label">The Scenario</div>
+    <h2 class="section-title">From the ER to the couch —<br>one number, zero context</h2>
+    <p class="section-body">
+      A real patient journey: discharged after an emergency visit, a smartwatch flashes 118 BPM.
+      Without context, that number feels like a threat. Here's how it unfolds, step by step.
+    </p>
+  </div>
+
+  <div class="journey">
+    <div class="j-card reveal">
+      <div class="j-step">01</div>
+      <h4>ED Discharge</h4>
+      <p>The patient leaves the Emergency Department with instructions to monitor symptoms at home but no clear explanation of what normal versus concerning numbers look like.</p>
+    </div>
+    <div class="j-card reveal">
+      <div class="j-step">02</div>
+      <h4>118 BPM on the Watch</h4>
+      <p>Sitting on the couch, the patient's smartwatch shows 118 BPM. The raw number offers no context — is this a leftover effect of the ED visit, or something to worry about?</p>
+    </div>
+    <div class="j-card reveal">
+      <div class="j-step">03</div>
+      <h4>Online Confusion</h4>
+      <p>A Google search returns a mix of alarming forum posts and dense medical articles. The conflicting information increases anxiety rather than reducing it.</p>
+    </div>
+    <div class="j-card reveal">
+      <div class="j-step">04</div>
+      <h4>Opens HeartWise</h4>
+      <p>The patient enters 118 into HeartWise and immediately sees a scrolling EKG waveform, an orange "Elevated" zone badge, and a calm explanation of what elevated heart rate can mean.</p>
+    </div>
+    <div class="j-card reveal">
+      <div class="j-step">05</div>
+      <h4>Understanding the Signal</h4>
+      <p>The visual waveform shows the patient how BPM affects the rhythm of their heartbeat. The color zone makes the interpretation instantly clear — elevated, not critical.</p>
+    </div>
+    <div class="j-card reveal">
+      <div class="j-step">06</div>
+      <h4>Informed Next Step</h4>
+      <p>The patient feels less anxious. They choose to rest, monitor the reading, and know exactly when to contact their clinician — armed with context instead of fear.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── STORYBOARD ────────────────────────────────────────────── -->
+<section class="section" id="storyboard">
+  <div class="reveal">
+    <div class="section-label">Storyboard</div>
+    <h2 class="section-title">Six panels. One journey.<br>From confusion to clarity.</h2>
+    <p class="section-body">
+      This storyboard traces the full patient experience — from leaving the ER with unanswered
+      questions to opening HeartWise and finding calm, actionable understanding.
+    </p>
+  </div>
+
+  <div class="pulse-badge reveal" style="margin-top:36px">
+    <div class="pulse-dot"></div>
+    HeartWise — Patient Storyboard
+  </div>
+
+  <div class="storyboard-wrap reveal">
+    <div class="sb-header">
+      <div class="sb-dot" style="background:#ff5f57"></div>
+      <div class="sb-dot" style="background:#febc2e"></div>
+      <div class="sb-dot" style="background:#28c840"></div>
+      <div class="sb-title">HeartWise: Understanding Heart Rate After an ED Visit</div>
+    </div>
+    <img
+      class="storyboard-img"
+      src="../Images/image.png"
+      alt="HeartWise storyboard showing 6 scenes: ED discharge, high BPM at home, online confusion, opening HeartWise, understanding the result, safer next step"
+    >
+    <div class="sb-caption">
+      This storyboard shows how HeartWise helps a patient move from confusion and anxiety
+      to better understanding after seeing an elevated heart rate at home.
+      Each panel represents one step of the user journey, from ED discharge through
+      informed, calm decision-making.
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── WHY IT WORKS ───────────────────────────────────────────── -->
+<section class="section" id="why">
+  <div class="reveal">
+    <div class="section-label">Why It Works</div>
+    <h2 class="section-title">Simple. Visual.<br>Privacy-preserving.</h2>
+    <p class="section-body">
+      HeartWise works not because it is the most technically complex solution — but because
+      it is precisely matched to what a non-clinical user actually needs in a moment of uncertainty.
+    </p>
+  </div>
+  <div class="why-grid">
+    <div class="why-card reveal">
+      <div class="why-icon">👁️</div>
+      <h4>Visual First</h4>
+      <p>A live EKG waveform makes the abstract BPM number tangible — you see the rhythm, not just the count.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">🎨</div>
+      <h4>Color-Coded Zones</h4>
+      <p>Blue / Green / Orange / Red zone indicators give instant, pre-attentive understanding without reading a word.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">🔒</div>
+      <h4>No Data, No Risk</h4>
+      <p>HeartWise requires no login, no health records, and no backend. Patient privacy is preserved by design.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">🗣️</div>
+      <h4>Plain Language</h4>
+      <p>All explanations are written for a general audience — calm, clear, and free of medical jargon.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">⚡</div>
+      <h4>Instant Response</h4>
+      <p>Every change in BPM updates the waveform and interpretation in real time — no loading, no friction.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon">🧠</div>
+      <h4>Supports — Not Replaces — Clinicians</h4>
+      <p>HeartWise is explicit that it is educational. It guides users toward clinical care, not away from it.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── LIMITATIONS ───────────────────────────────────────────── -->
+<section class="section" id="limits">
+  <div class="reveal">
+    <div class="section-label">Devil's Advocate</div>
+    <h2 class="section-title">What could go wrong —<br>and how we address it</h2>
+    <p class="section-body">
+      Honest design requires confronting failure modes. Here are the two primary risks
+      and our mitigation approach for each.
+    </p>
+  </div>
+  <div class="lim-grid" style="margin-top:44px">
+    <div class="lim-card risk reveal">
+      <div class="lim-badge">Risk 01</div>
+      <h4>Overtrust &amp; Self-Diagnosis</h4>
+      <p>Users may treat HeartWise as a medical authority and delay seeking urgent care. To address this, the interface clearly labels itself as an educational prototype and prominently states that symptoms — not numbers alone — determine urgency.</p>
+    </div>
+    <div class="lim-card resp reveal">
+      <div class="lim-badge">Mitigation 01</div>
+      <h4>Calm Language + Clear Disclaimers</h4>
+      <p>Every elevated or critical zone display is accompanied by plain-language context and a reminder to seek clinical care for symptoms. The app guides — it does not diagnose.</p>
+    </div>
+    <div class="lim-card risk reveal">
+      <div class="lim-badge">Risk 02</div>
+      <h4>Color Zones Increase Anxiety</h4>
+      <p>Seeing an orange "Elevated" or red "Critical" badge could alarm users rather than inform them — especially those already anxious about cardiac symptoms.</p>
+    </div>
+    <div class="lim-card resp reveal">
+      <div class="lim-badge">Mitigation 02</div>
+      <h4>Context Over Color</h4>
+      <p>Each color zone is paired with practical next steps written in a calm, empowering tone. "Your heart rate is elevated. This can happen after activity, stress, or caffeine. Monitor for symptoms and contact your doctor if concerned."</p>
+    </div>
+  </div>
+
+  <div class="use-case-box reveal" style="margin-top:40px">
+    <h3>Why Not Just a Static Chart?</h3>
+    <p>
+      A simpler solution — a static heart rate reference chart — would list bradycardia, normal, elevated, and critical ranges.
+      But it cannot show <em>how</em> BPM affects the waveform rhythm, making it less engaging and less intuitive.
+      HeartWise keeps the solution simple while making the information interactive, visual, and personally meaningful.
+      The added complexity of an animated waveform is justified because static charts fail to build the conceptual bridge
+      between a number and a lived cardiac experience.
+    </p>
+  </div>
+</section>
+
+<!-- ── DISCLAIMER ─────────────────────────────────────────────── -->
+<div class="disclaimer reveal">
+  <div class="disc-icon">⚠️</div>
+  <p>
+    <strong>Design Disclaimer:</strong> HeartWise is an educational prototype and does not provide medical diagnosis.
+    Users should seek urgent care if they experience severe or worsening symptoms such as
+    chest pain, fainting, severe shortness of breath, or sudden weakness.
+    Heart rate numbers alone are not sufficient to determine the severity of a cardiac event.
+  </p>
+</div>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-left">&copy; 2025 HeartWise &nbsp;·&nbsp; Biomedical Informatics Group Project</div>
+  <div class="footer-logo">HeartWise</div>
+  <div class="footer-left" style="display:flex;gap:20px">
+    <a href="../about/index.html" style="color:var(--muted);text-decoration:none">About ↗</a>
+    <a href="../index.html" style="color:var(--red);text-decoration:none" target="_blank">Demo ↗</a>
+  </div>
+</footer>
+
+<!-- ── SCROLL REVEAL ──────────────────────────────────────────── -->
+<script>
+const obs = new IntersectionObserver(
+  es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') }),
+  { threshold: 0.10 }
+);
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
