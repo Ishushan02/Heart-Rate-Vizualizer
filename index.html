@@ -125,6 +125,7 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 .bg-o3{width:450px;height:450px;top:35%;left:50%;background:radial-gradient(circle,rgba(225,29,72,.05) 0%,transparent 70%);animation:oFloat 18s ease-in-out infinite;animation-delay:-9s}
 @keyframes oFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.06)}66%{transform:translate(-25px,35px) scale(.95)}}
 .bg-grid-l{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse 100% 80% at 50% 0%,black 10%,transparent 80%);mask-image:radial-gradient(ellipse 100% 80% at 50% 0%,black 10%,transparent 80%)}
+@keyframes scanSweep{0%{top:-2%}100%{top:102%}}
 </style>
 </head>
 <body>
@@ -138,14 +139,30 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
     <a href="#problem">Problem</a>
     <a href="#product">Product</a>
     <a href="#team">Team</a>
-    <a href="./storyBoard/index.html">Storyboard</a>
+    <a href="./storyBoard/">Storyboard</a>
     <a href="./Heartwise/index.html" target="_blank" class="n-cta">Live Demo ↗</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-3d-wrap" id="hero3d"></div>
+  <div class="hero-3d-wrap" id="hero3d">
+    <canvas id="matrix-rain" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;opacity:.42"></canvas>
+    <div style="position:absolute;inset:0;z-index:4;pointer-events:none;background:repeating-linear-gradient(to bottom,transparent 0px,transparent 3px,rgba(0,0,0,0.055) 3px,rgba(0,0,0,0.055) 4px)"></div>
+    <div style="position:absolute;left:0;right:0;height:1px;z-index:5;pointer-events:none;background:linear-gradient(to right,transparent,rgba(0,255,65,.55),transparent);animation:scanSweep 6s linear infinite"></div>
+    <div style="position:absolute;top:0;left:0;bottom:0;width:1px;z-index:6;pointer-events:none;background:linear-gradient(to bottom,transparent,rgba(0,255,65,.22),transparent)"></div>
+    <div style="position:absolute;top:22px;left:22px;z-index:7;font-family:monospace;font-size:.58rem;color:#00ff41;opacity:.48;pointer-events:none;line-height:1.9;letter-spacing:.6px">
+      <div>SYS://HEARTWISE.v1</div>
+      <div>STATUS: ACTIVE</div>
+      <div>MODE: 3D_PARTICLE</div>
+      <div>BEAT: 72 BPM</div>
+    </div>
+    <div style="position:absolute;bottom:22px;right:22px;z-index:7;font-family:monospace;font-size:.55rem;color:#00ff41;opacity:.35;pointer-events:none;text-align:right;line-height:1.9;letter-spacing:.6px">
+      <div>PARTICLES: 4100</div>
+      <div>CARDIAC: SYNC</div>
+      <div>DRAG: ROTATE</div>
+    </div>
+  </div>
   <div class="hero-left">
     <div class="hero-badge"><div class="b-dot"></div>Biomedical Informatics · 2025</div>
     <h1>Turn a number<br>into <em>understanding.</em></h1>
@@ -262,7 +279,7 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
   </div>
 </section>
 
-<a href="./storyBoard/index.html" class="sb-banner reveal">
+<a href="./storyBoard/" class="sb-banner reveal">
   <div class="sb-text">
     <div class="t-eye2">Use Case &amp; Storyboard</div>
     <h3>See the full patient journey →</h3>
@@ -277,15 +294,45 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
     <a href="#problem">Problem</a>
     <a href="#product">Product</a>
     <a href="#team">Team</a>
-    <a href="./storyBoard/index.html">Storyboard</a>
+    <a href="./storyBoard/">Storyboard</a>
     <a href="./Heartwise/index.html" target="_blank">Demo ↗</a>
   </div>
-  <div class="f-copy">&copy; 2025 · Biomedical Informatics Group Project</div>
+  <div class="f-copy">&copy; 2025 ·   Design Innovations Group</div>
 </footer>
 
 <script>
 const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('in') }), { threshold:.10 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+<script>
+(function(){
+  const c=document.getElementById('matrix-rain');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  const CH='01アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEF∑∇∂';
+  const FS=13;
+  let drops=[];
+  function resize(){
+    c.width=c.offsetWidth;c.height=c.offsetHeight;
+    drops=Array.from({length:Math.floor(c.width/FS)},()=>-Math.floor(Math.random()*40));
+  }
+  setTimeout(resize,60);
+  window.addEventListener('resize',resize);
+  setInterval(()=>{
+    if(!c.width)return;
+    ctx.fillStyle='rgba(3,5,8,.07)';
+    ctx.fillRect(0,0,c.width,c.height);
+    drops.forEach((y,i)=>{
+      const r=Math.random();
+      ctx.fillStyle=r>.97?'#ccffcc':r>.55?'#00ff41':'#007a1a';
+      ctx.font=FS+'px monospace';
+      ctx.fillText(CH[Math.floor(Math.random()*CH.length)],i*FS,y*FS);
+      if(y*FS>c.height&&Math.random()>.975)drops[i]=-Math.floor(Math.random()*20);
+      drops[i]++;
+    });
+  },50);
+})();
 </script>
 
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.165.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.165.0/examples/jsm/"}}</script>
@@ -304,7 +351,7 @@ renderer.setSize(W(), H());
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
 wrap.appendChild(renderer.domElement);
-Object.assign(renderer.domElement.style, { position:'absolute', inset:'0', width:'100%', height:'100%' });
+Object.assign(renderer.domElement.style, { position:'absolute', inset:'0', width:'100%', height:'100%', zIndex:'3' });
 
 const scene  = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(50, W()/H(), 0.1, 100);
