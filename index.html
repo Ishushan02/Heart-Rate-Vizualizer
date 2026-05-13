@@ -396,15 +396,17 @@ window.addEventListener('load', () => {
     renderer.setSize(w, h);
   }).observe(wrap);
 
-  // Heart surface: rotate the right half of the 2D heart curve (t in [0,π]) around Y axis
-  // x=16sin³t, y=13cost−5cos2t−2cos3t−cos4t  (y range: −17 to 5, center at −6)
+  // Heart surface: medically-proportioned — sin² radius (wider, no romantic pinch),
+  // bottom half scaled 0.62× so the apex is rounded rather than a steep spike.
   function buildHeart(uSegs, vSegs, sc) {
     const verts = [];
-    const Y_OFF = 6 * sc;
+    const Y_OFF = 3.4 * sc; // recenters after bottom compression
     for (let ui = 0; ui <= uSegs; ui++) {
       const t = (ui / uSegs) * Math.PI;
-      const r = 16 * Math.pow(Math.sin(t), 3) * sc;
-      const y = (13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t)) * sc + Y_OFF;
+      const sinT = Math.sin(t);
+      const r = 16 * sinT * sinT * sc;                    // sin² → fuller, more oval cross-section
+      const yRaw = 13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
+      const y = (yRaw > 0 ? yRaw : yRaw * 0.62) * sc + Y_OFF; // compress lower half
       for (let vi = 0; vi <= vSegs; vi++) {
         const phi = (vi / vSegs) * Math.PI * 2;
         verts.push(r * Math.sin(phi), y, r * Math.cos(phi));
@@ -423,7 +425,7 @@ window.addEventListener('load', () => {
     return geo;
   }
 
-  const SC = 0.09;
+  const SC = 0.105; // slightly larger to compensate for the shorter compressed shape
 
   // Three wireframe layers — outer ghost, main, inner bright core
   const outerMat = new THREE.LineBasicMaterial({ color: 0x7b0020, transparent: true, opacity: 0.28 });
