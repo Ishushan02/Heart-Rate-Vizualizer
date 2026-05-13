@@ -396,23 +396,11 @@ window.addEventListener('load', () => {
     renderer.setSize(w, h);
   }).observe(wrap);
 
-  // Lights
-  scene.add(new THREE.AmbientLight(0xffffff, 0.28));
-  const keyLight = new THREE.PointLight(0xff2244, 6, 20);
-  keyLight.position.set(3, 3, 4);
-  scene.add(keyLight);
-  const fillLight = new THREE.PointLight(0xff8899, 3, 12);
-  fillLight.position.set(-3, 1, 2);
-  scene.add(fillLight);
-  const rimLight = new THREE.PointLight(0xfbbf24, 2, 10);
-  rimLight.position.set(0, -3, -2);
-  scene.add(rimLight);
-
   // Heart surface: rotate the right half of the 2D heart curve (t in [0,π]) around Y axis
   // x=16sin³t, y=13cost−5cos2t−2cos3t−cos4t  (y range: −17 to 5, center at −6)
   function buildHeart(uSegs, vSegs, sc) {
     const verts = [];
-    const Y_OFF = 6 * sc; // shift so vertical center of heart sits at y=0
+    const Y_OFF = 6 * sc;
     for (let ui = 0; ui <= uSegs; ui++) {
       const t = (ui / uSegs) * Math.PI;
       const r = 16 * Math.pow(Math.sin(t), 3) * sc;
@@ -432,29 +420,32 @@ window.addEventListener('load', () => {
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
     geo.setIndex(idx);
-    geo.computeVertexNormals();
     return geo;
   }
 
-  const SC = 0.135;
+  const SC = 0.09;
 
-  // Solid heart mesh
-  const heartMat = new THREE.MeshPhongMaterial({
-    color: 0xc0112e, emissive: 0x7b0020, emissiveIntensity: 0.45,
-    shininess: 90, specular: 0xff8899
-  });
-  const heart = new THREE.Mesh(buildHeart(72, 72, SC), heartMat);
-  scene.add(heart);
+  // Three wireframe layers — outer ghost, main, inner bright core
+  const outerMat = new THREE.LineBasicMaterial({ color: 0x7b0020, transparent: true, opacity: 0.28 });
+  const outerWire = new THREE.LineSegments(new THREE.WireframeGeometry(buildHeart(22, 22, SC * 1.10)), outerMat);
+  scene.add(outerWire);
 
-  // Subtle wireframe glow overlay
-  const wireMat = new THREE.LineBasicMaterial({ color: 0xff3355, transparent: true, opacity: 0.13 });
-  const wire = new THREE.LineSegments(new THREE.WireframeGeometry(buildHeart(20, 20, SC * 1.004)), wireMat);
-  scene.add(wire);
+  const mainMat = new THREE.LineBasicMaterial({ color: 0xe11d48, transparent: true, opacity: 0.75 });
+  const mainWire = new THREE.LineSegments(new THREE.WireframeGeometry(buildHeart(48, 48, SC)), mainMat);
+  scene.add(mainWire);
+
+  const innerMat = new THREE.LineBasicMaterial({ color: 0xff8099, transparent: true, opacity: 0.50 });
+  const innerWire = new THREE.LineSegments(new THREE.WireframeGeometry(buildHeart(22, 22, SC * 0.68)), innerMat);
+  scene.add(innerWire);
+
+  // Glow via CSS drop-shadow on the canvas
+  renderer.domElement.style.filter =
+    'drop-shadow(0 0 8px rgba(225,29,72,.8)) drop-shadow(0 0 24px rgba(225,29,72,.4))';
 
   // Beat: 72 BPM — lub-dub double pulse
   const BEAT = 60 / 72;
   function beatScale(phase) {
-    const lub = Math.exp(-Math.pow((phase - 0.12) / 0.048, 2)) * 0.13;
+    const lub = Math.exp(-Math.pow((phase - 0.12) / 0.048, 2)) * 0.12;
     const dub = Math.exp(-Math.pow((phase - 0.28) / 0.036, 2)) * 0.07;
     return 1 + lub + dub;
   }
@@ -469,6 +460,7 @@ window.addEventListener('load', () => {
   });
   window.addEventListener('mouseup', () => drag = false);
 
+  const allWires = [outerWire, mainWire, innerWire];
   let t = 0, last = performance.now();
   (function animate(now) {
     requestAnimationFrame(animate);
@@ -477,18 +469,18 @@ window.addEventListener('load', () => {
 
     const phase = (t % BEAT) / BEAT;
     const bs    = beatScale(phase);
-    const tilt  = Math.sin(t * 0.25) * 0.07;
-    if (!drag) autoAngle += dt * 0.3;
+    const tilt  = Math.sin(t * 0.25) * 0.06;
+    if (!drag) autoAngle += dt * 0.28;
 
-    [heart, wire].forEach(m => {
+    allWires.forEach(m => {
       m.rotation.y = autoAngle + userAngle;
       m.rotation.x = tilt;
       m.scale.setScalar(bs);
     });
 
     const pulse = Math.exp(-Math.pow((phase - 0.12) / 0.048, 2));
-    keyLight.intensity        = 6 + pulse * 8;
-    heartMat.emissiveIntensity = 0.45 + pulse * 0.65;
+    mainMat.opacity  = 0.65 + pulse * 0.28;
+    innerMat.opacity = 0.38 + pulse * 0.40;
 
     renderer.render(scene, camera);
   })(performance.now());
