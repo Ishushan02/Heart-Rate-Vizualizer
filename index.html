@@ -37,7 +37,7 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose
 .btn-outline{padding:12px 24px;border-radius:10px;border:1px solid var(--br2);color:var(--text);font-size:.88rem;font-weight:600;text-decoration:none;background:rgba(255,255,255,.03);transition:background .2s,border-color .2s;display:inline-flex;align-items:center;gap:8px}
 .btn-outline:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.22)}
 .hero-3d-wrap{position:absolute;right:0;top:0;width:55%;height:100vh;pointer-events:auto;z-index:5}
-.hero-3d-wrap canvas{width:100%!important;height:100%!important}
+.hero-3d-wrap>canvas{width:100%!important;height:100%!important}
 .hero-scroll{position:absolute;bottom:36px;left:80px;z-index:10;display:flex;align-items:center;gap:12px;font-size:.7rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);animation:fadeUp .7s .5s var(--r) both}
 .hero-scroll-line{width:40px;height:1px;background:linear-gradient(90deg,var(--rose),transparent)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -125,7 +125,16 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 .bg-o3{width:450px;height:450px;top:35%;left:50%;background:radial-gradient(circle,rgba(225,29,72,.05) 0%,transparent 70%);animation:oFloat 18s ease-in-out infinite;animation-delay:-9s}
 @keyframes oFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.06)}66%{transform:translate(-25px,35px) scale(.95)}}
 .bg-grid-l{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse 100% 80% at 50% 0%,black 10%,transparent 80%);mask-image:radial-gradient(ellipse 100% 80% at 50% 0%,black 10%,transparent 80%)}
-@keyframes scanSweep{0%{top:-2%}100%{top:102%}}
+/* Heart UI Overlay */
+.hrt-ui{position:absolute;bottom:0;left:0;right:0;z-index:10;padding:24px 28px 36px;pointer-events:none;background:linear-gradient(to top,rgba(3,5,8,.9) 0%,rgba(3,5,8,.5) 55%,transparent 100%)}
+.hrt-status{font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(148,163,184,.55);margin-bottom:10px}
+.hrt-bpm-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.hrt-pulse-dot{width:9px;height:9px;border-radius:50%;background:var(--rose);box-shadow:0 0 14px var(--rose),0 0 28px rgba(225,29,72,.4);animation:hb-dot 0.833s ease-in-out infinite;flex-shrink:0}
+.hrt-bpm-num{font-size:3.4rem;font-weight:900;letter-spacing:-.07em;color:#fff;line-height:1;text-shadow:0 0 30px rgba(225,29,72,.5)}
+.hrt-bpm-unit{font-size:.7rem;font-weight:700;letter-spacing:2.5px;color:var(--rose2);margin-top:2px}
+.hrt-ekg-wrap{position:relative;height:54px;border-radius:10px;overflow:hidden;background:rgba(8,13,24,.55);border:1px solid rgba(225,29,72,.15)}
+#ekgCanvas{display:block;width:100%;height:100%}
+.hrt-edge-fade{position:absolute;top:0;left:0;bottom:0;width:50px;background:linear-gradient(to right,rgba(3,5,8,.7),transparent);z-index:2;pointer-events:none}
 </style>
 </head>
 <body>
@@ -147,20 +156,20 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 <!-- HERO -->
 <section class="hero">
   <div class="hero-3d-wrap" id="hero3d">
-    <canvas id="matrix-rain" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;opacity:.42"></canvas>
-    <div style="position:absolute;inset:0;z-index:4;pointer-events:none;background:repeating-linear-gradient(to bottom,transparent 0px,transparent 3px,rgba(0,0,0,0.055) 3px,rgba(0,0,0,0.055) 4px)"></div>
-    <div style="position:absolute;left:0;right:0;height:1px;z-index:5;pointer-events:none;background:linear-gradient(to right,transparent,rgba(0,255,65,.55),transparent);animation:scanSweep 6s linear infinite"></div>
-    <div style="position:absolute;top:0;left:0;bottom:0;width:1px;z-index:6;pointer-events:none;background:linear-gradient(to bottom,transparent,rgba(0,255,65,.22),transparent)"></div>
-    <div style="position:absolute;top:22px;left:22px;z-index:7;font-family:monospace;font-size:.58rem;color:#00ff41;opacity:.48;pointer-events:none;line-height:1.9;letter-spacing:.6px">
-      <!-- <div>SYS://HEARTWISE.v1</div>
-      <div>STATUS: ACTIVE</div>
-      <div>MODE: 3D_PARTICLE</div>
-      <div>BEAT: 72 BPM</div> -->
-    </div>
-    <div style="position:absolute;bottom:22px;right:22px;z-index:7;font-family:monospace;font-size:.55rem;color:#00ff41;opacity:.35;pointer-events:none;text-align:right;line-height:1.9;letter-spacing:.6px">
-      <!-- <div>PARTICLES: 4100</div> -->
-      <!-- <div>CARDIAC: SYNC</div> -->
-      <div>DRAG: ROTATE</div>
+    <!-- Three.js canvas is injected here by JS (z-index:2) -->
+    <div class="hrt-ui">
+      <div class="hrt-status">Cardiac Monitor · Live</div>
+      <div class="hrt-bpm-row">
+        <div class="hrt-pulse-dot"></div>
+        <div>
+          <div class="hrt-bpm-num">72</div>
+          <div class="hrt-bpm-unit">BPM</div>
+        </div>
+      </div>
+      <div class="hrt-ekg-wrap">
+        <div class="hrt-edge-fade"></div>
+        <canvas id="ekgCanvas"></canvas>
+      </div>
     </div>
   </div>
   <div class="hero-left">
@@ -306,36 +315,55 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 
 <script>
+// EKG waveform scrolling canvas
 (function(){
-  const c=document.getElementById('matrix-rain');
-  if(!c)return;
-  const ctx=c.getContext('2d');
-  const CH='01アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEF∑∇∂';
-  const FS=13;
-  let drops=[];
-  function resize(){
-    c.width=c.offsetWidth;c.height=c.offsetHeight;
-    drops=Array.from({length:Math.floor(c.width/FS)},()=>-Math.floor(Math.random()*40));
+  function initEKG(){
+    const c=document.getElementById('ekgCanvas');
+    if(!c)return;
+    const W=c.offsetWidth||c.parentElement.offsetWidth||400;
+    const H=c.offsetHeight||54;
+    const dpr=Math.min(devicePixelRatio||1,2);
+    c.width=W*dpr;c.height=H*dpr;
+    const ctx=c.getContext('2d');
+    ctx.scale(dpr,dpr);
+    const BPM=72,BEAT_S=60/BPM;
+    const beatPx=W*0.56,SPEED=beatPx/BEAT_S;
+    function ekg(x){
+      if(x<0.10)return Math.exp(-Math.pow((x-0.06)/0.022,2))*0.18;
+      if(x<0.22)return 0;
+      if(x<0.28){const t=(x-0.22)/0.06;return t<0.5?-0.28*t/0.5:0;}
+      if(x<0.40){const t=(x-0.28)/0.12;return t<0.5?-0.28+2.8*t:2.8-2.8*t;}
+      if(x<0.50){const t=(x-0.40)/0.10;return -0.38*(1-t);}
+      if(x<0.72)return 0.22*Math.exp(-Math.pow((x-0.60)/0.065,2));
+      return 0;
+    }
+    let offset=0,lastT=performance.now();
+    function draw(now){
+      const dt=(now-lastT)/1000;lastT=now;
+      offset=(offset+SPEED*dt)%W;
+      ctx.clearRect(0,0,W,H);
+      ctx.strokeStyle='rgba(225,29,72,0.09)';ctx.lineWidth=0.5;
+      for(let x=0;x<W;x+=18){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+      for(let y=0;y<H;y+=13){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+      const midY=H*0.5,amp=H*0.43;
+      ctx.beginPath();ctx.strokeStyle='#e11d48';ctx.lineWidth=1.8;
+      ctx.shadowColor='#e11d48';ctx.shadowBlur=7;
+      for(let px=0;px<=W;px++){
+        const phase=((px+offset)%beatPx+beatPx)%beatPx/beatPx;
+        const y=midY-ekg(phase)*amp;
+        px===0?ctx.moveTo(0,y):ctx.lineTo(px,y);
+      }
+      ctx.stroke();ctx.shadowBlur=0;
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
   }
-  setTimeout(resize,60);
-  window.addEventListener('resize',resize);
-  setInterval(()=>{
-    if(!c.width)return;
-    ctx.fillStyle='rgba(3,5,8,.07)';
-    ctx.fillRect(0,0,c.width,c.height);
-    drops.forEach((y,i)=>{
-      const r=Math.random();
-      ctx.fillStyle=r>.97?'#ccffcc':r>.55?'#00ff41':'#007a1a';
-      ctx.font=FS+'px monospace';
-      ctx.fillText(CH[Math.floor(Math.random()*CH.length)],i*FS,y*FS);
-      if(y*FS>c.height&&Math.random()>.975)drops[i]=-Math.floor(Math.random()*20);
-      drops[i]++;
-    });
-  },50);
+  if(document.readyState!=='loading')setTimeout(initEKG,80);
+  else document.addEventListener('DOMContentLoaded',()=>setTimeout(initEKG,80));
 })();
 </script>
 
-<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.165.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.165.0/examples/jsm/"}}</script>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.165.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
 
@@ -350,116 +378,120 @@ window.addEventListener('load', () => {
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
   renderer.setSize(W(), H());
-  wrap.appendChild(renderer.domElement);
+  wrap.insertBefore(renderer.domElement, wrap.firstChild);
   Object.assign(renderer.domElement.style, {
-    position: 'absolute', inset: '0', width: '100%', height: '100%', zIndex: '3',
-    filter: 'drop-shadow(0 0 10px #00ff41) drop-shadow(0 0 28px #00cc33) drop-shadow(0 0 55px #009922)'
+    position: 'absolute', inset: '0', width: '100%', height: '100%', zIndex: '2', pointerEvents: 'auto'
   });
 
   const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(44, W() / H(), 0.1, 100);
-  camera.position.set(0, 0.25, 5.4);
-  camera.lookAt(0, -0.1, 0);
+  const camera = new THREE.PerspectiveCamera(50, W() / H(), 0.1, 100);
+  camera.position.set(0, 0.2, 5.8);
+  camera.lookAt(0, 0, 0);
 
   new ResizeObserver(() => {
-    camera.aspect = W() / H();
+    const w = wrap.clientWidth, h = wrap.clientHeight;
+    if (!w || !h) return;
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    renderer.setSize(W(), H());
+    renderer.setSize(w, h);
   }).observe(wrap);
 
-  // 3D heart: surface of revolution of the 2D heart parametric curve
-  // x=16sin^3(t), y=13cos(t)-5cos(2t)-2cos(3t)-cos(4t), rotated around Y axis
-  function buildHeartGeo(uSegs, vSegs, sc) {
-    const pos = [];
-    const Y_CENTER = 0.24; // shift up to center the heart vertically
+  // Lights
+  scene.add(new THREE.AmbientLight(0xffffff, 0.28));
+  const keyLight = new THREE.PointLight(0xff2244, 6, 20);
+  keyLight.position.set(3, 3, 4);
+  scene.add(keyLight);
+  const fillLight = new THREE.PointLight(0xff8899, 3, 12);
+  fillLight.position.set(-3, 1, 2);
+  scene.add(fillLight);
+  const rimLight = new THREE.PointLight(0xfbbf24, 2, 10);
+  rimLight.position.set(0, -3, -2);
+  scene.add(rimLight);
+
+  // Heart surface: rotate the right half of the 2D heart curve (t in [0,π]) around Y axis
+  // x=16sin³t, y=13cost−5cos2t−2cos3t−cos4t  (y range: −17 to 5, center at −6)
+  function buildHeart(uSegs, vSegs, sc) {
+    const verts = [];
+    const Y_OFF = 6 * sc; // shift so vertical center of heart sits at y=0
     for (let ui = 0; ui <= uSegs; ui++) {
       const t = (ui / uSegs) * Math.PI;
-      const xH = 16 * Math.pow(Math.sin(t), 3);
-      const yH = 13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
+      const r = 16 * Math.pow(Math.sin(t), 3) * sc;
+      const y = (13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t)) * sc + Y_OFF;
       for (let vi = 0; vi <= vSegs; vi++) {
-        const s = (vi / vSegs) * Math.PI * 2;
-        pos.push(xH * sc * Math.cos(s), yH * sc + Y_CENTER, xH * sc * Math.sin(s));
+        const phi = (vi / vSegs) * Math.PI * 2;
+        verts.push(r * Math.sin(phi), y, r * Math.cos(phi));
       }
     }
     const idx = [];
     for (let ui = 0; ui < uSegs; ui++) {
       for (let vi = 0; vi < vSegs; vi++) {
-        const a = ui * (vSegs + 1) + vi, b = a + vSegs + 1;
-        idx.push(a, b, a + 1, b, b + 1, a + 1);
+        const a = ui*(vSegs+1)+vi, b = a+vSegs+1;
+        idx.push(a, b, a+1, b, b+1, a+1);
       }
     }
     const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
     geo.setIndex(idx);
+    geo.computeVertexNormals();
     return geo;
   }
 
-  const SC = 0.092;
+  const SC = 0.135;
 
-  // Outer ghost shell (faint, slightly larger)
-  const outerMesh = new THREE.LineSegments(
-    new THREE.WireframeGeometry(buildHeartGeo(16, 24, SC * 1.12)),
-    new THREE.LineBasicMaterial({ color: 0x003d12, transparent: true, opacity: 0.32 })
-  );
-  scene.add(outerMesh);
+  // Solid heart mesh
+  const heartMat = new THREE.MeshPhongMaterial({
+    color: 0xc0112e, emissive: 0x7b0020, emissiveIntensity: 0.45,
+    shininess: 90, specular: 0xff8899
+  });
+  const heart = new THREE.Mesh(buildHeart(72, 72, SC), heartMat);
+  scene.add(heart);
 
-  // Main wireframe heart
-  const mainMat = new THREE.LineBasicMaterial({ color: 0x00ff41, transparent: true, opacity: 0.80 });
-  const mainMesh = new THREE.LineSegments(
-    new THREE.WireframeGeometry(buildHeartGeo(38, 56, SC)),
-    mainMat
-  );
-  scene.add(mainMesh);
+  // Subtle wireframe glow overlay
+  const wireMat = new THREE.LineBasicMaterial({ color: 0xff3355, transparent: true, opacity: 0.13 });
+  const wire = new THREE.LineSegments(new THREE.WireframeGeometry(buildHeart(20, 20, SC * 1.004)), wireMat);
+  scene.add(wire);
 
-  // Inner bright core
-  const innerMat = new THREE.LineBasicMaterial({ color: 0xaaffbb, transparent: true, opacity: 0.55 });
-  const innerMesh = new THREE.LineSegments(
-    new THREE.WireframeGeometry(buildHeartGeo(18, 26, SC * 0.66)),
-    innerMat
-  );
-  scene.add(innerMesh);
-
-  // Beat timing (72 BPM)
+  // Beat: 72 BPM — lub-dub double pulse
   const BEAT = 60 / 72;
-  function beatScale(t) {
-    const p = (t % BEAT) / BEAT;
-    return 1.0 + Math.exp(-0.5 * Math.pow((p - 0.30) / 0.055, 2)) * 0.14;
+  function beatScale(phase) {
+    const lub = Math.exp(-Math.pow((phase - 0.12) / 0.048, 2)) * 0.13;
+    const dub = Math.exp(-Math.pow((phase - 0.28) / 0.036, 2)) * 0.07;
+    return 1 + lub + dub;
   }
 
   // Drag to rotate
-  let dragging = false, lastX = 0, rotY = 0, autoAngle = 0;
-  renderer.domElement.addEventListener('mousedown', e => { dragging = true; lastX = e.clientX; });
+  let drag = false, lastX = 0, userAngle = 0, autoAngle = 0;
+  renderer.domElement.addEventListener('mousedown', e => { drag = true; lastX = e.clientX; });
   renderer.domElement.addEventListener('mousemove', e => {
-    if (!dragging) return;
-    rotY += (e.clientX - lastX) * 0.007;
+    if (!drag) return;
+    userAngle += (e.clientX - lastX) * 0.008;
     lastX = e.clientX;
   });
-  window.addEventListener('mouseup', () => dragging = false);
+  window.addEventListener('mouseup', () => drag = false);
 
-  // Animate
-  const allMeshes = [mainMesh, innerMesh, outerMesh];
-  let last = 0, t = 0;
+  let t = 0, last = performance.now();
   (function animate(now) {
     requestAnimationFrame(animate);
     const dt = Math.min((now - last) / 1000, 0.05);
     last = now; t += dt;
 
-    const bs = beatScale(t);
-    const beat = Math.exp(-0.5 * Math.pow(((t % BEAT) / BEAT - 0.30) / 0.055, 2));
-    const tilt = Math.sin(t * 0.12) * 0.04 + 0.10;
+    const phase = (t % BEAT) / BEAT;
+    const bs    = beatScale(phase);
+    const tilt  = Math.sin(t * 0.25) * 0.07;
+    if (!drag) autoAngle += dt * 0.3;
 
-    if (!dragging) autoAngle += dt * 0.18;
-    allMeshes.forEach(m => { m.rotation.y = autoAngle + rotY; m.rotation.x = tilt; });
+    [heart, wire].forEach(m => {
+      m.rotation.y = autoAngle + userAngle;
+      m.rotation.x = tilt;
+      m.scale.setScalar(bs);
+    });
 
-    mainMesh.scale.setScalar(bs);
-    innerMesh.scale.setScalar(bs * 0.68);
-    outerMesh.scale.setScalar(bs * 1.06 + 0.02);
-
-    mainMat.opacity  = 0.68 + beat * 0.25;
-    innerMat.opacity = 0.45 + beat * 0.38;
+    const pulse = Math.exp(-Math.pow((phase - 0.12) / 0.048, 2));
+    keyLight.intensity        = 6 + pulse * 8;
+    heartMat.emissiveIntensity = 0.45 + pulse * 0.65;
 
     renderer.render(scene, camera);
-  })();
+  })(performance.now());
 });
 </script>
 </body>
