@@ -33,12 +33,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 @media(max-width:768px){nav{padding:0 20px}.n-links{display:none}}
 
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden}
-.hero-ekg{position:absolute;bottom:18%;left:0;right:0;opacity:.08;pointer-events:none}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,rgba(225,29,72,.11),transparent 34%),linear-gradient(to bottom,rgba(3,5,8,.24),var(--bg));pointer-events:none}
+.hero-ekg{position:absolute;bottom:18%;left:0;right:0;opacity:.13;pointer-events:none;filter:drop-shadow(0 0 16px rgba(225,29,72,.42))}
+.hero-ekg polyline{stroke-dasharray:180 1220;animation:ekgSweep 6s linear infinite}
+@keyframes ekgSweep{to{stroke-dashoffset:-1400}}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:20px;border:1px solid rgba(225,29,72,.28);background:rgba(225,29,72,.06);font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose2);margin-bottom:32px;animation:fadeUp .7s var(--r) both}
 .b-dot{width:6px;height:6px;border-radius:50%;background:var(--rose2)}
 h1{font-size:clamp(2.6rem,6vw,4.8rem);font-weight:900;letter-spacing:-.05em;line-height:.96;animation:fadeUp .7s .1s var(--r) both}
 h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose2),#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.bpm-hero{display:inline-flex;align-items:baseline;gap:6px;font-size:5rem;font-weight:900;background:linear-gradient(135deg,var(--rose),var(--rose2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-3px;margin:20px 0;animation:fadeUp .7s .15s var(--r) both}
+.bpm-hero{display:inline-flex;align-items:baseline;gap:6px;font-size:5rem;font-weight:900;background:linear-gradient(135deg,var(--rose),var(--rose2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-3px;margin:20px 0;animation:fadeUp .7s .15s var(--r) both,pulseScale 1.35s ease-in-out infinite}
 .bpm-hero sub{font-size:1.4rem;font-weight:600;letter-spacing:0;-webkit-text-fill-color:var(--sub);color:var(--sub)}
 .hero-sub{max-width:620px;margin:0 auto;font-size:1.05rem;line-height:1.75;color:var(--sub);animation:fadeUp .7s .2s var(--r) both}
 .hero-actions{display:flex;gap:12px;margin-top:38px;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s .3s var(--r) both}
@@ -47,6 +50,13 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose
 .btn-outline{padding:12px 24px;border-radius:10px;border:1px solid var(--br2);color:var(--text);font-size:.88rem;font-weight:600;text-decoration:none;background:rgba(255,255,255,.03);transition:background .2s,border-color .2s;display:inline-flex;align-items:center;gap:8px}
 .btn-outline:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.22)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulseScale{0%,100%{filter:drop-shadow(0 0 0 rgba(225,29,72,0))}50%{filter:drop-shadow(0 0 22px rgba(225,29,72,.38))}}
+
+.context-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:34px auto 0;max-width:760px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:rgba(8,13,24,.68);animation:fadeUp .7s .34s var(--r) both}
+.ctx{padding:16px 18px;text-align:left;background:rgba(255,255,255,.025)}
+.ctx-k{font-size:.62rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose2);margin-bottom:6px}
+.ctx-v{font-size:.86rem;line-height:1.35;color:var(--sub)}
+@media(max-width:760px){.context-strip{grid-template-columns:1fr 1fr}.ctx{text-align:center}}
 
 .section{padding:120px 80px;max-width:1280px;margin:0 auto}
 @media(max-width:768px){.section{padding:80px 24px}}
@@ -71,23 +81,26 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose
 .qa-block h4{font-size:1.05rem;font-weight:700;margin-bottom:14px;letter-spacing:-.02em}
 .qa-block p{font-size:.9rem;line-height:1.78;color:var(--sub)}
 
-.journey{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:48px;border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.journey{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:48px;border:1px solid var(--border);border-radius:20px;overflow:hidden;position:relative}
+.journey::before{content:'';position:absolute;left:5%;right:5%;top:52px;height:1px;background:linear-gradient(90deg,transparent,rgba(225,29,72,.55),transparent);z-index:1}
 @media(max-width:900px){.journey{grid-template-columns:1fr}}
-.j-card{background:var(--card);padding:32px 28px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:background .3s;position:relative;overflow:hidden}
+.j-card{background:var(--card);padding:32px 28px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:background .3s,transform .3s var(--r);position:relative;overflow:hidden;z-index:2}
 .j-card:nth-child(3n){border-right:none}
 .j-card:nth-child(4),.j-card:nth-child(5),.j-card:nth-child(6){border-bottom:none}
-.j-card:hover{background:#0e1525}
+.j-card:hover{background:#0e1525;transform:translateY(-3px)}
 .j-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--rose),var(--rose2));opacity:0;transition:opacity .3s}
 .j-card:hover::after{opacity:1}
 .j-step{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;margin-bottom:18px;background:rgba(225,29,72,.10);color:var(--rose);border:1px solid rgba(225,29,72,.22)}
 .j-card h4{font-size:1rem;font-weight:700;margin-bottom:10px;letter-spacing:-.02em}
 .j-card p{font-size:.88rem;line-height:1.72;color:var(--sub)}
 
-.storyboard-wrap{margin-top:52px;border:1px solid var(--border);border-radius:20px;overflow:hidden;background:var(--card);box-shadow:0 40px 100px rgba(0,0,0,.8),0 0 120px rgba(225,29,72,.06)}
+.storyboard-wrap{margin-top:52px;border:1px solid rgba(225,29,72,.18);border-radius:22px;overflow:hidden;background:var(--card);box-shadow:0 44px 120px rgba(0,0,0,.86),0 0 160px rgba(225,29,72,.10);position:relative}
+.storyboard-wrap::before{content:'';position:absolute;inset:0;border-radius:22px;box-shadow:inset 0 0 80px rgba(225,29,72,.06);pointer-events:none;z-index:2}
 .sb-header{display:flex;align-items:center;gap:10px;padding:14px 22px;border-bottom:1px solid var(--border);background:#0a0f1c}
 .sb-dot{width:11px;height:11px;border-radius:50%}
 .sb-bar{flex:1;text-align:center;font-size:.72rem;color:var(--dim);letter-spacing:.5px}
-.storyboard-img{width:100%;display:block;background:#0a1020}
+.storyboard-img{width:100%;display:block;background:#0a1020;transition:transform .7s var(--r),filter .7s var(--r)}
+.storyboard-wrap:hover .storyboard-img{transform:scale(1.018);filter:contrast(1.04) saturate(1.05)}
 .sb-caption{padding:20px 28px;border-top:1px solid var(--border);font-size:.85rem;line-height:1.72;color:var(--sub);font-style:italic;text-align:center}
 
 .pulse-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:20px;background:rgba(225,29,72,.06);border:1px solid rgba(225,29,72,.22);font-size:.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose2);margin-top:36px}
@@ -124,6 +137,11 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose
 .disclaimer p{font-size:.88rem;line-height:1.75;color:var(--sub)}
 .disclaimer strong{color:var(--text)}
 @media(max-width:768px){.disclaimer{margin:0 24px 60px;padding:22px 22px}}
+
+.final-cta{margin:0 80px 80px;padding:44px 48px;border-radius:22px;background:linear-gradient(135deg,rgba(225,29,72,.10),rgba(8,13,24,.82));border:1px solid rgba(225,29,72,.18);display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap}
+.final-cta h3{font-size:1.55rem;font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.final-cta p{font-size:.94rem;line-height:1.65;color:var(--sub);max-width:520px}
+@media(max-width:768px){.final-cta{margin:0 24px 60px;padding:32px 26px}}
 
 footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
 .f-logo{font-size:.9rem;font-weight:800;letter-spacing:-.02em}
@@ -174,6 +192,12 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
         View Storyboard
       </a>
       <a href="../Heartwise/" target="_blank" class="btn-outline">Open Demo ↗</a>
+    </div>
+    <div class="context-strip">
+      <div class="ctx"><div class="ctx-k">Patient State</div><div class="ctx-v">Recently discharged</div></div>
+      <div class="ctx"><div class="ctx-k">Signal</div><div class="ctx-v">118 BPM at home</div></div>
+      <div class="ctx"><div class="ctx-k">Concern</div><div class="ctx-v">Elevated but unclear</div></div>
+      <div class="ctx"><div class="ctx-k">Need</div><div class="ctx-v">Calm next step</div></div>
     </div>
   </div>
 </div>
@@ -369,6 +393,17 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 <div class="disclaimer reveal">
   <div class="disc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
   <p><strong>Design Disclaimer:</strong> HeartWise is an educational prototype and does not provide medical diagnosis. Users should seek urgent care if they experience severe or worsening symptoms such as chest pain, fainting, severe shortness of breath, or sudden weakness. Heart rate numbers alone are not sufficient to determine the severity of a cardiac event.</p>
+</div>
+
+<div class="final-cta reveal">
+  <div>
+    <h3>Try the moment from the storyboard.</h3>
+    <p>Enter 118 BPM in the live demo and see how HeartWise translates a confusing number into visual context.</p>
+  </div>
+  <a href="../Heartwise/" target="_blank" class="btn-solid">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    Open Live Demo
+  </a>
 </div>
 
 <!-- FOOTER -->
