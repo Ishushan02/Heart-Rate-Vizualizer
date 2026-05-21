@@ -25,6 +25,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 @media(max-width:768px){nav{padding:0 20px}.n-links{display:none}}
 
 .hero{position:relative;min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;overflow:hidden;padding-top:64px}
+.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(110deg,rgba(3,5,8,.98) 0%,rgba(3,5,8,.74) 43%,rgba(3,5,8,.26) 100%);z-index:1;pointer-events:none}
+.hero::after{content:'';position:absolute;inset:auto 0 0 0;height:42%;background:linear-gradient(to top,var(--bg),transparent);z-index:4;pointer-events:none}
+.hero-signal{position:absolute;left:0;right:0;top:18%;height:130px;z-index:2;opacity:.13;pointer-events:none;filter:drop-shadow(0 0 18px rgba(225,29,72,.55))}
+.hero-signal polyline{stroke-dasharray:180 1480;animation:signalSweep 7s linear infinite}
+@keyframes signalSweep{to{stroke-dashoffset:-1660}}
 .hero-left{position:relative;z-index:10;padding:80px 48px 80px 80px;display:flex;flex-direction:column}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:20px;border:1px solid rgba(225,29,72,.28);background:rgba(225,29,72,.06);font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose2);margin-bottom:32px;width:fit-content;animation:fadeUp .7s var(--r) both}
 .b-dot{width:6px;height:6px;border-radius:50%;background:var(--rose2)}
@@ -32,6 +37,10 @@ h1{font-size:clamp(2.8rem,4.8vw,4.6rem);font-weight:900;letter-spacing:-.05em;li
 h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose2),#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero-sub{margin-top:26px;font-size:1.05rem;font-weight:400;line-height:1.75;color:var(--sub);max-width:400px;animation:fadeUp .7s .18s var(--r) both}
 .hero-actions{margin-top:44px;display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp .7s .26s var(--r) both}
+.hero-metrics{margin-top:30px;display:grid;grid-template-columns:repeat(3,minmax(0,118px));gap:2px;max-width:390px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:rgba(8,13,24,.42);animation:fadeUp .7s .34s var(--r) both}
+.hm{padding:14px 16px;background:rgba(255,255,255,.025)}
+.hm-k{font-size:1rem;font-weight:800;letter-spacing:-.03em;color:#fff}
+.hm-v{margin-top:4px;font-size:.62rem;line-height:1.35;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim)}
 .btn-solid{padding:13px 26px;border-radius:10px;background:var(--rose);color:#fff;font-size:.88rem;font-weight:700;letter-spacing:-.2px;text-decoration:none;box-shadow:0 4px 24px rgba(225,29,72,.4),0 0 0 1px rgba(225,29,72,.5);transition:transform .2s var(--r),box-shadow .2s;display:inline-flex;align-items:center;gap:8px}
 .btn-solid:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(225,29,72,.55),0 0 0 1px rgba(225,29,72,.7)}
 .btn-outline{padding:12px 24px;border-radius:10px;border:1px solid var(--br2);color:var(--text);font-size:.88rem;font-weight:600;text-decoration:none;background:rgba(255,255,255,.03);transition:background .2s,border-color .2s;display:inline-flex;align-items:center;gap:8px}
@@ -41,7 +50,7 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose
 .hero-scroll{position:absolute;bottom:36px;left:80px;z-index:10;display:flex;align-items:center;gap:12px;font-size:.7rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);animation:fadeUp .7s .5s var(--r) both}
 .hero-scroll-line{width:40px;height:1px;background:linear-gradient(90deg,var(--rose),transparent)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:900px){.hero{grid-template-columns:1fr}.hero-left{padding:80px 24px}.hero-3d-wrap{display:none}.hero-scroll{left:24px}}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.hero-left{padding:80px 24px}.hero-3d-wrap{display:none}.hero-scroll{left:24px}.hero-metrics{grid-template-columns:1fr 1fr 1fr;max-width:100%}.hero-signal{top:12%;opacity:.10}}
 
 .section{padding:120px 80px;max-width:1280px;margin:0 auto}
 @media(max-width:768px){.section{padding:80px 24px}}
@@ -63,12 +72,25 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose
 .quote-block{margin-top:32px;padding:28px 32px;background:var(--card);border-radius:16px;border:1px solid var(--border);border-left:3px solid var(--rose);font-size:1rem;line-height:1.75;color:var(--sub);font-style:italic}
 .quote-block strong{color:var(--text);font-style:normal}
 
-.product-frame{margin-top:52px;border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 0 0 1px rgba(225,29,72,.06),0 40px 100px rgba(0,0,0,.8),0 0 120px rgba(225,29,72,.08)}
+.product-frame{margin-top:52px;border-radius:20px;overflow:hidden;border:1px solid rgba(225,29,72,.18);box-shadow:0 0 0 1px rgba(225,29,72,.08),0 44px 120px rgba(0,0,0,.82),0 0 160px rgba(225,29,72,.14);position:relative;background:#060a12}
+.product-frame::before{content:'';position:absolute;inset:0;border-radius:20px;box-shadow:inset 0 0 80px rgba(225,29,72,.08);pointer-events:none;z-index:2}
 .chrome{display:flex;align-items:center;gap:10px;padding:14px 20px;background:#0a0f1c;border-bottom:1px solid var(--border)}
 .c-dot{width:11px;height:11px;border-radius:50%}
 .c-bar{flex:1;text-align:center;font-size:.72rem;color:var(--dim);letter-spacing:.5px}
+.c-live{display:flex;align-items:center;gap:7px;font-size:.64rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--rose2)}
+.c-live::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--rose);box-shadow:0 0 12px var(--rose);animation:hb-dot 1.1s ease-in-out infinite}
 .product-iframe{width:100%;height:580px;border:none;display:block}
 .product-open{display:flex;justify-content:center;padding:20px;background:#0a0f1c;border-top:1px solid var(--border)}
+
+.bpm-strip{margin-top:44px;border:1px solid var(--border);border-radius:18px;overflow:hidden;background:rgba(8,13,24,.68)}
+.bpm-track{display:grid;grid-template-columns:.9fr 1.15fr 1fr 1fr;min-height:92px}
+.bpm-zone{position:relative;padding:26px 24px;border-right:1px solid var(--border);transition:background .25s,transform .25s}
+.bpm-zone:last-child{border-right:none}
+.bpm-zone:hover{background:rgba(255,255,255,.045);transform:translateY(-2px)}
+.bpm-zone::before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:var(--zc)}
+.bz-k{font-size:.68rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--zc);margin-bottom:8px}
+.bz-v{font-size:.86rem;line-height:1.55;color:var(--sub)}
+@media(max-width:900px){.bpm-track{grid-template-columns:1fr}.bpm-zone{border-right:none;border-bottom:1px solid var(--border)}.bpm-zone:last-child{border-bottom:none}}
 
 .how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:52px;border:1px solid var(--border);border-radius:20px;overflow:hidden}
 @media(max-width:768px){.how-grid{grid-template-columns:1fr}}
@@ -93,6 +115,8 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose
 .t-info{padding:26px 26px 30px}
 .t-name{font-size:1.2rem;font-weight:800;letter-spacing:-.03em;margin-bottom:12px}
 .t-bio{font-size:.87rem;line-height:1.75;color:var(--sub)}
+.t-link{display:inline-flex;align-items:center;gap:7px;margin-top:18px;font-size:.78rem;font-weight:700;color:var(--rose2);text-decoration:none;transition:color .2s,transform .2s}
+.t-link:hover{color:#fff;transform:translateX(2px)}
 .t-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
 .tag{padding:3px 10px;border-radius:20px;font-size:.67rem;font-weight:500;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--dim)}
 
@@ -155,6 +179,10 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 
 <!-- HERO -->
 <section class="hero">
+  <svg class="hero-signal" viewBox="0 0 1400 130" preserveAspectRatio="none" fill="none" aria-hidden="true">
+    <polyline stroke="#e11d48" stroke-width="2"
+      points="0,70 120,70 150,70 168,42 186,96 204,18 222,90 246,70 380,70 420,70 438,48 456,92 476,70 640,70 690,70 708,42 726,98 744,16 762,92 788,70 960,70 1000,70 1018,50 1036,90 1060,70 1200,70 1400,70"/>
+  </svg>
   <div class="hero-3d-wrap" id="hero3d">
     <!-- Three.js canvas is injected here by JS (z-index:2) -->
     <div class="hrt-ui">
@@ -183,6 +211,11 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
       </a>
       <a href="#team" class="btn-outline">Meet the team</a>
     </div>
+    <div class="hero-metrics" aria-label="HeartWise capabilities">
+      <div class="hm"><div class="hm-k">Live</div><div class="hm-v">BPM-linked motion</div></div>
+      <div class="hm"><div class="hm-k">3D</div><div class="hm-v">Anatomical view</div></div>
+      <div class="hm"><div class="hm-k">0 PHI</div><div class="hm-v">Private by design</div></div>
+    </div>
   </div>
   <div class="hero-scroll"><div class="hero-scroll-line"></div>Scroll to explore</div>
 </section>
@@ -194,13 +227,13 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
       <div class="s-eye">The Problem</div>
       <h2 class="s-title">A number without context is just noise.</h2>
       <p class="s-body">Millions leave the ER with heart rate data and zero ability to interpret it. 118 BPM on a smartwatch could mean stress, dehydration, or something urgent. Without context, patients panic or ignore it. Both outcomes are dangerous.</p>
-      <div class="quote-block">"I didn't know if <strong>118 BPM</strong> was going to kill me or if I just needed to sit down. I searched online for 40 minutes and felt worse." <br><br><em style="font-size:.84rem;font-style:normal;opacity:.6">Simulated patient narrative</em></div>
+      <div class="quote-block">"My watch showed <strong>118 BPM</strong>, but the number did not tell me what to do next. I needed a simple way to understand whether it was a normal response or a reason to call someone." <br><br><em style="font-size:.84rem;font-style:normal;opacity:.6">Simulated patient narrative</em></div>
     </div>
     <div class="stat-grid reveal d1">
-      <div class="stat-cell"><div class="stat-big">36M</div><div class="stat-lbl">ED visits yearly involving cardiac monitoring</div></div>
-      <div class="stat-cell"><div class="stat-big">72%</div><div class="stat-lbl">Patients who can't interpret their own heart rate zone</div></div>
-      <div class="stat-cell"><div class="stat-big">3D</div><div class="stat-lbl">Anatomical heart with chambers, vessels, real-time blood flow</div></div>
-      <div class="stat-cell"><div class="stat-big">0</div><div class="stat-lbl">Personal health data required. Private by design.</div></div>
+      <div class="stat-cell"><div class="stat-big" data-count="36" data-suffix="M">0</div><div class="stat-lbl">ED visits yearly involving cardiac monitoring</div></div>
+      <div class="stat-cell"><div class="stat-big" data-count="72" data-suffix="%">0</div><div class="stat-lbl">Patients who can't interpret their own heart rate zone</div></div>
+      <div class="stat-cell"><div class="stat-big" data-count="3" data-suffix="D">0</div><div class="stat-lbl">Anatomical heart with chambers, vessels, real-time blood flow</div></div>
+      <div class="stat-cell"><div class="stat-big" data-count="0" data-suffix="">0</div><div class="stat-lbl">Personal health data required. Private by design.</div></div>
     </div>
   </div>
 </section>
@@ -214,6 +247,14 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
     <h2 class="s-title">HeartWise: your heart rate, made visible.</h2>
     <p class="s-body">Enter any BPM and watch a live 3D anatomical heart respond in real time, chambers contracting, blood flowing, EKG synchronized to every beat. Drag to rotate. See the LAD artery. See the aortic arch. Understand what your heart is doing.</p>
   </div>
+  <div class="bpm-strip reveal d1" aria-label="Heart rate interpretation zones">
+    <div class="bpm-track">
+      <div class="bpm-zone" style="--zc:#4488ff"><div class="bz-k">30-59 BPM</div><div class="bz-v">Bradycardia range. Slow rates can be normal for some people, but symptoms matter.</div></div>
+      <div class="bpm-zone" style="--zc:#00ff88"><div class="bz-k">60-99 BPM</div><div class="bz-v">Typical adult resting range when calm, seated, and feeling well.</div></div>
+      <div class="bpm-zone" style="--zc:#ffaa00"><div class="bz-k">100-139 BPM</div><div class="bz-v">Elevated range. Context like stress, fever, dehydration, or activity changes meaning.</div></div>
+      <div class="bpm-zone" style="--zc:#ff3344"><div class="bz-k">140+ BPM</div><div class="bz-v">High range. Sustained readings or symptoms should prompt clinical attention.</div></div>
+    </div>
+  </div>
   <div class="how-grid reveal d1">
     <div class="how-cell"><span class="how-n">01</span><div class="how-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="11" cy="18" r="2" fill="currentColor" stroke="none"/></svg></div><h4>Enter your BPM</h4><p>Type or drag the slider from 30–220 BPM. The entire 3D simulation responds instantly.</p></div>
     <div class="how-cell"><span class="how-n">02</span><div class="how-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><h4>Watch the 3D heart</h4><p>Anatomical chambers, coronary arteries, great vessels, beating at your rate. Rotate 360°.</p></div>
@@ -225,6 +266,7 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
       <div class="c-dot" style="background:#febc2e"></div>
       <div class="c-dot" style="background:#28c840"></div>
       <div class="c-bar">HeartWise · 3D Heart Rate Visualizer</div>
+      <div class="c-live">Live Signal</div>
     </div>
     <iframe class="product-iframe" src="./Heartwise/" title="HeartWise Demo" loading="lazy"></iframe>
     <div class="product-open">
@@ -252,9 +294,10 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
         <div class="t-overlay"></div>
       </div>
       <div class="t-info">
-        <div class="t-name">Ishan Anand</div>
+        <div class="t-name">Ishan Kumar Anand</div>
         <p class="t-bio">Ishan is interested in clinical workflows, health informatics, and usability evaluation. For this project, he will help assess whether the tool communicates heart rate information safely and effectively, and will support testing and documentation.</p>
-        <div class="t-tags"><span class="tag">Health Informatics</span><span class="tag">Usability</span><span class="tag">Clinical Workflows</span></div>
+        <a class="t-link" href="https://ishushan02.github.io/" target="_blank" rel="noopener">Website ↗</a>
+        <div class="t-tags"><span class="tag">Computer Science</span><span class="tag">AI Specialization</span></div>
       </div>
     </div>
 
@@ -267,7 +310,8 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
       <div class="t-info">
         <div class="t-name">Abhiraj Yogesh Srivastava</div>
         <p class="t-bio">Abhiraj is interested in human-centered healthcare technology, patient-facing interfaces, and systems that make clinical information easier to understand. He is contributing to prototype design, web implementation, and user-centered framing of the problem.</p>
-        <div class="t-tags"><span class="tag">Patient Interfaces</span><span class="tag">Web Dev</span><span class="tag">Human-Centered</span></div>
+        <a class="t-link" href="https://www.linkedin.com/in/abhiraj-srivastava-5300b81a0/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <div class="t-tags"><span class="tag">Computer Science</span><span class="tag">Software Development</span><span class="tag">Deployments</span></div>
       </div>
     </div>
 
@@ -280,7 +324,8 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
       <div class="t-info">
         <div class="t-name">Rammya Sakpal</div>
         <p class="t-bio">Rammya is interested in healthcare communication, patient education, and designing tools that reduce confusion around medical data. She will help refine the storyboard, evaluate interface clarity, and gather feedback from potential users.</p>
-        <div class="t-tags"><span class="tag">Healthcare Comms</span><span class="tag">Patient Education</span><span class="tag">UX Research</span></div>
+        <a class="t-link" href="https://www.linkedin.com/in/rammya-sakpal/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <div class="t-tags"><span class="tag">Computer Science</span><span class="tag">Software Security</span></div>
       </div>
     </div>
 
@@ -311,6 +356,25 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 <script>
 const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('in') }), { threshold:.10 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+const countIO = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting || entry.target.dataset.done) return;
+    entry.target.dataset.done = '1';
+    const target = Number(entry.target.dataset.count || 0);
+    const suffix = entry.target.dataset.suffix || '';
+    const start = performance.now();
+    const dur = 950;
+    function tick(now) {
+      const p = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      entry.target.textContent = Math.round(target * eased) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}, { threshold:.45 });
+document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
 </script>
 
 <script>
