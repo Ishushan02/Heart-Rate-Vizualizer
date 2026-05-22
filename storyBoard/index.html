@@ -185,8 +185,9 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 
   <div style="position:relative;z-index:2;max-width:760px">
     <div class="hero-badge"><div class="b-dot"></div>Use Case &amp; Storyboard</div>
-    <h1>One Tool.<br><em>Many Lives.</em></h1>
-    <div class="bpm-hero">A Thousand<sub>purpose</sub></div>
+    <h1>One Tool<br><em>Endless Uses</em></h1>
+    <!-- One Tool. Endless Uses. Built for Everyone. -->
+    <div class="bpm-hero">Built for All<sub></sub></div>
     <p class="hero-sub">From the exam room to the village clinic, from lecture halls to a wrist in a crowd  HeartWise brings cardiac visualization to the eight moments where understanding a heartbeat changes everything.</p>
     <div class="hero-actions">
       <a href="#storyboard" class="btn-solid">
@@ -314,9 +315,12 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
     </div>
     <div class="sb-video-container" id="sbVideoContainer">
       <iframe id="sbVideoFrame"
-              src="../Images/Heartwise-Video-Standalone.html"
+              data-src="../Images/Heartwise-Video-Standalone.html"
               allow="autoplay"
               title="HeartWise animated storyboard film"></iframe>
+      <iframe id="sbThumb" src="../Images/Heartwise-Thumbnail.html"
+              style="position:absolute;inset:0;width:100%;height:100%;border:none;display:block;pointer-events:none;transition:opacity .4s;z-index:3"
+              title="HeartWise thumbnail"></iframe>
       <!-- <div class="sb-sound-hint">Hover to enable heartbeat sound</div> -->
     </div>
   </div>
@@ -445,11 +449,14 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   const container = document.getElementById('sbVideoContainer');
   const frame     = document.getElementById('sbVideoFrame');
   if (!container || !frame) return;
+  const thumb = document.getElementById('sbThumb');
   let started = false;
   container.addEventListener('mouseenter', function() {
     if (started) return;
     started = true;
-    container.classList.add('sound-started'); // fades out the hint label
+    if (frame.dataset.src) frame.src = frame.dataset.src;
+    if (thumb) thumb.style.opacity = '0';
+    container.classList.add('sound-started');
     try { frame.contentWindow.postMessage('hw-sound-start', '*'); } catch (e) {}
   });
 })();
