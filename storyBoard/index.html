@@ -99,8 +99,10 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose
 .sb-header{display:flex;align-items:center;gap:10px;padding:14px 22px;border-bottom:1px solid var(--border);background:#0a0f1c}
 .sb-dot{width:11px;height:11px;border-radius:50%}
 .sb-bar{flex:1;text-align:center;font-size:.72rem;color:var(--dim);letter-spacing:.5px}
-.storyboard-img{width:100%;display:block;background:#0a1020;transition:transform .7s var(--r),filter .7s var(--r)}
-.storyboard-wrap:hover .storyboard-img{transform:scale(1.018);filter:contrast(1.04) saturate(1.05)}
+.sb-video-container{position:relative;width:100%;aspect-ratio:16/9;background:#0a1020;overflow:hidden;display:block}
+.sb-video-container iframe{position:absolute;inset:0;width:100%;height:100%;border:none;display:block}
+.sb-sound-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:10;background:rgba(8,13,24,.72);backdrop-filter:blur(8px);border:1px solid rgba(225,29,72,.22);border-radius:20px;padding:5px 14px;font-size:.65rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose2);pointer-events:none;opacity:1;transition:opacity .6s .4s}
+.sb-video-container.sound-started .sb-sound-hint{opacity:0}
 .sb-caption{padding:20px 28px;border-top:1px solid var(--border);font-size:.85rem;line-height:1.72;color:var(--sub);font-style:italic;text-align:center}
 
 .pulse-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:20px;background:rgba(225,29,72,.06);border:1px solid rgba(225,29,72,.22);font-size:.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose2);margin-top:36px}
@@ -183,9 +185,9 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 
   <div style="position:relative;z-index:2;max-width:760px">
     <div class="hero-badge"><div class="b-dot"></div>Use Case &amp; Storyboard</div>
-    <h1>When a <em>Number</em><br>Isn't Enough</h1>
-    <div class="bpm-hero">118<sub>bpm</sub></div>
-    <p class="hero-sub">A patient leaves the ER with more questions than answers. Their smartwatch shows 118 BPM. Is that dangerous? Should they call someone? HeartWise turns that number into understanding.</p>
+    <h1>One Tool.<br><em>Many Lives.</em></h1>
+    <div class="bpm-hero">A Thousand<sub>purpose</sub></div>
+    <p class="hero-sub">From the exam room to the village clinic, from lecture halls to a wrist in a crowd  HeartWise brings cardiac visualization to the eight moments where understanding a heartbeat changes everything.</p>
     <div class="hero-actions">
       <a href="#storyboard" class="btn-solid">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
@@ -194,10 +196,10 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
       <a href="../Heartwise/" target="_blank" class="btn-outline">Open Demo ↗</a>
     </div>
     <div class="context-strip">
-      <div class="ctx"><div class="ctx-k">Patient State</div><div class="ctx-v">Recently discharged</div></div>
-      <div class="ctx"><div class="ctx-k">Signal</div><div class="ctx-v">118 BPM at home</div></div>
-      <div class="ctx"><div class="ctx-k">Concern</div><div class="ctx-v">Elevated but unclear</div></div>
-      <div class="ctx"><div class="ctx-k">Need</div><div class="ctx-v">Calm next step</div></div>
+      <div class="ctx"><div class="ctx-k">Users</div><div class="ctx-v">Doctors, students, patients</div></div>
+      <div class="ctx"><div class="ctx-k">Settings</div><div class="ctx-v">Clinic, lecture, home, field</div></div>
+      <div class="ctx"><div class="ctx-k">Reach</div><div class="ctx-v">Any device, anywhere</div></div>
+      <div class="ctx"><div class="ctx-k">Impact</div><div class="ctx-v">8 use cases, one tool</div></div>
     </div>
   </div>
 </div>
@@ -206,30 +208,30 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 <section class="section" id="overview">
   <div class="reveal">
     <div class="s-eye">Use Case Overview</div>
-    <h2 class="s-title">HeartWise: bridging the gap<br>between data and understanding</h2>
-    <p class="s-body">HeartWise is designed for patients who see heart rate numbers after a clinical visit or through a wearable device but don't know how to interpret them. Raw BPM readings without context create anxiety, confusion, and poor decision-making. HeartWise replaces guesswork with clear, visual, plain-language guidance.</p>
+    <h2 class="s-title">HeartWise: one visualization,<br>eight transformative uses</h2>
+    <p class="s-body">HeartWise is a 3D cardiac visualization tool built for every stakeholder who needs to understand what a heartbeat means  from a cardiologist explaining a diagnosis, to a student learning anatomy at midnight, to a community health worker in a rural clinic with a phone as their only diagnostic tool.</p>
   </div>
 
   <div class="use-case-box reveal">
-    <h3>User Story</h3>
-    <p>As a patient recovering at home after an ED visit, I want to understand what my heart rate number means in simple language so that I can decide whether to rest, keep monitoring, contact a clinician, or seek urgent care without needing medical training or wading through conflicting search results.</p>
+    <h3>Eight User Stories, One Tool</h3>
+    <p>HeartWise serves doctors explaining diagnoses to patients, educators teaching the next generation of clinicians, students practising independently, specialists conducting telemedicine across continents, smartwatch users monitoring for arrhythmia and heart attack risk, post-surgical patients tracking recovery at home, community health workers in regions without echocardiography access, and individuals managing anxiety through real-time cardiac feedback.</p>
   </div>
 
   <div class="qa-grid">
     <div class="qa-block reveal">
-      <div class="qa-q">Who is the user?</div>
-      <h4>The Anxious Patient or Caregiver</h4>
-      <p>A patient or family member without medical training who encounters raw BPM numbers from hospital monitors, wearables, or discharge paperwork and feels overwhelmed by what they see.</p>
+      <div class="qa-q">Who are the users?</div>
+      <h4>A Spectrum of Stakeholders</h4>
+      <p>Cardiologists, medical educators, students, remote specialists, smartwatch users, post-surgical patients, rural health workers, and anyone managing a stress- or anxiety-driven cardiac response  across every level of medical literacy.</p>
     </div>
     <div class="qa-block reveal d1">
-      <div class="qa-q">What do they need?</div>
-      <h4>Simple, Visual Interpretation</h4>
-      <p>A way to understand whether a reading is low, normal, elevated, or critical and what general next steps might be appropriate without being buried in technical jargon or alarming clinical language.</p>
+      <div class="qa-q">What do they share?</div>
+      <h4>A Need for Visual Clarity</h4>
+      <p>Whether explaining, learning, monitoring, or managing, every user benefits from the same thing: a live waveform and plain-language context that turns a raw BPM number into something meaningful and actionable.</p>
     </div>
     <div class="qa-block reveal d2">
       <div class="qa-q">How does HeartWise help?</div>
-      <h4>Number to Waveform to Context</h4>
-      <p>Users enter a BPM value and instantly see a live EKG-style waveform, a color-coded zone indicator, and calm plain-language guidance. The visual connection between the number and the signal makes interpretation intuitive.</p>
+      <h4>One Interface, Every Context</h4>
+      <p>A single BPM input drives a real-time 3D heart, a color-coded zone indicator, and a synchronized EKG strip. The same interface that helps a doctor explain tachycardia also helps a student study it and a patient understand it.</p>
     </div>
   </div>
 </section>
@@ -239,41 +241,51 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 <!-- SCENARIO -->
 <section class="section" id="scenario">
   <div class="reveal">
-    <div class="s-eye">The Scenario</div>
-    <h2 class="s-title">From the ER to the couch,<br>one number, zero context</h2>
-    <p class="s-body">A real patient journey: discharged after an emergency visit, a smartwatch flashes 118 BPM. Without context, that number feels like a threat. Here's how it unfolds, step by step.</p>
+    <div class="s-eye">The Eight Scenes</div>
+    <h2 class="s-title">Eight moments.<br>One common thread.</h2>
+    <p class="s-body">Each scene captures a distinct context where HeartWise changes how people understand, communicate, and act on cardiac information  from the clinic to the field, from the lecture hall to the bedside.</p>
   </div>
 
   <div class="journey">
     <div class="j-card reveal">
       <div class="j-step">01</div>
-      <h4>ED Discharge</h4>
-      <p>The patient leaves the Emergency Department with instructions to monitor symptoms at home but no clear explanation of what normal versus concerning numbers look like.</p>
+      <h4>Doctor Explains to Patient</h4>
+      <p>A cardiologist turns the HeartWise visualizer toward their patient. The 3D beating heart, live BPM, and synchronized EKG make a complex diagnosis legible without a single medical term.</p>
     </div>
     <div class="j-card reveal d1">
       <div class="j-step">02</div>
-      <h4>118 BPM on the Watch</h4>
-      <p>Sitting on the couch, the patient's smartwatch shows 118 BPM. The raw number offers no context. Is this a leftover effect of the ED visit, or something to worry about?</p>
+      <h4>Teaching Medical Students</h4>
+      <p>In a lecture theatre, the heart is projected at scale. Chambers, valves, and coronary arteries are labelled in real time as the lecturer walks students through every beat of a PQRST cycle.</p>
     </div>
     <div class="j-card reveal d2">
       <div class="j-step">03</div>
-      <h4>Online Confusion</h4>
-      <p>A Google search returns a mix of alarming forum posts and dense medical articles. The conflicting information increases anxiety rather than reducing it.</p>
+      <h4>Students Practise Independently</h4>
+      <p>The same simulation runs on a student's laptop after midnight. They rotate the heart, toggle labels, and answer practice questions  learning at their own pace, on their own time.</p>
     </div>
-    <div class="j-card reveal">
+    <div class="j-card reveal" style="border-bottom:1px solid var(--border)">
       <div class="j-step">04</div>
-      <h4>Opens HeartWise</h4>
-      <p>The patient enters 118 into HeartWise and immediately sees a scrolling EKG waveform, an orange "Elevated" zone badge, and a calm explanation of what elevated heart rate can mean.</p>
+      <h4>Remote Telemedicine</h4>
+      <p>A specialist in one country reads an ECG streaming from a clinic thousands of kilometres away. The same waveform draws on two screens in the same heartbeat, making distance irrelevant.</p>
     </div>
-    <div class="j-card reveal d1">
+    <div class="j-card reveal d1" style="border-bottom:1px solid var(--border)">
       <div class="j-step">05</div>
-      <h4>Understanding the Signal</h4>
-      <p>The visual waveform shows the patient how BPM affects the rhythm of their heartbeat. The color zone makes the interpretation instantly clear: elevated, not critical.</p>
+      <h4>Smartwatch AFib Detection</h4>
+      <p>A rhythm stutters on a wrist in a crowd. Before the wearer has sat down, their cardiologist has the trace, the MI cue has fired, and emergency services are on standby.</p>
     </div>
-    <div class="j-card reveal d2">
+    <div class="j-card reveal d2" style="border-bottom:1px solid var(--border)">
       <div class="j-step">06</div>
-      <h4>Informed Next Step</h4>
-      <p>The patient feels less anxious. They choose to rest, monitor the reading, and know exactly when to contact their clinician, armed with context instead of fear.</p>
+      <h4>Post-Surgical Recovery</h4>
+      <p>Day fourteen after bypass surgery. A patient reads in their chair while HeartWise quietly monitors their pulse and surfaces any change worth reporting  calm, continuous, unobtrusive.</p>
+    </div>
+    <div class="j-card reveal" style="border-bottom:none">
+      <div class="j-step">07</div>
+      <h4>Developing Countries Access</h4>
+      <p>A community health worker in a region without echocardiography holds HeartWise on a phone. The same diagnostic capability available in a city hospital now fits in a palm in a rural clinic.</p>
+    </div>
+    <div class="j-card reveal d1" style="border-bottom:none">
+      <div class="j-step">08</div>
+      <h4>Anxiety and Panic Monitoring</h4>
+      <p>At 3 a.m., a chaotic waveform on screen steadies as a person breathes through a panic attack. HeartWise does not fix the fear  it shows them they are already regaining control.</p>
     </div>
   </div>
 </section>
@@ -284,8 +296,8 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 <section class="section" id="storyboard">
   <div class="reveal">
     <div class="s-eye">Storyboard</div>
-    <h2 class="s-title">Six panels. One journey.<br>From confusion to clarity.</h2>
-    <p class="s-body">This storyboard traces the full patient experience, from leaving the ER with unanswered questions to opening HeartWise and finding calm, actionable understanding.</p>
+    <h2 class="s-title">Eight scenes. Eight lives.<br>One visualization.</h2>
+    <p class="s-body">This animated storyboard traces all eight use cases  from the exam room and lecture hall to the rural clinic and 3 a.m. bedside  showing how HeartWise fits every context where cardiac understanding matters.</p>
   </div>
 
   <div class="pulse-badge reveal">
@@ -300,10 +312,12 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
       <div class="sb-dot" style="background:#28c840"></div>
       <div class="sb-bar">HeartWise: Understanding Heart Rate After an ED Visit</div>
     </div>
-    <img class="storyboard-img" src="../Images/image.png" alt="HeartWise storyboard showing 6 scenes: ED discharge, high BPM at home, online confusion, opening HeartWise, understanding the result, safer next step">
-    <div class="sb-caption">
-      This storyboard shows how HeartWise helps a patient move from confusion and anxiety to better understanding after seeing an elevated heart rate at home.
-      Each panel represents one step of the user journey, from ED discharge through informed, calm decision-making.
+    <div class="sb-video-container" id="sbVideoContainer">
+      <iframe id="sbVideoFrame"
+              src="../Images/Heartwise-Video-Standalone.html"
+              allow="autoplay"
+              title="HeartWise animated storyboard film"></iframe>
+      <!-- <div class="sb-sound-hint">Hover to enable heartbeat sound</div> -->
     </div>
   </div>
 </section>
@@ -397,8 +411,8 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 
 <div class="final-cta reveal">
   <div>
-    <h3>Try the moment from the storyboard.</h3>
-    <p>Enter 118 BPM in the live demo and see how HeartWise translates a confusing number into visual context.</p>
+    <h3>See HeartWise in action.</h3>
+    <p>Enter any BPM in the live demo  your resting rate, a post-surgical reading, or 142 to trigger an AFib alert  and experience how the visualization adapts across every use case.</p>
   </div>
   <a href="../Heartwise/" target="_blank" class="btn-solid">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -421,6 +435,24 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 <script>
 const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('in') }), { threshold:.10 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+<script>
+// Hover-to-start heartbeat sound: sends a postMessage to the iframe on first mouseenter.
+// The iframe (video-app.jsx SoundController) listens and starts audio.
+// The mute toggle button inside the video is the only way to disable it after that.
+(function() {
+  const container = document.getElementById('sbVideoContainer');
+  const frame     = document.getElementById('sbVideoFrame');
+  if (!container || !frame) return;
+  let started = false;
+  container.addEventListener('mouseenter', function() {
+    if (started) return;
+    started = true;
+    container.classList.add('sound-started'); // fades out the hint label
+    try { frame.contentWindow.postMessage('hw-sound-start', '*'); } catch (e) {}
+  });
+})();
 </script>
 </body>
 </html>
