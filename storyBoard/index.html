@@ -510,11 +510,18 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   function startVideo() {
     if (started) return;
     started = true;
-    if (frame.dataset.src) frame.src = frame.dataset.src;
     if (thumb) thumb.style.opacity = '0';
     container.classList.add('sound-started');
     container.classList.add('video-started');
-    try { frame.contentWindow.postMessage('hw-sound-start', '*'); } catch (e) {}
+    if (frame.dataset.src) {
+      frame.src = frame.dataset.src;
+      frame.addEventListener('load', function onLoad() {
+        frame.removeEventListener('load', onLoad);
+        try { frame.contentWindow.postMessage('hw-sound-start', '*'); } catch (e) {}
+      });
+    } else {
+      try { frame.contentWindow.postMessage('hw-sound-start', '*'); } catch (e) {}
+    }
   }
 
   container.addEventListener('mouseenter', startVideo);
