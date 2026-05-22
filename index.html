@@ -508,7 +508,7 @@ window.addEventListener('load', () => {
     renderer.setSize(w, h);
   }).observe(wrap);
 
-  // Heart surface: medically-proportioned — sin² radius (wider, no romantic pinch),
+  // Heart surface: medically-proportioned  sin² radius (wider, no romantic pinch),
   // bottom half scaled 0.62× so the apex is rounded rather than a steep spike.
   function buildHeart(uSegs, vSegs, sc) {
     const verts = [];
@@ -539,7 +539,7 @@ window.addEventListener('load', () => {
 
   const SC = 0.105; // slightly larger to compensate for the shorter compressed shape
 
-  // Three wireframe layers — outer ghost, main, inner bright core
+  // Three wireframe layers  outer ghost, main, inner bright core
   const outerMat = new THREE.LineBasicMaterial({ color: 0x7b0020, transparent: true, opacity: 0.28 });
   const outerWire = new THREE.LineSegments(new THREE.WireframeGeometry(buildHeart(22, 22, SC * 1.10)), outerMat);
   scene.add(outerWire);
@@ -556,7 +556,7 @@ window.addEventListener('load', () => {
   renderer.domElement.style.filter =
     'drop-shadow(0 0 8px rgba(225,29,72,.8)) drop-shadow(0 0 24px rgba(225,29,72,.4))';
 
-  // Beat: 72 BPM — lub-dub double pulse
+  // Beat: 72 BPM  lub-dub double pulse
   const BEAT = 60 / 72;
   function beatScale(phase) {
     const lub = Math.exp(-Math.pow((phase - 0.12) / 0.048, 2)) * 0.12;

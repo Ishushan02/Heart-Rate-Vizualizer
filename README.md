@@ -1,6 +1,6 @@
 # HeartWise
 
-A biomedical informatics project that turns raw heart rate numbers into real-time 3D cardiac visualization — making the heartbeat legible for patients and clinicians alike.
+A biomedical informatics project that turns raw heart rate numbers into real-time 3D cardiac visualization  making the heartbeat legible for patients and clinicians alike.
 
 ## Predictions
 HeartWise shows an educational 10-minute acute MI cue based on the entered BPM and selected symptom state. It displays warnings only when the current reading suggests a relevant concern, such as bradycardia, tachycardia, extreme tachycardia, or chest-pain/severe-symptom concern.
@@ -16,9 +16,9 @@ AHA arrhythmia definitions: https://www.heart.org/en/health-topics/arrhythmia/ab
 
 ## Structure
 
-- `/` — Landing page (HeartWise marketing site)
-- `/Heartwise/` — Live demo (3D anatomical heart with EKG)
-- `/storyBoard/` — Project storyboard and design rationale
+- `/`  Landing page (HeartWise marketing site)
+- `/Heartwise/`  Live demo (3D anatomical heart with EKG)
+- `/storyBoard/`  Project storyboard and design rationale
 
 ## Running locally
 
@@ -33,7 +33,7 @@ The demo at `/Heartwise/` requires a server (not `file://`) due to ES module imp
 ## Tech
 
 - Three.js (v0.165.0) via ES module import map
-- Vanilla JS, HTML, CSS — no build step
+- Vanilla JS, HTML, CSS  no build step
 - Hosted on GitHub Pages
 
 ## Team
