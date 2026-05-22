@@ -157,6 +157,41 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--r),transform .7s var(--r)}
 .reveal.in{opacity:1;transform:none}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}
+
+/* Mobile hamburger */
+.n-burger{display:none;background:none;border:none;color:var(--text);cursor:pointer;padding:7px;border-radius:8px;flex-direction:column;gap:5px;align-items:center;justify-content:center;width:36px;height:36px}
+.n-burger span{display:block;width:18px;height:2px;background:currentColor;border-radius:2px;transition:transform .25s var(--r),opacity .25s}
+.n-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.n-burger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.n-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Video tap hint for touch devices */
+.sb-tap-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:10;background:rgba(8,13,24,.72);backdrop-filter:blur(8px);border:1px solid rgba(225,29,72,.22);border-radius:20px;padding:5px 14px;font-size:.65rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose2);pointer-events:none;opacity:0;transition:opacity .4s;display:none}
+
+@media(max-width:768px){
+  .n-burger{display:flex}
+  .n-links{display:none;position:fixed;top:64px;left:0;right:0;flex-direction:column;gap:2px;background:rgba(3,5,8,.97);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:10px 16px 18px;z-index:199}
+  .n-links.open{display:flex}
+  .n-links a{border-radius:10px;padding:12px 14px;font-size:.9rem;width:100%}
+  .sb-tap-hint{display:block;opacity:1}
+  .sb-video-container.video-started .sb-tap-hint{opacity:0}
+  .context-strip{grid-template-columns:1fr 1fr}
+  .hero-sub{font-size:.95rem}
+}
+@media(max-width:480px){
+  .context-strip{grid-template-columns:1fr}
+  .hero-actions{flex-direction:column;align-items:stretch}
+  .hero-actions a{justify-content:center;text-align:center}
+  .bpm-hero{font-size:3.2rem}
+  h1{font-size:2.4rem}
+  .use-case-box{padding:24px 20px}
+  .qa-block{padding:28px 22px}
+  .j-card{padding:26px 22px}
+  .why-card{padding:28px 22px}
+  .lim-card{padding:28px 22px}
+  .final-cta{flex-direction:column}
+  .final-cta h3{font-size:1.25rem}
+}
 </style>
 </head>
 <body>
@@ -166,7 +201,7 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 
 <nav>
   <a href="../" class="n-logo"><div class="n-dot"></div>HeartWise</a>
-  <div class="n-links">
+  <div class="n-links" id="nLinks">
     <a href="#overview">Overview</a>
     <a href="#scenario">Scenario</a>
     <a href="#storyboard">Storyboard</a>
@@ -174,6 +209,9 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
     <a href="#limits">Limitations</a>
     <a href="../Heartwise/" target="_blank" class="n-cta">Live Demo ↗</a>
   </div>
+  <button class="n-burger" id="nBurger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -321,7 +359,7 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
       <iframe id="sbThumb" src="../Images/Heartwise-Thumbnail.html"
               style="position:absolute;inset:0;width:100%;height:100%;border:none;display:block;pointer-events:none;transition:opacity .4s;z-index:3"
               title="HeartWise thumbnail"></iframe>
-      <!-- <div class="sb-sound-hint">Hover to enable heartbeat sound</div> -->
+      <div class="sb-tap-hint">Tap to play</div>
     </div>
   </div>
 </section>
@@ -442,23 +480,46 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 
 <script>
-// Hover-to-start heartbeat sound: sends a postMessage to the iframe on first mouseenter.
-// The iframe (video-app.jsx SoundController) listens and starts audio.
-// The mute toggle button inside the video is the only way to disable it after that.
+// Mobile hamburger menu
+(function(){
+  var btn = document.getElementById('nBurger');
+  var links = document.getElementById('nLinks');
+  if (!btn || !links) return;
+  btn.addEventListener('click', function(){
+    var open = links.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open);
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      links.classList.remove('open');
+      btn.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  });
+})();
+
+// Hover / tap-to-start video and heartbeat sound
 (function() {
-  const container = document.getElementById('sbVideoContainer');
-  const frame     = document.getElementById('sbVideoFrame');
+  var container = document.getElementById('sbVideoContainer');
+  var frame     = document.getElementById('sbVideoFrame');
   if (!container || !frame) return;
-  const thumb = document.getElementById('sbThumb');
-  let started = false;
-  container.addEventListener('mouseenter', function() {
+  var thumb   = document.getElementById('sbThumb');
+  var started = false;
+
+  function startVideo() {
     if (started) return;
     started = true;
     if (frame.dataset.src) frame.src = frame.dataset.src;
     if (thumb) thumb.style.opacity = '0';
     container.classList.add('sound-started');
+    container.classList.add('video-started');
     try { frame.contentWindow.postMessage('hw-sound-start', '*'); } catch (e) {}
-  });
+  }
+
+  container.addEventListener('mouseenter', startVideo);
+  container.addEventListener('touchstart', startVideo, {passive: true});
+  container.addEventListener('click', startVideo);
 })();
 </script>
 </body>
