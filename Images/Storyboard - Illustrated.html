@@ -1,0 +1,1222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=1440"/>
+<title>Heartwise — Illustrated Storyboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: #F0E8D4;
+    color: #2A2117;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 1320px; margin: 0 auto; padding: 56px 48px 80px; }
+
+  /* ── Header ─────────────────────────────────────────────────────── */
+  .hd { margin-bottom: 36px; }
+  .hd h1 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 700;
+    font-size: 44px;
+    line-height: 1.1;
+    margin: 0 0 12px;
+    color: #1F1810;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .hd .sub {
+    font-size: 16px;
+    color: #5C4E38;
+    margin: 0;
+    line-height: 1.5;
+    max-width: 980px;
+  }
+  .hd .sub .dot { color: #9E8054; margin: 0 8px; }
+
+  /* ── Grid of cards ──────────────────────────────────────────────── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px 28px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 1180px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 880px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .card { display: flex; flex-direction: column; }
+  .ill {
+    aspect-ratio: 3 / 2;
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 0 0 1px rgba(120,90,40,.18);
+    background: #EFE5CE;
+  }
+  .ill svg { display: block; width: 100%; height: 100%; }
+
+  .card h2 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.2;
+    margin: 18px 0 8px;
+    color: #1F1810;
+    letter-spacing: -0.01em;
+  }
+  .card p {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: #4A3E2C;
+    text-wrap: pretty;
+  }
+
+  /* ── Footer guardrail ───────────────────────────────────────────── */
+  .ft {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(120,90,40,.2);
+    font-style: italic;
+    font-size: 13.5px;
+    color: #A0501C;
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel">
+// illustrated-scenes.jsx
+// Painterly-style narrative storyboard panels for Heartwise.
+// Each scene is a richly-layered SVG illustration (600 × 400 viewBox)
+// modelled on the reference: warm muted palette, character-driven,
+// device UI integrated into the scene, no flat wireframe look.
+
+// ── Palette ─────────────────────────────────────────────────────────────────
+const P = {
+  paper:    '#EFE5CE',   // base canvas
+  paperDk:  '#E0D2B0',
+  wall:     '#D9C8A4',
+  wallDk:   '#B89E70',
+  shadow:   '#6E5A38',
+  ink:      '#2A2117',
+  inkSoft:  '#5C4E38',
+  // skin
+  skin:     '#D4A77A',
+  skinDk:   '#B68658',
+  skinDp:   '#8F6440',   // deeper skin tone for variety
+  skinMd:   '#A87B52',
+  // hair
+  hairDk:   '#3A2A1A',
+  hairBr:   '#6B4A2D',
+  hairGr:   '#9C8060',
+  // clothing
+  coat:     '#F5EFE0',
+  coatSh:   '#D6CCB4',
+  scrubs:   '#5C7B8F',
+  shirtBl:  '#4A6A82',
+  shirtRd:  '#A04A36',
+  shirtGr:  '#6B7A4F',
+  shirtTn:  '#9C7A55',
+  blanket:  '#C49866',
+  // accent (heart / alerts / pulse)
+  heart:    '#C13B2C',
+  heartDk:  '#8A2418',
+  accent:   '#D9583F',
+  // greens
+  plant:    '#5A7048',
+  plantDk:  '#3D5232',
+  plantLt:  '#7B9560',
+  // sky / windows
+  sky:      '#8FA8B8',
+  skyDusk:  '#6B7A8E',
+  skyNight: '#1E2738',
+  skyGold:  '#E8B870',
+  glowWarm: '#F4D89A',
+  // screen
+  screen:   '#0F1318',
+  screenLt: '#1A2230',
+  ui:       '#3A8DD8',
+  uiAlt:    '#56C29F',
+  uiWarn:   '#E0A03A',
+  pulse:    '#E55B45',
+  // wood / furniture
+  wood:     '#B68953',
+  woodDk:   '#7A552E',
+  cream:    '#F8F1E0',
+};
+
+// ── Shared primitives ───────────────────────────────────────────────────────
+
+// PulseLine — small EKG strip; chaos=0..3 fibrillates it.
+function PulseLine({ x, y, w, h, stroke = P.pulse, sw = 1.4, segs = 3, chaos = 0, opacity = 1 }) {
+  const seg = w / segs;
+  const baseline = y + h / 2;
+  const pts = [];
+  for (let i = 0; i <= segs; i++) {
+    const cx = x + i * seg;
+    pts.push(
+      [cx,            baseline],
+      [cx + seg*0.18, baseline - h*0.06],
+      [cx + seg*0.30, baseline + h*0.05],
+      [cx + seg*0.42, baseline - h*0.46],
+      [cx + seg*0.50, baseline + h*0.34],
+      [cx + seg*0.62, baseline - h*0.10],
+      [cx + seg*0.85, baseline],
+      [cx + seg,      baseline],
+    );
+  }
+  if (chaos > 0) {
+    for (const p of pts) p[1] += (Math.sin(p[0]*0.6) + Math.cos(p[0]*1.3)) * chaos;
+  }
+  return (
+    <polyline points={pts.map(p => p.join(',')).join(' ')}
+              fill="none" stroke={stroke} strokeWidth={sw}
+              strokeLinecap="round" strokeLinejoin="round" opacity={opacity}/>
+  );
+}
+
+// Heart icon — filled, with soft inner highlight. Looks more illustrated than emoji.
+function Heart({ cx, cy, r, fill = P.heart, highlight = true }) {
+  return (
+    <g transform={`translate(${cx} ${cy})`}>
+      <path d={`M 0 ${r*0.85} C ${-r*1.2} ${r*0.2}, ${-r*1.1} ${-r*0.7}, ${-r*0.4} ${-r*0.7}
+                C ${-r*0.15} ${-r*0.7}, 0 ${-r*0.4}, 0 ${-r*0.2}
+                C 0 ${-r*0.4}, ${r*0.15} ${-r*0.7}, ${r*0.4} ${-r*0.7}
+                C ${r*1.1} ${-r*0.7}, ${r*1.2} ${r*0.2}, 0 ${r*0.85} Z`} fill={fill}/>
+      {highlight && (
+        <path d={`M ${-r*0.6} ${-r*0.55} C ${-r*0.85} ${-r*0.4}, ${-r*0.85} ${-r*0.05}, ${-r*0.55} ${r*0.1}`}
+              fill="none" stroke="#FFF" strokeWidth={r*0.12} strokeLinecap="round" opacity="0.45"/>
+      )}
+    </g>
+  );
+}
+
+// Plant — leaves emerging from a pot. Pot at origin baseline.
+function Plant({ x, y, scale = 1, leafColor = P.plant, potColor = P.wood }) {
+  const s = scale;
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      {/* pot */}
+      <path d="M -14 0 L 14 0 L 11 22 L -11 22 Z" fill={potColor}/>
+      <ellipse cx="0" cy="0" rx="14" ry="3" fill={potColor} stroke={P.shadow} strokeWidth="0.4"/>
+      <path d="M -14 0 L 14 0 L 11 22 L -11 22 Z" fill={P.shadow} opacity="0.18"/>
+      {/* leaves — five blades */}
+      <path d="M -2 0 Q -22 -12 -26 -32 Q -18 -34 -10 -22 Q -4 -10 -2 0 Z" fill={leafColor}/>
+      <path d="M 2 0 Q 22 -8 28 -28 Q 20 -34 12 -22 Q 4 -10 2 0 Z" fill={leafColor} opacity="0.92"/>
+      <path d="M 0 0 Q -2 -22 6 -42 Q 12 -38 8 -22 Q 4 -10 0 0 Z" fill={leafColor} opacity="0.85"/>
+      <path d="M -1 0 Q -12 -20 -8 -42 Q -2 -42 -2 -22 Q -2 -10 -1 0 Z" fill={P.plantDk}/>
+      <path d="M 1 0 Q 16 -16 22 -38 Q 16 -42 10 -28 Q 4 -10 1 0 Z" fill={P.plantDk} opacity="0.6"/>
+      {/* leaf veins (subtle) */}
+      <path d="M 0 -2 Q 3 -22 8 -36" fill="none" stroke={P.plantDk} strokeWidth="0.5" opacity="0.6"/>
+    </g>
+  );
+}
+
+// Mug — simple ceramic, optional steam.
+function Mug({ x, y, scale = 1, color = '#3D5A6E', steam = false }) {
+  const s = scale;
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      {steam && (
+        <g opacity="0.4" stroke="#FFF" strokeWidth="1" fill="none" strokeLinecap="round">
+          <path d="M -4 -2 Q -2 -8 -4 -14 Q -6 -20 -3 -26"/>
+          <path d="M 3 -2 Q 5 -8 3 -14 Q 1 -20 4 -26"/>
+        </g>
+      )}
+      <path d="M -10 0 L 10 0 L 9 16 Q 8 20 0 20 Q -8 20 -9 16 Z" fill={color}/>
+      <ellipse cx="0" cy="0" rx="10" ry="2.5" fill={color} stroke={P.shadow} strokeWidth="0.5"/>
+      <ellipse cx="0" cy="0" rx="7" ry="1.6" fill="#1A1410"/>
+      <path d="M 10 4 Q 18 6 18 12 Q 18 17 10 17" fill="none" stroke={color} strokeWidth="2.4"/>
+      {/* shadow on body */}
+      <path d="M 4 2 L 9 16 Q 8 20 0 20 L 0 2 Z" fill="#000" opacity="0.18"/>
+    </g>
+  );
+}
+
+// Window — frame + view + light wash.
+function Window({ x, y, w, h, view = 'day' }) {
+  const skyFill = view === 'night' ? P.skyNight : view === 'dusk' ? P.skyDusk : view === 'gold' ? P.skyGold : P.sky;
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      {/* outer frame */}
+      <rect x="-4" y="-4" width={w + 8} height={h + 8} fill={P.cream}/>
+      <rect x="0" y="0" width={w} height={h} fill={skyFill}/>
+      {/* mullion */}
+      <line x1={w/2} y1="0" x2={w/2} y2={h} stroke={P.cream} strokeWidth="4"/>
+      <line x1="0" y1={h/2} x2={w} y2={h/2} stroke={P.cream} strokeWidth="4"/>
+      {/* light/details inside */}
+      {view === 'day' && (
+        <>
+          <path d={`M 4 ${h - 28} Q ${w/4} ${h - 50} ${w/2 - 4} ${h - 30}`} fill="none" stroke="#FFF" strokeWidth="2" opacity="0.5"/>
+          <circle cx={w - 18} cy="22" r="8" fill="#FFF" opacity="0.6"/>
+        </>
+      )}
+      {view === 'dusk' && (
+        <>
+          <rect x="0" y={h*0.55} width={w} height={h*0.45} fill="#9E7A6E" opacity="0.5"/>
+          <circle cx={w*0.7} cy={h*0.4} r="6" fill={P.skyGold}/>
+        </>
+      )}
+      {view === 'night' && (
+        <>
+          {[10, 25, 40, 55, 70, 85].map((px, k) => (
+            <circle key={k} cx={px * w / 100} cy={h * 0.3 + (k%3)*4} r={Math.random()*0.6 + 0.6} fill="#FFF" opacity="0.7"/>
+          ))}
+          {/* city lights */}
+          {[8, 20, 30, 42, 55, 68, 80, 90].map((px, k) => (
+            <rect key={k} x={px * w / 100} y={h*0.7 + (k%2)*4} width="1" height="2" fill={P.skyGold} opacity="0.9"/>
+          ))}
+        </>
+      )}
+      {/* sill */}
+      <rect x="-6" y={h} width={w + 12} height="4" fill={P.wood}/>
+    </g>
+  );
+}
+
+// Heart UI screen contents — used inside laptops / tablets / phones / tv.
+function ScreenContent({ x, y, w, h, accent = P.accent, type = 'visualizer', bg = '#FBF6E8' }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <rect x="0" y="0" width={w} height={h} fill={bg}/>
+      {type === 'visualizer' && (
+        <>
+          {/* 3D heart, big */}
+          <ellipse cx={w*0.32} cy={h*0.55} rx={w*0.16} ry={h*0.32} fill={P.heart} opacity="0.18"/>
+          <Heart cx={w*0.32} cy={h*0.5} r={Math.min(w, h)*0.22} fill={P.heart}/>
+          {/* ECG strip */}
+          <rect x={w*0.55} y={h*0.18} width={w*0.4} height={h*0.18} fill="#F0E6CC" opacity="0.5"/>
+          <g clipPath={`url(#sc-clip-${x}-${y})`}>
+            <PulseLine x={w*0.55} y={h*0.2} w={w*0.4} h={h*0.16} stroke={accent} sw={1.1} segs={3}/>
+          </g>
+          <defs><clipPath id={`sc-clip-${x}-${y}`}><rect x={w*0.55} y={h*0.18} width={w*0.4} height={h*0.18}/></clipPath></defs>
+          {/* BPM block */}
+          <text x={w*0.56} y={h*0.5} fontFamily="Source Serif 4, Georgia, serif" fontWeight="600" fontSize={h*0.18} fill={P.ink}>72</text>
+          <text x={w*0.78} y={h*0.5} fontFamily="Inter" fontSize={h*0.07} fill={P.inkSoft}>BPM</text>
+          <text x={w*0.56} y={h*0.62} fontFamily="Inter" fontSize={h*0.07} fontWeight="500" fill={accent}>● NORMAL</text>
+          {/* status pills */}
+          <rect x={w*0.55} y={h*0.7} width={w*0.12} height={h*0.08} rx={h*0.04} fill="#9CB89A"/>
+          <rect x={w*0.68} y={h*0.7} width={w*0.12} height={h*0.08} rx={h*0.04} fill="#E0C28A"/>
+          <rect x={w*0.81} y={h*0.7} width={w*0.12} height={h*0.08} rx={h*0.04} fill="#D88E70"/>
+        </>
+      )}
+      {type === 'alert' && (
+        <>
+          <rect x="0" y="0" width={w} height={h*0.22} fill={P.heart}/>
+          <text x={w*0.5} y={h*0.16} fontFamily="Inter" fontWeight="700" fontSize={h*0.12} fill="#FFF" textAnchor="middle">⚠  AFib DETECTED</text>
+          <text x={w*0.5} y={h*0.42} fontFamily="Source Serif 4" fontWeight="700" fontSize={h*0.32} fill={P.ink} textAnchor="middle">142</text>
+          <text x={w*0.5} y={h*0.52} fontFamily="Inter" fontSize={h*0.08} fill={P.inkSoft} textAnchor="middle">BPM</text>
+          <g clipPath={`url(#al-clip-${x}-${y})`}>
+            <PulseLine x={w*0.08} y={h*0.6} w={w*0.84} h={h*0.2} stroke={accent} sw={1.4} chaos={2.4} segs={3}/>
+          </g>
+          <defs><clipPath id={`al-clip-${x}-${y}`}><rect x={w*0.08} y={h*0.6} width={w*0.84} height={h*0.2}/></clipPath></defs>
+          <text x={w*0.5} y={h*0.94} fontFamily="Inter" fontSize={h*0.07} fill={P.inkSoft} textAnchor="middle">DR. PATEL NOTIFIED · 14:08</text>
+        </>
+      )}
+      {type === 'calm' && (
+        <>
+          <rect x="0" y="0" width={w} height={h} fill="#2D3548"/>
+          <circle cx={w*0.5} cy={h*0.42} r={h*0.32} fill="none" stroke={accent} strokeWidth="1.2" opacity="0.4"/>
+          <circle cx={w*0.5} cy={h*0.42} r={h*0.24} fill="none" stroke={accent} strokeWidth="1.4" opacity="0.7"/>
+          <circle cx={w*0.5} cy={h*0.42} r={h*0.16} fill={accent} opacity="0.85"/>
+          <text x={w*0.5} y={h*0.45} fontFamily="Inter" fontSize={h*0.1} fontWeight="500" fill="#FFF" textAnchor="middle">breathe</text>
+          <text x={w*0.5} y={h*0.82} fontFamily="Source Serif 4" fontWeight="600" fontSize={h*0.16} fill="#F0E5D2" textAnchor="middle">64 BPM</text>
+          <text x={w*0.5} y={h*0.92} fontFamily="Inter" fontSize={h*0.07} fill="#A8B0C0" textAnchor="middle">HRV 0.81 · coherent</text>
+        </>
+      )}
+      {type === 'remote' && (
+        <>
+          <rect x="0" y="0" width={w*0.62} height={h} fill="#1A2230"/>
+          {/* video tile — patient */}
+          <rect x={w*0.05} y={h*0.08} width={w*0.52} height={h*0.62} fill="#3A4658"/>
+          {/* simple face inside */}
+          <circle cx={w*0.31} cy={h*0.32} r={h*0.12} fill={P.skinDp}/>
+          <path d={`M ${w*0.16} ${h*0.62} Q ${w*0.31} ${h*0.46} ${w*0.46} ${h*0.62} L ${w*0.46} ${h*0.7} L ${w*0.16} ${h*0.7} Z`} fill={P.shirtBl}/>
+          <text x={w*0.07} y={h*0.78} fontFamily="Inter" fontSize={h*0.06} fill="#A8B0C0">Amara · Kibera Clinic</text>
+          {/* ECG strip on right side */}
+          <rect x={w*0.62} y="0" width={w*0.38} height={h} fill="#F0E6CC"/>
+          <text x={w*0.65} y={h*0.12} fontFamily="Inter" fontSize={h*0.06} fill={P.inkSoft}>HEART RATE</text>
+          <text x={w*0.65} y={h*0.28} fontFamily="Source Serif 4" fontWeight="600" fontSize={h*0.18} fill={P.ink}>118</text>
+          <text x={w*0.84} y={h*0.28} fontFamily="Inter" fontSize={h*0.07} fill={P.inkSoft}>BPM</text>
+          <text x={w*0.65} y={h*0.38} fontFamily="Inter" fontSize={h*0.06} fill={P.uiWarn}>● ELEVATED</text>
+          <g clipPath={`url(#rc-clip-${x}-${y})`}>
+            <PulseLine x={w*0.64} y={h*0.5} w={w*0.32} h={h*0.18} stroke={accent} sw={1.2}/>
+          </g>
+          <defs><clipPath id={`rc-clip-${x}-${y}`}><rect x={w*0.64} y={h*0.5} width={w*0.32} height={h*0.18}/></clipPath></defs>
+          <text x={w*0.65} y={h*0.78} fontFamily="Inter" fontSize={h*0.05} fill={P.inkSoft}>MI cue: monitor</text>
+          <text x={w*0.65} y={h*0.86} fontFamily="Inter" fontSize={h*0.05} fill={P.inkSoft}>Lat 240ms · 6,420km</text>
+        </>
+      )}
+      {type === 'dashboard' && (
+        <>
+          <text x={w*0.06} y={h*0.16} fontFamily="Inter" fontSize={h*0.08} fill={P.inkSoft}>POST-OP · DAY 14</text>
+          <text x={w*0.06} y={h*0.4} fontFamily="Source Serif 4" fontWeight="600" fontSize={h*0.26} fill={P.ink}>68</text>
+          <text x={w*0.3} y={h*0.4} fontFamily="Inter" fontSize={h*0.09} fill={P.inkSoft}>BPM</text>
+          <text x={w*0.06} y={h*0.5} fontFamily="Inter" fontSize={h*0.07} fill={P.uiAlt}>● RESTING · OK</text>
+          <g clipPath={`url(#db-clip-${x}-${y})`}>
+            <PulseLine x={w*0.06} y={h*0.6} w={w*0.88} h={h*0.18} stroke={accent} sw={1.2}/>
+          </g>
+          <defs><clipPath id={`db-clip-${x}-${y}`}><rect x={w*0.06} y={h*0.6} width={w*0.88} height={h*0.18}/></clipPath></defs>
+          <text x={w*0.06} y={h*0.9} fontFamily="Inter" fontSize={h*0.06} fill={P.inkSoft}>14-day trend ↓ stable</text>
+        </>
+      )}
+      {type === 'lecture' && (
+        <>
+          {/* Big heart diagram + labels */}
+          <Heart cx={w*0.32} cy={h*0.5} r={h*0.32} fill={P.heart}/>
+          <line x1={w*0.18} y1={h*0.36} x2={w*0.06} y2={h*0.2} stroke={P.inkSoft} strokeWidth="0.6"/>
+          <text x={w*0.02} y={h*0.18} fontFamily="Inter" fontSize={h*0.06} fill={P.inkSoft}>Aorta</text>
+          <line x1={w*0.42} y1={h*0.6} x2={w*0.5} y2={h*0.78} stroke={P.inkSoft} strokeWidth="0.6"/>
+          <text x={w*0.46} y={h*0.84} fontFamily="Inter" fontSize={h*0.06} fill={P.inkSoft}>Left ventricle</text>
+          <line x1={w*0.42} y1={h*0.4} x2={w*0.6} y2={h*0.28} stroke={P.inkSoft} strokeWidth="0.6"/>
+          <text x={w*0.62} y={h*0.28} fontFamily="Inter" fontSize={h*0.06} fill={P.inkSoft}>Coronary a.</text>
+          <text x={w*0.62} y={h*0.5} fontFamily="Source Serif 4" fontWeight="600" fontSize={h*0.16} fill={P.ink}>72 BPM</text>
+          <g clipPath={`url(#lc-clip-${x}-${y})`}>
+            <PulseLine x={w*0.6} y={h*0.6} w={w*0.36} h={h*0.16} stroke={accent} sw={1.1}/>
+          </g>
+          <defs><clipPath id={`lc-clip-${x}-${y}`}><rect x={w*0.6} y={h*0.6} width={w*0.36} height={h*0.16}/></clipPath></defs>
+        </>
+      )}
+      {type === 'quiz' && (
+        <>
+          <Heart cx={w*0.28} cy={h*0.5} r={h*0.28} fill={P.heart}/>
+          {/* control toggles */}
+          {['AUTO-ROTATE','LABELS','FLOW GLOW','FOCUS'].map((t,k) => (
+            <g key={t} transform={`translate(${w*0.06 + k*(w*0.13)} ${h*0.08})`}>
+              <rect x="0" y="0" width={w*0.11} height={h*0.06} rx={h*0.03} fill={k<2?accent:'#D8C8A0'}/>
+              <circle cx={k<2 ? w*0.085 : w*0.025} cy={h*0.03} r={h*0.022} fill="#FFF"/>
+            </g>
+          ))}
+          {/* quiz panel */}
+          <text x={w*0.55} y={h*0.32} fontFamily="Inter" fontWeight="600" fontSize={h*0.08} fill={P.ink}>Which is the QRS?</text>
+          {['P wave', 'QRS complex', 'T wave'].map((opt, k) => (
+            <g key={opt} transform={`translate(${w*0.55} ${h*0.42 + k*(h*0.16)})`}>
+              <rect x="0" y="0" width={h*0.1} height={h*0.1} fill={k===1?accent:'none'} stroke={P.inkSoft} strokeWidth="0.8"/>
+              {k===1 && <path d={`M ${h*0.025} ${h*0.05} L ${h*0.04} ${h*0.07} L ${h*0.08} ${h*0.025}`} fill="none" stroke="#FFF" strokeWidth="1.6"/>}
+              <text x={h*0.16} y={h*0.085} fontFamily="Inter" fontSize={h*0.08} fill={P.ink}>{opt}</text>
+            </g>
+          ))}
+        </>
+      )}
+    </g>
+  );
+}
+
+// Detailed human figure: head, hair, neck, torso. Built from layered shapes.
+// `pose`: 'front', 'profile-r', 'profile-l', 'back', 'lean'. `coat`: white coat.
+// `garment`: torso color. `hair`: { color, style: 'short'|'long'|'bun'|'wrap'|'curly' }.
+// `skin`: face/neck color.
+function Person({ x, y, scale = 1, pose = 'front', coat = false, garment = P.shirtBl,
+                  hair = { color: P.hairDk, style: 'short' },
+                  skin = P.skin, stethoscope = false, badge = false }) {
+  const s = scale;
+  const headR = 22;
+  const torsoH = 80;
+  const torsoW = 50;
+  const headCx = pose === 'profile-r' ? 4 : pose === 'profile-l' ? -4 : 0;
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      {/* shadow */}
+      <ellipse cx="0" cy={torsoH + 4} rx={torsoW*0.7} ry="4" fill="#000" opacity="0.18"/>
+      {/* torso (coat or shirt) */}
+      <path d={`M ${-torsoW/2} ${torsoH} L ${-torsoW/2} 4 Q ${-torsoW/2} -4 ${-torsoW/2 + 10} -6 L ${torsoW/2 - 10} -6 Q ${torsoW/2} -4 ${torsoW/2} 4 L ${torsoW/2} ${torsoH} Z`}
+            fill={coat ? P.coat : garment}/>
+      {/* shoulder shadow */}
+      <path d={`M ${-torsoW/2} 4 Q -8 -2 0 0 Q 8 -2 ${torsoW/2} 4 L ${torsoW/2} 12 L ${-torsoW/2} 12 Z`} fill={P.shadow} opacity="0.12"/>
+      {/* coat collar / lapel */}
+      {coat && (
+        <>
+          <path d={`M -8 -6 L 0 14 L 8 -6 Z`} fill={garment}/>
+          <path d={`M -10 -6 L 0 16 L 10 -6`} fill="none" stroke={P.coatSh} strokeWidth="1"/>
+          <line x1="0" y1="16" x2="0" y2={torsoH} stroke={P.coatSh} strokeWidth="0.8"/>
+        </>
+      )}
+      {/* stethoscope around neck */}
+      {stethoscope && (
+        <>
+          <path d="M -14 -4 Q -16 12 -10 22" fill="none" stroke={P.ink} strokeWidth="1.6"/>
+          <path d="M 14 -4 Q 16 12 10 22" fill="none" stroke={P.ink} strokeWidth="1.6"/>
+          <path d="M -10 22 Q -2 26 6 24 Q 12 22 14 18" fill="none" stroke={P.ink} strokeWidth="1.6"/>
+          <circle cx="14" cy="18" r="4" fill={P.ink}/>
+          <circle cx="14" cy="18" r="2" fill={P.shadow}/>
+        </>
+      )}
+      {/* badge clip */}
+      {badge && (
+        <g transform="translate(-12 22)">
+          <rect x="-4" y="-2" width="8" height="10" fill={P.shirtBl} stroke={P.ink} strokeWidth="0.5"/>
+          <rect x="-3" y="0" width="6" height="2" fill="#FFF"/>
+        </g>
+      )}
+      {/* neck */}
+      <rect x={headCx - 6} y={-16} width="12" height="12" fill={skin}/>
+      <path d={`M ${headCx - 6} -10 Q ${headCx} -6 ${headCx + 6} -10`} fill="none" stroke={P.shadow} strokeWidth="0.6" opacity="0.5"/>
+      {/* head shape — slight oval, varies by pose */}
+      {pose === 'profile-r' && (
+        <>
+          <path d={`M ${headCx - headR*0.6} ${-26} Q ${headCx - headR*0.8} ${-headR - 4} ${headCx} ${-headR - 6} Q ${headCx + headR*0.9} ${-headR - 4} ${headCx + headR} ${-headR + 6} Q ${headCx + headR + 2} ${-4} ${headCx + headR*0.7} ${0} Q ${headCx + headR*0.4} 2 ${headCx + headR*0.6} 6 L ${headCx - 6} 6 Q ${headCx - headR*0.8} 2 ${headCx - headR*0.6} ${-26} Z`}
+                fill={skin}/>
+          {/* ear */}
+          <ellipse cx={headCx + headR*0.7} cy={-headR*0.2} rx="3" ry="5" fill={P.skinDk}/>
+          {/* eye (small) */}
+          <circle cx={headCx + headR*0.85} cy={-headR*0.5} r="1.4" fill={P.ink}/>
+          {/* nose hint */}
+          <path d={`M ${headCx + headR} ${-headR*0.4} Q ${headCx + headR + 4} ${-headR*0.2} ${headCx + headR - 2} 0`} fill="none" stroke={P.skinDk} strokeWidth="1.2" strokeLinecap="round"/>
+          {/* mouth */}
+          <path d={`M ${headCx + headR - 4} ${headR*0.15} Q ${headCx + headR - 6} ${headR*0.25} ${headCx + headR - 10} ${headR*0.18}`} fill="none" stroke={P.heartDk} strokeWidth="1.2" strokeLinecap="round"/>
+        </>
+      )}
+      {pose !== 'profile-r' && pose !== 'back' && (
+        <>
+          <ellipse cx={headCx} cy={-headR + 2} rx={headR} ry={headR + 2} fill={skin}/>
+          {/* face shading */}
+          <path d={`M ${headCx + headR*0.4} ${-headR*1.6} Q ${headCx + headR} ${-headR*0.4} ${headCx + headR*0.5} ${headR*0.2}`} fill={P.skinDk} opacity="0.22"/>
+          {/* eyes */}
+          <ellipse cx={headCx - 7} cy={-headR*0.7} rx="2.2" ry="1.4" fill={P.ink}/>
+          <ellipse cx={headCx + 7} cy={-headR*0.7} rx="2.2" ry="1.4" fill={P.ink}/>
+          {/* eyebrows */}
+          <path d={`M ${headCx - 11} ${-headR*0.95} Q ${headCx - 7} ${-headR - 4} ${headCx - 3} ${-headR*0.9}`} fill="none" stroke={hair.color} strokeWidth="1.4" strokeLinecap="round"/>
+          <path d={`M ${headCx + 3} ${-headR*0.9} Q ${headCx + 7} ${-headR - 4} ${headCx + 11} ${-headR*0.95}`} fill="none" stroke={hair.color} strokeWidth="1.4" strokeLinecap="round"/>
+          {/* nose */}
+          <path d={`M ${headCx} ${-headR*0.4} Q ${headCx - 1} ${-headR*0.05} ${headCx + 2} ${headR*0.05}`} fill="none" stroke={P.skinDk} strokeWidth="0.8" strokeLinecap="round"/>
+          {/* mouth */}
+          <path d={`M ${headCx - 5} ${headR*0.4} Q ${headCx} ${headR*0.55} ${headCx + 5} ${headR*0.4}`} fill="none" stroke={P.heartDk} strokeWidth="1.2" strokeLinecap="round" opacity="0.7"/>
+        </>
+      )}
+      {pose === 'back' && (
+        <>
+          <ellipse cx="0" cy={-headR + 2} rx={headR} ry={headR + 2} fill={hair.color}/>
+        </>
+      )}
+      {/* hair on top */}
+      {pose !== 'back' && hair.style === 'short' && (
+        <path d={`M ${headCx - headR + 2} ${-headR*0.5} Q ${headCx - headR + 6} ${-headR - 4} ${headCx} ${-headR - 6} Q ${headCx + headR - 4} ${-headR - 4} ${headCx + headR - 2} ${-headR*0.5} Q ${headCx + headR - 6} ${-headR + 4} ${headCx + headR*0.6} ${-headR*0.7} Q ${headCx} ${-headR + 2} ${headCx - headR + 6} ${-headR*0.7} Z`} fill={hair.color}/>
+      )}
+      {pose !== 'back' && hair.style === 'long' && (
+        <>
+          <path d={`M ${headCx - headR - 2} ${-4} Q ${headCx - headR - 4} ${-headR*0.6} ${headCx - headR + 4} ${-headR - 4} Q ${headCx} ${-headR - 8} ${headCx + headR - 4} ${-headR - 4} Q ${headCx + headR + 4} ${-headR*0.6} ${headCx + headR + 2} ${-4} L ${headCx + headR*0.6} 4 L ${headCx - headR*0.6} 4 Z`} fill={hair.color}/>
+          <path d={`M ${headCx - headR - 2} -4 Q ${headCx - headR - 4} 14 ${headCx - headR + 2} 24 L ${headCx - headR + 6} 4 Z`} fill={hair.color}/>
+          <path d={`M ${headCx + headR + 2} -4 Q ${headCx + headR + 4} 14 ${headCx + headR - 2} 24 L ${headCx + headR - 6} 4 Z`} fill={hair.color}/>
+        </>
+      )}
+      {pose !== 'back' && hair.style === 'bun' && (
+        <>
+          <path d={`M ${headCx - headR + 2} ${-headR*0.6} Q ${headCx} ${-headR - 6} ${headCx + headR - 2} ${-headR*0.6} L ${headCx + headR*0.4} ${-headR*0.5} L ${headCx - headR*0.4} ${-headR*0.5} Z`} fill={hair.color}/>
+          <circle cx={headCx} cy={-headR - 8} r="9" fill={hair.color}/>
+        </>
+      )}
+      {pose !== 'back' && hair.style === 'wrap' && (
+        <path d={`M ${headCx - headR - 2} ${-4} Q ${headCx - headR - 4} ${-headR} ${headCx} ${-headR - 6} Q ${headCx + headR + 4} ${-headR} ${headCx + headR + 2} ${-4} L ${headCx + headR - 2} ${-headR*0.4} Q ${headCx} ${-headR + 4} ${headCx - headR + 2} ${-headR*0.4} Z`} fill={hair.color}/>
+      )}
+      {pose !== 'back' && hair.style === 'curly' && (
+        <>
+          {[-headR + 2, -headR*0.4, headCx, headR*0.4, headR - 2].map((cx, k) => (
+            <circle key={k} cx={headCx + cx - headCx + (k - 2) * 7} cy={-headR + 2 + (k%2)*2} r="6" fill={hair.color}/>
+          ))}
+        </>
+      )}
+    </g>
+  );
+}
+
+// ── SCENE 1 — Doctor's Explanation (exam room) ─────────────────────────────
+function Scene1() {
+  return (
+    <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
+      {/* wall */}
+      <rect x="0" y="0" width="600" height="280" fill={P.wall}/>
+      {/* moulding line */}
+      <line x1="0" y1="280" x2="600" y2="280" stroke={P.shadow} strokeWidth="0.8" opacity="0.4"/>
+      {/* floor */}
+      <rect x="0" y="280" width="600" height="120" fill={P.paperDk}/>
+      <path d="M 0 280 L 600 280 L 580 400 L 20 400 Z" fill={P.paperDk}/>
+      <line x1="0" y1="280" x2="600" y2="280" stroke={P.wallDk} strokeWidth="1" opacity="0.5"/>
+      {/* warm light wash */}
+      <ellipse cx="180" cy="120" rx="240" ry="160" fill={P.glowWarm} opacity="0.18"/>
+      {/* window upper left */}
+      <Window x={30} y={30} w={140} h={130} view="day"/>
+      {/* anatomy poster on wall right */}
+      <g transform="translate(440 70)">
+        <rect x="0" y="0" width="100" height="130" fill={P.cream} stroke={P.shadow} strokeWidth="1"/>
+        <Heart cx={50} cy={56} r={28} fill={P.heart}/>
+        <text x="50" y="110" fontFamily="Inter" fontSize="8" fill={P.inkSoft} textAnchor="middle">CARDIAC ANATOMY</text>
+        <line x1="20" y1="40" x2="6" y2="20" stroke={P.inkSoft} strokeWidth="0.4"/>
+        <line x1="76" y1="60" x2="92" y2="80" stroke={P.inkSoft} strokeWidth="0.4"/>
+      </g>
+      {/* exam bed corner — far right */}
+      <rect x="540" y="240" width="60" height="14" fill={P.skin} opacity="0.5"/>
+      <rect x="540" y="252" width="60" height="40" fill="#7A6A50"/>
+      {/* desk */}
+      <path d="M 80 320 L 520 320 L 540 360 L 60 360 Z" fill={P.wood}/>
+      <path d="M 80 320 L 520 320 L 540 360 L 60 360 Z" fill={P.shadow} opacity="0.18"/>
+      <line x1="80" y1="320" x2="520" y2="320" stroke={P.woodDk} strokeWidth="1.2"/>
+      {/* plant left */}
+      <Plant x={88} y={320} scale={0.7}/>
+      {/* tablet between them — tilted toward patient */}
+      <g transform="translate(310 240) rotate(-6)">
+        <rect x="-90" y="-60" width="180" height="120" rx="6" fill={P.ink}/>
+        <rect x="-86" y="-56" width="172" height="112" rx="3" fill={P.cream}/>
+        <ScreenContent x={-86} y={-56} w={172} h={112} type="visualizer"/>
+        {/* tablet edge highlight */}
+        <path d="M -90 -60 L 90 -60" stroke="#FFF" strokeWidth="1" opacity="0.4"/>
+      </g>
+      {/* doctor — left, leaning in, white coat */}
+      <g transform="translate(170 300)">
+        <Person x={0} y={0} scale={1.4} pose="profile-r" coat garment={P.shirtBl}
+                hair={{ color: P.hairDk, style: 'bun' }} stethoscope badge/>
+      </g>
+      {/* doctor's pointing arm — extending toward tablet */}
+      <path d="M 200 290 Q 240 268 280 252" fill="none" stroke={P.coat} strokeWidth="14" strokeLinecap="round"/>
+      <path d="M 200 290 Q 240 268 280 252" fill="none" stroke={P.coatSh} strokeWidth="14" strokeLinecap="round" opacity="0.3"/>
+      <ellipse cx="282" cy="250" rx="7" ry="5" fill={P.skin}/>
+      <ellipse cx="288" cy="246" rx="2" ry="3" fill={P.skinDk}/>
+      {/* patient — right, seated, listening */}
+      <g transform="translate(450 300)">
+        <Person x={0} y={0} scale={1.3} pose="profile-l" garment={P.shirtRd}
+                hair={{ color: P.hairBr, style: 'short' }} skin={P.skinDp}/>
+      </g>
+      {/* desk shadow under tablet */}
+      <ellipse cx="310" cy="324" rx="80" ry="6" fill="#000" opacity="0.18"/>
+    </svg>
+  );
+}
+
+// ── SCENE 2 — Med Students Lecture ─────────────────────────────────────────
+function Scene2() {
+  return (
+    <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
+      {/* back wall */}
+      <rect x="0" y="0" width="600" height="280" fill={P.wallDk}/>
+      <rect x="0" y="0" width="600" height="280" fill={P.shadow} opacity="0.18"/>
+      {/* floor / tiered */}
+      <rect x="0" y="280" width="600" height="120" fill={P.paperDk}/>
+      {/* projection screen */}
+      <rect x="40" y="30" width="520" height="220" fill={P.ink}/>
+      <rect x="48" y="38" width="504" height="204" fill={P.cream}/>
+      <ScreenContent x={48} y={38} w={504} h={204} type="lecture"/>
+      {/* screen frame highlight */}
+      <path d="M 40 30 L 560 30" stroke="#FFF" strokeWidth="1" opacity="0.3"/>
+      {/* warm projection cone (light spill) */}
+      <path d="M 300 245 L 100 380 L 500 380 Z" fill={P.glowWarm} opacity="0.12"/>
+      {/* tiered seating — three rows visible from behind */}
+      {[0, 1, 2].map(row => {
+        const baseY = 300 + row * 32;
+        const xOffset = row * 16;
+        return (
+          <g key={row}>
+            {/* row bench */}
+            <rect x={20 + xOffset} y={baseY + 16} width={560 - xOffset*2} height="6" fill={P.woodDk}/>
+            {/* students from behind */}
+            {Array.from({length: 8 - row}, (_, k) => {
+              const x = 60 + xOffset + k * ((480 - xOffset*2) / (8 - row));
+              const hairs = [P.hairDk, P.hairBr, '#5C3A20', P.hairGr, P.hairDk, P.hairBr, '#8B5A2B', P.hairDk];
+              const shirts = [P.shirtBl, '#6B4D32', P.shirtGr, P.shirtTn, P.shirtBl, P.shirtRd, '#3D5A6E', P.shirtGr];
+              return (
+                <g key={k} transform={`translate(${x} ${baseY})`}>
+                  {/* shoulders */}
+                  <path d="M -18 22 Q -18 -2 0 -2 Q 18 -2 18 22 Z" fill={shirts[(k + row) % shirts.length]}/>
+                  {/* head from behind */}
+                  <ellipse cx="0" cy="-8" rx="11" ry="13" fill={hairs[(k + row) % hairs.length]}/>
+                  {/* highlight on hair */}
+                  <ellipse cx="-3" cy="-12" rx="3" ry="5" fill={P.hairBr} opacity="0.5"/>
+                </g>
+              );
+            })}
+          </g>
+        );
+      })}
+      {/* lecturer at front, small */}
+      <g transform="translate(80 290)">
+        <Person x={0} y={0} scale={0.9} pose="front" coat
+                hair={{ color: P.hairDk, style: 'short' }}/>
+      </g>
+      {/* pointer/laser dot on screen */}
+      <circle cx="220" cy="160" r="4" fill={P.accent}/>
+      <circle cx="220" cy="160" r="10" fill={P.accent} opacity="0.25"/>
+    </svg>
+  );
+}
+
+// ── SCENE 3 — Student Practising at Night ──────────────────────────────────
+function Scene3() {
+  return (
+    <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
+      {/* night room wall */}
+      <rect x="0" y="0" width="600" height="280" fill="#3D3220"/>
+      <rect x="0" y="280" width="600" height="120" fill="#2B2316"/>
+      {/* window night skyline */}
+      <Window x={40} y={30} w={160} h={140} view="night"/>
+      {/* warm desk lamp glow */}
+      <radialGradient id="lamp-glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stopColor={P.glowWarm} stopOpacity="0.7"/>
+        <stop offset="1" stopColor={P.glowWarm} stopOpacity="0"/>
+      </radialGradient>
+      <ellipse cx="430" cy="160" rx="200" ry="160" fill="url(#lamp-glow)"/>
+      {/* desk surface */}
+      <rect x="0" y="290" width="600" height="110" fill={P.wood}/>
+      <path d="M 0 290 L 600 290 L 600 296 L 0 296 Z" fill={P.woodDk}/>
+      {/* lamp */}
+      <g transform="translate(450 290)">
+        <path d="M 0 0 L 0 -70" stroke={P.ink} strokeWidth="3"/>
+        <ellipse cx="0" cy="-2" rx="14" ry="3" fill={P.ink}/>
+        <path d="M -22 -82 L 22 -82 L 12 -68 L -12 -68 Z" fill={P.ink}/>
+        <ellipse cx="0" cy="-68" rx="11" ry="3" fill={P.glowWarm}/>
+      </g>
+      {/* notebook with sketches, open */}
+      <g transform="translate(110 320) rotate(-4)">
+        <rect x="-50" y="-30" width="100" height="50" fill={P.cream}/>
+        <line x1="0" y1="-30" x2="0" y2="20" stroke={P.shadow} strokeWidth="0.4"/>
+        {/* left page: heart sketch */}
+        <Heart cx={-30} cy={-8} r={12} fill={P.heart}/>
+        <line x1="-46" y1="10" x2="-12" y2="10" stroke={P.inkSoft} strokeWidth="0.4"/>
+        <line x1="-46" y1="14" x2="-18" y2="14" stroke={P.inkSoft} strokeWidth="0.4"/>
+        {/* right page: ECG sketch */}
+        <path d="M 8 -8 L 16 -8 L 20 -14 L 26 0 L 30 -10 L 34 -8 L 46 -8" fill="none" stroke={P.inkSoft} strokeWidth="0.8"/>
+        <line x1="8" y1="6" x2="46" y2="6" stroke={P.inkSoft} strokeWidth="0.4"/>
+        <line x1="8" y1="10" x2="40" y2="10" stroke={P.inkSoft} strokeWidth="0.4"/>
+      </g>
+      {/* pencil */}
+      <g transform="translate(180 350) rotate(20)">
+        <rect x="0" y="-1.5" width="56" height="3" fill={P.glowWarm}/>
+        <rect x="0" y="-1.5" width="6" height="3" fill={P.heart}/>
+        <path d="M 56 -1.5 L 60 0 L 56 1.5 Z" fill="#3A2A1A"/>
+      </g>
+      {/* coffee mug */}
+      <Mug x={70} y={300} scale={1.1} color="#4A5C6E" steam/>
+      {/* potted plant */}
+      <Plant x={555} y={290} scale={0.7} leafColor={P.plant}/>
+      {/* laptop open */}
+      <g transform="translate(350 285)">
+        {/* base */}
+        <path d="M -110 0 L 110 0 L 122 16 L -122 16 Z" fill="#3A2E20"/>
+        <rect x="-118" y="2" width="236" height="3" fill={P.ink}/>
+        {/* screen */}
+        <path d="M -110 -130 L 110 -130 L 110 0 L -110 0 Z" fill={P.ink}/>
+        <rect x="-104" y="-124" width="208" height="120" fill={P.cream}/>
+        <ScreenContent x={-104} y={-124} w={208} h={120} type="visualizer"/>
+      </g>
+      {/* hands on keyboard */}
+      <g transform="translate(290 300)">
+        <ellipse cx="0" cy="-2" rx="22" ry="6" fill={P.skin}/>
+        <rect x="-18" y="-4" width="36" height="6" fill={P.skin}/>
+      </g>
+      <g transform="translate(390 300)">
+        <ellipse cx="0" cy="-2" rx="22" ry="6" fill={P.skin}/>
+        <rect x="-18" y="-4" width="36" height="6" fill={P.skin}/>
+      </g>
+      {/* student head visible above laptop, leaning forward */}
+      <g transform="translate(350 200)">
+        <Person x={0} y={0} scale={0.85} pose="back"
+                hair={{ color: P.hairBr, style: 'short' }} garment={P.shirtGr}/>
+      </g>
+    </svg>
+  );
+}
+
+// ── SCENE 4 — Remote Telemedicine Consultation ─────────────────────────────
+function Scene4() {
+  return (
+    <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
+      {/* office wall */}
+      <rect x="0" y="0" width="600" height="280" fill="#D5C5A0"/>
+      <rect x="0" y="280" width="600" height="120" fill={P.wood}/>
+      {/* window with daylight */}
+      <Window x={40} y={40} w={130} h={110} view="day"/>
+      {/* world-map frame on wall — context for "borderless" */}
+      <g transform="translate(420 50)">
+        <rect x="0" y="0" width="140" height="84" fill={P.cream} stroke={P.shadow} strokeWidth="0.8"/>
+        {/* simple continent silhouettes */}
+        <path d="M 14 30 Q 22 20 36 24 Q 44 32 38 42 Q 26 46 14 40 Z" fill={P.plant} opacity="0.7"/>
+        <path d="M 50 22 Q 64 18 78 28 Q 84 38 72 46 Q 56 46 50 36 Z" fill={P.plant} opacity="0.7"/>
+        <path d="M 90 26 Q 110 24 122 36 Q 124 50 110 56 Q 96 56 90 44 Z" fill={P.plant} opacity="0.7"/>
+        <path d="M 38 52 Q 52 48 60 58 Q 56 70 44 70 Q 32 66 38 52 Z" fill={P.plant} opacity="0.7"/>
+        {/* pins */}
+        <circle cx="60" cy="58" r="2" fill={P.heart}/>
+        <circle cx="100" cy="36" r="2" fill={P.heart}/>
+        <path d="M 60 58 Q 80 30 100 36" fill="none" stroke={P.heart} strokeWidth="0.8" strokeDasharray="2 2"/>
+      </g>
+      {/* desk */}
+      <path d="M 40 320 L 560 320 L 580 360 L 20 360 Z" fill={P.woodDk}/>
+      {/* monitor — large, on desk */}
+      <g transform="translate(300 220)">
+        {/* stand */}
+        <rect x="-30" y="80" width="60" height="6" fill={P.ink}/>
+        <path d="M -10 80 L 10 80 L 6 60 L -6 60 Z" fill={P.ink}/>
+        {/* screen */}
+        <rect x="-180" y="-100" width="360" height="180" rx="4" fill={P.ink}/>
+        <rect x="-174" y="-94" width="348" height="168" fill={P.cream}/>
+        <ScreenContent x={-174} y={-94} w={348} h={168} type="remote"/>
+      </g>
+      {/* doctor at desk, back-3/4 view */}
+      <g transform="translate(140 340)">
+        <Person x={0} y={0} scale={1.1} pose="profile-r" coat
+                hair={{ color: P.hairDk, style: 'long' }} stethoscope/>
+      </g>
+      {/* doctor's arm reaching to keyboard/mouse */}
+      <ellipse cx="190" cy="340" rx="20" ry="6" fill={P.coat}/>
+      <ellipse cx="210" cy="340" rx="6" ry="4" fill={P.skin}/>
+      {/* mug */}
+      <Mug x={490} y={328} scale={0.9} color={P.shirtRd}/>
+      {/* desk lamp */}
+      <g transform="translate(60 320)">
+        <path d="M 0 0 L 0 -40 Q 0 -50 10 -50" fill="none" stroke={P.ink} strokeWidth="2.5"/>
+        <ellipse cx="0" cy="0" rx="10" ry="2.5" fill={P.ink}/>
+        <path d="M 6 -52 L 22 -52 L 16 -42 L 12 -42 Z" fill={P.ink}/>
+      </g>
+    </svg>
+  );
+}
+
+// ── SCENE 5 — Smartwatch AFib Alert (street/café) ──────────────────────────
+function Scene5() {
+  return (
+    <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
+      {/* outdoor café — warm wall + planters */}
+      <rect x="0" y="0" width="600" height="240" fill="#C49866"/>
+      <rect x="0" y="240" width="600" height="160" fill="#8B6F45"/>
+      {/* awning */}
+      <path d="M 0 80 L 600 80 L 600 130 L 0 130 Z" fill={P.shirtRd} opacity="0.85"/>
+      {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(k => (
+        <path key={k} d={`M ${k*70} 80 L ${k*70 + 35} 130 L ${k*70 + 70} 80 Z`} fill={P.coat} opacity="0.3"/>
+      ))}
+      <line x1="0" y1="80" x2="600" y2="80" stroke={P.shadow} strokeWidth="1.4" opacity="0.5"/>
+      {/* blurred passers-by (bokeh) */}
+      <g opacity="0.5">
+        {[80, 180, 320, 480].map((x, k) => (
+          <g key={x} transform={`translate(${x} ${200 + (k%2)*8})`}>
+            <ellipse cx="0" cy="0" rx="14" ry="18" fill={[P.hairDk, P.hairBr, P.shirtBl, P.shirtTn][k]}/>
+            <path d="M -22 90 Q -22 18 0 18 Q 22 18 22 90 Z" fill={[P.shirtRd, P.shirtGr, P.shirtBl, P.shirtTn][k]} opacity="0.7"/>
+          </g>
+        ))}
+      </g>
+      {/* ground / shadow */}
+      <ellipse cx="280" cy="380" rx="180" ry="12" fill="#000" opacity="0.18"/>
+      {/* MAIN: person looking at wrist (foreground) */}
+      <g transform="translate(160 250)">
+        <Person x={0} y={0} scale={1.6} pose="front"
+                hair={{ color: P.hairDk, style: 'long' }} garment={P.shirtBl} skin={P.skinDk}/>
+      </g>
+      {/* raised arm with watch — angled across body */}
+      <path d="M 160 220 Q 200 200 260 200" fill="none" stroke={P.skinDk} strokeWidth="22" strokeLinecap="round"/>
+      <path d="M 160 220 Q 200 200 260 200" fill="none" stroke={P.shirtBl} strokeWidth="22" strokeLinecap="round" opacity="0.6"/>
+      <ellipse cx="260" cy="200" rx="18" ry="10" fill={P.skinDk}/>
+      {/* SMARTWATCH — large, foreground right */}
+      <g transform="translate(380 220)">
+        {/* strap */}
+        <path d="M -36 -54 L 36 -54 L 30 -34 L -30 -34 Z" fill="#3A2A1A"/>
+        <path d="M -30 30 L 30 30 L 36 50 L -36 50 Z" fill="#3A2A1A"/>
+        {/* body */}
+        <rect x="-50" y="-34" width="100" height="68" rx="14" fill="#1A1410"/>
+        <rect x="-46" y="-30" width="92" height="60" rx="10" fill="#0A0A0E"/>
+        <ScreenContent x={-46} y={-30} w={92} h={60} type="alert" bg="#0A0A0E"/>
+        {/* crown */}
+        <rect x="50" y="-8" width="7" height="16" rx="2" fill="#3A2E20"/>
+        {/* glare on glass */}
+        <path d="M -40 -28 L -10 -28 L -36 -8 Z" fill="#FFF" opacity="0.18"/>
+      </g>
+      {/* alert speech bubble pointing to watch */}
+      <g transform="translate(440 80)">
+        <rect x="0" y="0" width="150" height="48" rx="8" fill={P.cream} stroke={P.heart} strokeWidth="1.4"/>
+        <text x="10" y="18" fontFamily="Inter" fontWeight="700" fontSize="11" fill={P.ink}>Irregular rhythm</text>
+        <text x="10" y="32" fontFamily="Inter" fontSize="9" fill={P.inkSoft}>HR 142 · possible AFib</text>
+        <text x="10" y="42" fontFamily="Inter" fontSize="8" fill={P.inkSoft}>Cardiologist alerted · 14:08</text>
+        <path d="M 30 48 L 26 60 L 38 50 Z" fill={P.cream} stroke={P.heart} strokeWidth="1.4"/>
+      </g>
+    </svg>
+  );
+}
+
+// ── SCENE 6 — Post-Surgical Home Recovery ──────────────────────────────────
+function Scene6() {
+  return (
+    <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
+      {/* wall */}
+      <rect x="0" y="0" width="600" height="290" fill="#E5D4AE"/>
+      <rect x="0" y="290" width="600" height="110" fill={P.wood}/>
+      <line x1="0" y1="290" x2="600" y2="290" stroke={P.shadow} strokeWidth="0.8" opacity="0.5"/>
+      {/* big window with morning light */}
+      <Window x={40} y={50} w={170} h={170} view="day"/>
+      {/* light beam across floor */}
+      <path d="M 210 220 L 360 400 L 80 400 L 40 220 Z" fill={P.glowWarm} opacity="0.16"/>
+      {/* framed photo on wall */}
+      <g transform="translate(440 60)">
+        <rect x="0" y="0" width="80" height="60" fill={P.cream} stroke={P.shadow} strokeWidth="0.8"/>
+        <rect x="6" y="6" width="68" height="48" fill={P.plant} opacity="0.5"/>
+        <circle cx="28" cy="26" r="6" fill={P.skin}/>
+        <circle cx="46" cy="26" r="5" fill={P.skinDp}/>
+        <path d="M 14 50 Q 28 38 42 50" fill={P.shirtBl}/>
+        <path d="M 38 50 Q 50 40 62 50" fill={P.shirtGr}/>
+      </g>
+      {/* side table */}
+      <rect x="350" y="280" width="60" height="60" fill={P.wood}/>
+      <rect x="346" y="276" width="68" height="6" fill={P.woodDk}/>
+      {/* phone on side table — dashboard glowing */}
+      <g transform="translate(380 270)">
+        <rect x="-18" y="-12" width="36" height="50" rx="4" fill={P.ink}/>
+        <rect x="-16" y="-10" width="32" height="46" rx="2" fill={P.cream}/>
+        <ScreenContent x={-16} y={-10} w={32} h={46} type="dashboard"/>
+      </g>
+      {/* glass of water */}
+      <g transform="translate(354 270)">
+        <rect x="-5" y="-12" width="10" height="14" fill="#B8D4E0" opacity="0.6"/>
+        <ellipse cx="0" cy="-12" rx="5" ry="1.4" fill="#B8D4E0"/>
+        <ellipse cx="0" cy="2" rx="5" ry="1.2" fill="#B8D4E0" stroke={P.shadow} strokeWidth="0.4"/>
+      </g>
+      {/* armchair */}
+      <g transform="translate(220 360)">
+        <path d="M -80 0 L -80 -110 Q -80 -126 -64 -126 L 64 -126 Q 80 -126 80 -110 L 80 0 Z" fill={P.shirtTn}/>
+        <path d="M -80 -110 L -64 -100 L -64 0 M 80 -110 L 64 -100 L 64 0" fill="none" stroke={P.shadow} strokeWidth="0.6" opacity="0.4"/>
+        <ellipse cx="0" cy="-50" rx="50" ry="6" fill={P.shadow} opacity="0.18"/>
+        {/* seat cushion */}
+        <path d="M -64 -100 Q 0 -90 64 -100 L 60 -40 L -60 -40 Z" fill={P.shirtTn} stroke={P.shadow} strokeWidth="0.4"/>
+      </g>
+      {/* blanket */}
+      <path d="M 160 320 Q 220 304 280 320 L 290 380 L 150 380 Z" fill={P.blanket}/>
+      <path d="M 170 330 L 270 330 M 168 346 L 272 346 M 170 362 L 270 362" stroke={P.woodDk} strokeWidth="0.8" opacity="0.4"/>
+      {/* PATIENT in chair reading */}
+      <g transform="translate(220 280)">
+        {/* body */}
+        <path d="M -36 90 Q -36 -16 0 -16 Q 36 -16 36 90 Z" fill={P.scrubs}/>
+        {/* head */}
+        <g transform="translate(0 -28)">
+          <ellipse cx="0" cy="0" rx="22" ry="24" fill={P.skin}/>
+          {/* short hair (older man, grey-flecked) */}
+          <path d="M -22 -6 Q -22 -26 0 -28 Q 22 -26 22 -6 Q 22 -16 14 -18 Q 0 -22 -14 -18 Q -22 -16 -22 -6 Z" fill={P.hairGr}/>
+          {/* face features */}
+          <ellipse cx="-7" cy="-2" rx="2.2" ry="1.4" fill={P.ink}/>
+          <ellipse cx="7" cy="-2" rx="2.2" ry="1.4" fill={P.ink}/>
+          <path d="M -11 -8 Q -7 -14 -3 -8" fill="none" stroke={P.hairGr} strokeWidth="1.4"/>
+          <path d="M 3 -8 Q 7 -14 11 -8" fill="none" stroke={P.hairGr} strokeWidth="1.4"/>
+          <path d="M 0 4 Q -1 12 2 14" fill="none" stroke={P.skinDk} strokeWidth="0.8"/>
+          <path d="M -5 16 Q 0 20 5 16" fill="none" stroke={P.heartDk} strokeWidth="1" opacity="0.6"/>
+        </g>
+        {/* arms holding book */}
+        <path d="M -36 4 Q -24 30 -4 40 L 28 40 Q 36 16 36 4 Z" fill={P.scrubs}/>
+        <ellipse cx="-8" cy="40" rx="8" ry="5" fill={P.skin}/>
+        <ellipse cx="28" cy="40" rx="8" ry="5" fill={P.skin}/>
+        {/* book */}
+        <g transform="translate(10 50)">
+          <rect x="-30" y="-12" width="60" height="32" fill={P.cream} stroke={P.shadow} strokeWidth="0.6"/>
+          <line x1="0" y1="-12" x2="0" y2="20" stroke={P.shadow} strokeWidth="0.4"/>
+          <line x1="-26" y1="-6" x2="-6" y2="-6" stroke={P.inkSoft} strokeWidth="0.4"/>
+          <line x1="-26" y1="-1" x2="-6" y2="-1" stroke={P.inkSoft} strokeWidth="0.4"/>
+          <line x1="-26" y1="4" x2="-6" y2="4" stroke={P.inkSoft} strokeWidth="0.4"/>
+          <line x1="-26" y1="9" x2="-6" y2="9" stroke={P.inkSoft} strokeWidth="0.4"/>
+          <line x1="6" y1="-6" x2="26" y2="-6" stroke={P.inkSoft} strokeWidth="0.4"/>
+          <line x1="6" y1="-1" x2="26" y2="-1" stroke={P.inkSoft} strokeWidth="0.4"/>
+          <line x1="6" y1="4" x2="26" y2="4" stroke={P.inkSoft} strokeWidth="0.4"/>
+          <line x1="6" y1="9" x2="26" y2="9" stroke={P.inkSoft} strokeWidth="0.4"/>
+        </g>
+        {/* watch on left wrist — visible */}
+        <rect x="-30" y="34" width="10" height="8" rx="1.5" fill={P.ink}/>
+        <rect x="-29" y="35" width="8" height="6" fill={P.heart}/>
+        <path d="M -29 38 L -27 36 L -25 39 L -23 35 L -21 38" fill="none" stroke="#FFF" strokeWidth="0.6"/>
+      </g>
+      {/* plant in corner */}
+      <Plant x={555} y={290} scale={0.9} leafColor={P.plant}/>
+    </svg>
+  );
+}
+
+// ── SCENE 7 — Rural Health Worker (Developing Country) ─────────────────────
+function Scene7() {
+  return (
+    <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
+      {/* sky gradient — golden hour */}
+      <defs>
+        <linearGradient id="sky7" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#F2C078"/>
+          <stop offset="0.5" stopColor="#E89762"/>
+          <stop offset="1" stopColor="#C76A4B"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="600" height="240" fill="url(#sky7)"/>
+      {/* far hills */}
+      <path d="M 0 220 L 120 180 L 220 200 L 340 170 L 460 195 L 600 175 L 600 240 L 0 240 Z" fill="#8B5E3C" opacity="0.55"/>
+      <path d="M 0 230 L 100 210 L 200 224 L 320 204 L 460 220 L 600 210 L 600 250 L 0 250 Z" fill="#6B4528" opacity="0.5"/>
+      {/* sun */}
+      <circle cx="490" cy="130" r="36" fill="#F8DC9C" opacity="0.6"/>
+      <circle cx="490" cy="130" r="20" fill="#FBE5B0"/>
+      {/* ground */}
+      <rect x="0" y="240" width="600" height="160" fill="#A07350"/>
+      <path d="M 0 240 Q 300 232 600 240 L 600 270 L 0 270 Z" fill="#8B5E3C" opacity="0.4"/>
+      {/* simple clinic building far right */}
+      <g transform="translate(440 180)">
+        <rect x="0" y="0" width="120" height="60" fill="#C49866"/>
+        <path d="M -6 0 L 126 0 L 110 -18 L 10 -18 Z" fill="#5C4028"/>
+        <rect x="14" y="20" width="20" height="30" fill="#3A2E20"/>
+        <rect x="50" y="20" width="20" height="22" fill={P.sky} opacity="0.5"/>
+        <rect x="86" y="20" width="20" height="22" fill={P.sky} opacity="0.5"/>
+        <text x="60" y="14" fontFamily="Inter" fontSize="6" fill={P.cream} textAnchor="middle">+ KIBERA CLINIC</text>
+        {/* red cross */}
+        <g transform="translate(60 8)">
+          <rect x="-2" y="-4" width="4" height="8" fill={P.heart}/>
+          <rect x="-4" y="-2" width="8" height="4" fill={P.heart}/>
+        </g>
+      </g>
+      {/* tree silhouette mid-distance */}
+      <g transform="translate(80 240)">
+        <rect x="-2" y="-30" width="4" height="30" fill="#3A2E20"/>
+        <circle cx="0" cy="-32" r="14" fill={P.plantDk}/>
+        <circle cx="8" cy="-38" r="10" fill={P.plant}/>
+        <circle cx="-8" cy="-36" r="9" fill={P.plant}/>
+      </g>
+      {/* MAIN figure — community health worker in foreground, holding phone */}
+      <g transform="translate(220 320)">
+        {/* body */}
+        <path d="M -50 80 Q -50 -16 0 -22 Q 50 -16 50 80 Z" fill="#3B7A8C"/>
+        {/* colorful printed wrap detail */}
+        <path d="M -50 30 L 50 30 L 50 60 L -50 60 Z" fill={P.heart} opacity="0.6"/>
+        <path d="M -50 35 L 50 35 M -50 45 L 50 45 M -50 55 L 50 55" stroke="#F4D89A" strokeWidth="1.2"/>
+        {/* head + headwrap */}
+        <g transform="translate(0 -36)">
+          <ellipse cx="0" cy="0" rx="22" ry="24" fill={P.skinDp}/>
+          {/* headwrap */}
+          <path d="M -24 -6 Q -24 -28 0 -30 Q 24 -28 24 -6 Q 24 -16 14 -16 L -14 -16 Q -24 -16 -24 -6 Z" fill="#E0A03A"/>
+          <path d="M 22 -14 Q 30 -8 26 4 Q 22 12 14 8" fill="#C77E2A"/>
+          <path d="M -22 -20 L 22 -20" stroke="#A04A36" strokeWidth="2"/>
+          <path d="M -22 -10 L 22 -10" stroke="#A04A36" strokeWidth="1.2" opacity="0.6"/>
+          {/* face */}
+          <ellipse cx="-7" cy="-2" rx="2.2" ry="1.4" fill={P.ink}/>
+          <ellipse cx="7" cy="-2" rx="2.2" ry="1.4" fill={P.ink}/>
+          <path d="M -11 -7 Q -7 -11 -3 -7" fill="none" stroke={P.hairDk} strokeWidth="1.4"/>
+          <path d="M 3 -7 Q 7 -11 11 -7" fill="none" stroke={P.hairDk} strokeWidth="1.4"/>
+          <path d="M 0 4 Q -1 10 1 12" fill="none" stroke={P.skinDk} strokeWidth="0.8"/>
+          <path d="M -6 16 Q 0 20 6 16" fill="none" stroke={P.heartDk} strokeWidth="1.2"/>
+        </g>
+        {/* arms cupped around phone */}
+        <path d="M -42 12 Q -32 -4 -10 -2 L 10 -2 Q 32 -4 42 12 L 42 26 L -42 26 Z" fill="#3B7A8C"/>
+        <ellipse cx="-20" cy="22" rx="14" ry="8" fill={P.skinDp}/>
+        <ellipse cx="20" cy="22" rx="14" ry="8" fill={P.skinDp}/>
+        {/* phone */}
+        <g transform="translate(0 24)">
+          <rect x="-30" y="-30" width="60" height="80" rx="6" fill={P.ink}/>
+          <rect x="-27" y="-27" width="54" height="74" rx="3" fill={P.cream}/>
+          <ScreenContent x={-27} y={-27} w={54} h={74} type="visualizer"/>
+        </g>
+      </g>
+      {/* second figure further back — patient leaning in to see */}
+      <g transform="translate(360 340)">
+        <Person x={0} y={0} scale={0.85} pose="profile-l"
+                hair={{ color: P.hairDk, style: 'short' }} garment="#9C7A55" skin={P.skinDp}/>
+      </g>
+      {/* dust/light particles */}
+      {[120, 180, 380, 440].map((x, k) => (
+        <circle key={x} cx={x} cy={140 + (k%2)*30} r="1.5" fill="#FBE5B0" opacity="0.6"/>
+      ))}
+    </svg>
+  );
+}
+
+// ── SCENE 8 — Calm the Storm (anxiety/panic at night) ──────────────────────
+function Scene8() {
+  return (
+    <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
+      {/* night room */}
+      <rect x="0" y="0" width="600" height="400" fill="#2A2438"/>
+      {/* warm lamp glow upper-left */}
+      <radialGradient id="lamp8" cx="15%" cy="20%" r="60%">
+        <stop offset="0" stopColor="#F4D89A" stopOpacity="0.55"/>
+        <stop offset="1" stopColor="#F4D89A" stopOpacity="0"/>
+      </radialGradient>
+      <rect x="0" y="0" width="600" height="400" fill="url(#lamp8)"/>
+      {/* window night sky */}
+      <Window x={440} y={40} w={130} h={120} view="night"/>
+      {/* bedside lamp */}
+      <g transform="translate(60 200)">
+        {/* base */}
+        <rect x="-14" y="-4" width="28" height="6" fill={P.woodDk}/>
+        <path d="M 0 -4 L 0 -40" stroke={P.ink} strokeWidth="3"/>
+        {/* shade */}
+        <path d="M -22 -40 L 22 -40 L 16 -76 L -16 -76 Z" fill="#C49866"/>
+        <path d="M -22 -40 L 22 -40 L 16 -76 L -16 -76 Z" fill={P.glowWarm} opacity="0.6"/>
+        <ellipse cx="0" cy="-40" rx="22" ry="4" fill={P.heartDk} opacity="0.3"/>
+      </g>
+      {/* nightstand */}
+      <rect x="20" y="220" width="100" height="80" fill={P.woodDk}/>
+      <rect x="16" y="216" width="108" height="6" fill={P.wood}/>
+      {/* bed */}
+      <g transform="translate(0 280)">
+        <rect x="140" y="0" width="440" height="120" fill="#5C4A6E"/>
+        <rect x="140" y="0" width="440" height="14" fill="#F0E5D2"/>
+        {/* pillow */}
+        <path d="M 160 -2 Q 240 -16 320 -2 L 320 28 L 160 28 Z" fill="#F0E5D2"/>
+        <path d="M 160 -2 Q 240 -16 320 -2" fill="none" stroke={P.shadow} strokeWidth="0.6" opacity="0.4"/>
+        {/* duvet rumpled */}
+        <path d="M 240 28 Q 340 8 480 28 Q 540 36 560 60 L 560 120 L 240 120 Z" fill="#7A4A6E"/>
+        <path d="M 280 40 Q 360 28 440 44" fill="none" stroke={P.shadow} strokeWidth="1.2" opacity="0.5"/>
+        <path d="M 320 60 Q 380 56 440 70" fill="none" stroke={P.shadow} strokeWidth="0.8" opacity="0.4"/>
+      </g>
+      {/* MAIN person sitting upright in bed, profile */}
+      <g transform="translate(280 230)">
+        {/* legs under duvet (hint) */}
+        {/* torso */}
+        <path d="M -34 80 Q -36 -8 -8 -14 Q 18 -10 16 80 Z" fill="#5C4060"/>
+        {/* arms — one resting on knees, other holding phone */}
+        <path d="M 14 -2 Q 30 18 32 50 L 24 52 Q 16 30 4 16 Z" fill={P.skin}/>
+        {/* head profile */}
+        <g transform="translate(0 -30)">
+          {/* hair back */}
+          <path d="M -18 -16 Q -22 -32 -2 -38 Q 22 -36 24 -16 Q 26 0 18 8 L 18 14 L -8 14 Q -18 4 -18 -16 Z" fill={P.hairDk}/>
+          {/* face profile-l */}
+          <path d="M -14 -10 Q -16 -28 0 -34 Q 18 -30 20 -14 Q 22 -2 14 4 Q 8 4 6 8 L -10 8 Q -16 0 -14 -10 Z" fill={P.skin}/>
+          {/* eye closed */}
+          <path d="M -4 -10 Q 0 -8 4 -10" fill="none" stroke={P.ink} strokeWidth="1"/>
+          <line x1="-4" y1="-8" x2="4" y2="-8" stroke={P.ink} strokeWidth="0.8"/>
+          {/* eyebrow */}
+          <path d="M -4 -16 Q 0 -18 4 -16" fill="none" stroke={P.hairDk} strokeWidth="1.4"/>
+          {/* nose */}
+          <path d="M 8 -8 Q 14 -2 8 4" fill="none" stroke={P.skinDk} strokeWidth="1.2"/>
+          {/* mouth */}
+          <path d="M 2 6 Q 6 8 4 12" fill="none" stroke={P.heartDk} strokeWidth="1"/>
+        </g>
+        {/* phone in hand — glowing toward face */}
+        <g transform="translate(30 56) rotate(-10)">
+          <rect x="-18" y="-30" width="36" height="60" rx="4" fill={P.ink}/>
+          <rect x="-16" y="-28" width="32" height="56" rx="2" fill="#2D3548"/>
+          <ScreenContent x={-16} y={-28} w={32} h={56} type="calm"/>
+          {/* light from phone onto face */}
+          <path d="M -18 -30 L -60 -50 L -60 -10 Z" fill="#A8C5D9" opacity="0.18"/>
+        </g>
+      </g>
+      {/* steaming tea on nightstand */}
+      <Mug x={70} y={230} scale={0.9} color="#7A4A6E" steam/>
+      {/* book on nightstand */}
+      <g transform="translate(40 240) rotate(-6)">
+        <rect x="0" y="0" width="40" height="8" fill={P.shirtRd}/>
+        <rect x="0" y="0" width="40" height="2" fill={P.cream}/>
+        <line x1="2" y1="4" x2="38" y2="4" stroke={P.cream} strokeWidth="0.4"/>
+      </g>
+      {/* before/after HRV mini-card floating right (subtle annotation in scene) */}
+      <g transform="translate(440 200)">
+        <rect x="0" y="0" width="140" height="74" rx="4" fill="#1A1626" stroke={P.accent} strokeWidth="0.8" opacity="0.95"/>
+        <text x="8" y="14" fontFamily="Inter" fontSize="7" fill="#A8B0C0">HRV · LAST 4 MIN</text>
+        <text x="8" y="26" fontFamily="Inter" fontSize="6" fill="#8B95A8">Before</text>
+        <g clipPath="url(#s8mini-a)">
+          <PulseLine x={36} y={20} w={96} h={12} stroke="#8B95A8" sw={0.8} chaos={2.4} segs={4}/>
+        </g>
+        <defs><clipPath id="s8mini-a"><rect x={36} y={20} width={96} height={12}/></clipPath></defs>
+        <text x="8" y="44" fontFamily="Inter" fontSize="6" fill={P.accent}>After</text>
+        <g clipPath="url(#s8mini-b)">
+          <PulseLine x={36} y={38} w={96} h={12} stroke={P.accent} sw={0.9} segs={3}/>
+        </g>
+        <defs><clipPath id="s8mini-b"><rect x={36} y={38} width={96} height={12}/></clipPath></defs>
+        <text x="8" y="64" fontFamily="Inter" fontSize="7" fill="#A8B0C0">0.42 → 0.81 coherence</text>
+      </g>
+    </svg>
+  );
+}
+
+// ── Export scenes globally for the app file ────────────────────────────────
+Object.assign(window, { Scene1, Scene2, Scene3, Scene4, Scene5, Scene6, Scene7, Scene8 });
+
+</script>
+  <script type="text/babel">
+// illustrated-app.jsx
+// Storyboard grid layout — 8 narrative scenes for Heartwise.
+// Mirrors the reference: title + subtitle, 3:2 illustration cards in a 4-col grid,
+// numbered titles & short captions, italic guardrail line at the foot.
+
+const SCENES = [
+  {
+    n: 1,
+    title: 'Doctor explains the heart',
+    body: 'A cardiologist turns the visualizer toward her patient. The 3D heart, the live BPM, the ECG strip — what the body is doing, in plain sight, in plain language.',
+    Comp: Scene1,
+  },
+  {
+    n: 2,
+    title: 'Teaching the next generation',
+    body: 'In a full lecture theatre, the heart is sectioned open at fifty-foot scale. Leader labels appear and fade as the lecturer walks students through every chamber and valve.',
+    Comp: Scene2,
+  },
+  {
+    n: 3,
+    title: 'Students practise and learn',
+    body: 'A second-year rotates the heart with two fingers, toggles labels on, takes a quiz on the QRS complex. Same simulation as the lecture — runs on her own laptop, after midnight, anywhere.',
+    Comp: Scene3,
+  },
+  {
+    n: 4,
+    title: 'Borderless remote care',
+    body: 'A specialist in Berlin reads a live ECG streaming from a clinic in Kibera. The same waveform draws on both screens, six thousand kilometres apart, in the same heartbeat.',
+    Comp: Scene4,
+  },
+  {
+    n: 5,
+    title: 'Smartwatch catches AFib',
+    body: 'A watch on a wrist, mid-afternoon, mid-crowd. The rhythm stutters. By the time he sits down, his cardiologist has the trace and EMS is on standby — predicting a heart attack before symptoms.',
+    Comp: Scene5,
+  },
+  {
+    n: 6,
+    title: 'Recovery, gently watched',
+    body: 'Day fourteen after the bypass, he reads in his own armchair. The watch holds his pulse, the phone holds his surgeon\'s gaze — quiet, continuous, unobtrusive monitoring.',
+    Comp: Scene6,
+  },
+  {
+    n: 7,
+    title: 'Where echocardiograms don\'t reach',
+    body: 'A community health worker in rural Kibera holds the visualizer in her palm. No echocardiogram in three hundred kilometres — but the same diagnostic, on the phone she already owns.',
+    Comp: Scene7,
+  },
+  {
+    n: 8,
+    title: 'Calm in a panic attack',
+    body: 'Three a.m., the chaotic line on screen slows, evens, settles into a coherent wave as she breathes through it. The visualizer doesn\'t fix the fear — it shows her she\'s already in control.',
+    Comp: Scene8,
+  },
+];
+
+function App() {
+  return (
+    <div className="page">
+      <header className="hd">
+        <h1>HeartWise: One Heart, Eight Lives It Touches</h1>
+        <p className="sub">
+          Product: 3D heart rate visualizer with ECG <span className="dot">·</span>
+          Audience: clinicians, students, patients, remote care workers <span className="dot">·</span>
+          Story: from exam room to bedside, from lecture hall to rural clinic
+        </p>
+      </header>
+
+      <div className="grid">
+        {SCENES.map((s) => {
+          const Comp = s.Comp;
+          return (
+            <article className="card" key={s.n} data-screen-label={`${String(s.n).padStart(2, '0')} ${s.title}`}>
+              <div className="ill"><Comp/></div>
+              <h2>{s.n}. {s.title}</h2>
+              <p>{s.body}</p>
+            </article>
+          );
+        })}
+      </div>
+
+      <p className="ft">
+        Design guardrail: educational and decision-support, not standalone diagnosis.
+        Clinical context, history, and a qualified clinician always matter.
+      </p>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+
+</script>
+</body>
+</html>
