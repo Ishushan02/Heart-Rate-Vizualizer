@@ -167,9 +167,17 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
 .n-burger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
 .n-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
-/* Video tap hint for touch devices */
-.sb-tap-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:10;background:rgba(8,13,24,.72);backdrop-filter:blur(8px);border:1px solid rgba(225,29,72,.22);border-radius:20px;padding:5px 14px;font-size:.65rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose2);pointer-events:none;opacity:0;transition:opacity .4s;display:none}
+/* Video tap hint */
+.sb-tap-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:10;background:rgba(8,13,24,.82);backdrop-filter:blur(8px);border:1px solid rgba(225,29,72,.3);border-radius:20px;padding:7px 18px;font-size:.7rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--rose2);pointer-events:none;opacity:0;transition:opacity .4s;display:none;white-space:nowrap}
 
+/* Journey: fix decorative line + borders in 1-column layout */
+@media(max-width:900px){
+  .journey::before{display:none}
+  .j-card{border-right:none!important;border-bottom:1px solid var(--border)!important}
+  .j-card:last-child{border-bottom:none!important}
+}
+
+/* Tablet */
 @media(max-width:768px){
   .n-burger{display:flex}
   .n-links{display:none;position:fixed;top:64px;left:0;right:0;flex-direction:column;gap:2px;background:rgba(3,5,8,.97);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:10px 16px 18px;z-index:199}
@@ -177,22 +185,47 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
   .n-links a{border-radius:10px;padding:12px 14px;font-size:.9rem;width:100%}
   .sb-tap-hint{display:block;opacity:1}
   .sb-video-container.video-started .sb-tap-hint{opacity:0}
+  .section{padding:64px 20px}
+  .hero{padding:100px 20px 56px}
+  .bpm-hero{font-size:3.4rem}
   .context-strip{grid-template-columns:1fr 1fr}
   .hero-sub{font-size:.95rem}
+  .storyboard-wrap{border-radius:14px;margin-top:36px}
+  .sb-header{padding:10px 14px}
+  .sb-bar{font-size:.62rem;letter-spacing:.2px}
+  .final-cta{flex-direction:column;gap:20px}
+  .final-cta h3{font-size:1.3rem}
+  .disclaimer{margin:0 20px 52px}
+  .final-cta{margin:0 20px 52px}
+  footer{padding:28px 20px}
 }
+
+/* Mobile */
 @media(max-width:480px){
-  .context-strip{grid-template-columns:1fr}
-  .hero-actions{flex-direction:column;align-items:stretch}
+  .section{padding:48px 16px}
+  .hero{padding:88px 16px 44px;min-height:auto}
+  h1{font-size:2.1rem}
+  .bpm-hero{font-size:2.6rem}
+  .hero-sub{font-size:.88rem;line-height:1.65}
+  .hero-actions{flex-direction:column;align-items:stretch;gap:10px}
   .hero-actions a{justify-content:center;text-align:center}
-  .bpm-hero{font-size:3.2rem}
-  h1{font-size:2.4rem}
-  .use-case-box{padding:24px 20px}
-  .qa-block{padding:28px 22px}
-  .j-card{padding:26px 22px}
-  .why-card{padding:28px 22px}
-  .lim-card{padding:28px 22px}
-  .final-cta{flex-direction:column}
-  .final-cta h3{font-size:1.25rem}
+  .context-strip{grid-template-columns:1fr 1fr;max-width:100%}
+  .s-title{font-size:1.75rem}
+  .use-case-box{padding:22px 18px}
+  .j-card{padding:22px 18px}
+  .why-card{padding:24px 18px}
+  .lim-card{padding:24px 18px}
+  .qa-block{padding:24px 18px}
+  .sb-header{padding:8px 12px}
+  .sb-dot{width:8px;height:8px}
+  .sb-bar{font-size:.58rem}
+  .rule{margin:0 16px}
+  .disclaimer{margin:0 16px 44px;padding:18px 16px;gap:12px}
+  .final-cta{margin:0 16px 44px;padding:28px 20px}
+  .final-cta p{font-size:.88rem}
+  footer{gap:12px}
+  .f-links{gap:14px}
+  .f-copy{font-size:.72rem}
 }
 </style>
 </head>
@@ -501,13 +534,24 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   });
 })();
 
-// Hover / tap-to-start video and heartbeat sound
+// Video: preload when section scrolls near, then postMessage fires inside gesture
 (function() {
   var container = document.getElementById('sbVideoContainer');
   var frame     = document.getElementById('sbVideoFrame');
   if (!container || !frame) return;
-  var thumb   = document.getElementById('sbThumb');
-  var started = false;
+  var thumb     = document.getElementById('sbThumb');
+  var started   = false;
+  var preloaded = false;
+
+  // Preload iframe ~500px before it enters viewport so it's ready when tapped
+  var preloadIO = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting && !preloaded && frame.dataset.src) {
+      preloaded = true;
+      frame.src = frame.dataset.src;
+      preloadIO.disconnect();
+    }
+  }, { rootMargin: '500px' });
+  preloadIO.observe(container);
 
   function startVideo() {
     if (started) return;
@@ -515,20 +559,26 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     if (thumb) thumb.style.opacity = '0';
     container.classList.add('sound-started');
     container.classList.add('video-started');
-    if (frame.dataset.src) {
+
+    if (!preloaded) {
+      // Fallback: load now (first tap before scroll preload triggered)
+      preloaded = true;
       frame.src = frame.dataset.src;
-      frame.addEventListener('load', function onLoad() {
-        frame.removeEventListener('load', onLoad);
-        try { frame.contentWindow.postMessage('hw-sound-start', '*'); } catch (e) {}
-      });
-    } else {
-      try { frame.contentWindow.postMessage('hw-sound-start', '*'); } catch (e) {}
     }
+
+    // Send postMessage immediately — within user gesture context (fixes iOS audio)
+    try { frame.contentWindow.postMessage('hw-sound-start', '*'); } catch(e) {}
+
+    // Also retry once iframe finishes loading (covers case where preload didn't finish)
+    frame.addEventListener('load', function onLoad() {
+      frame.removeEventListener('load', onLoad);
+      try { frame.contentWindow.postMessage('hw-sound-start', '*'); } catch(e) {}
+    });
   }
 
   container.addEventListener('mouseenter', startVideo);
-  container.addEventListener('touchend', startVideo, {passive: true});
-  container.addEventListener('click', startVideo);
+  container.addEventListener('touchend',   startVideo, { passive: true });
+  container.addEventListener('click',      startVideo);
 })();
 </script>
 </body>
