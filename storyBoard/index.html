@@ -242,6 +242,7 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
     <a href="#storyboard">Storyboard</a>
     <a href="#why">Why It Works</a>
     <a href="#limits">Limitations</a>
+    <a href="../ExpertAdvise/">Expert Review</a>
     <a href="../Heartwise/" target="_blank" class="n-cta">Live Demo ↗</a>
   </div>
   <button class="n-burger" id="nBurger" aria-label="Toggle menu" aria-expanded="false">
@@ -566,7 +567,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
       frame.src = frame.dataset.src;
     }
 
-    // Send postMessage immediately — within user gesture context (fixes iOS audio)
+    // Send postMessage immediately  within user gesture context (fixes iOS audio)
     try { frame.contentWindow.postMessage('hw-sound-start', '*'); } catch(e) {}
 
     // Also retry once iframe finishes loading (covers case where preload didn't finish)
