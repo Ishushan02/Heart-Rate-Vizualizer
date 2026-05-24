@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HeartWise · Expert Session</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030508;--card:#080d18;--border:rgba(255,255,255,0.06);--br2:rgba(255,255,255,0.12);--rose:#e11d48;--rose2:#fb7185;--text:#f1f5f9;--sub:#94a3b8;--dim:#475569;--r:cubic-bezier(.16,1,.3,1)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ── Background ── */
+.bg-mesh{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(110px)}
+.bg-o1{width:700px;height:700px;top:-200px;left:-150px;background:radial-gradient(circle,rgba(225,29,72,.09) 0%,transparent 70%);animation:oFloat 22s ease-in-out infinite}
+.bg-o2{width:500px;height:500px;bottom:-100px;right:-100px;background:radial-gradient(circle,rgba(124,58,237,.07) 0%,transparent 70%);animation:oFloat 28s ease-in-out infinite reverse}
+.bg-o3{width:400px;height:400px;top:40%;left:55%;background:radial-gradient(circle,rgba(225,29,72,.04) 0%,transparent 70%);animation:oFloat 18s ease-in-out infinite;animation-delay:-9s}
+@keyframes oFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.06)}66%{transform:translate(-25px,35px) scale(.95)}}
+.bg-grid{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.016) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.016) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse 100% 80% at 50% 0%,black 10%,transparent 80%);mask-image:radial-gradient(ellipse 100% 80% at 50% 0%,black 10%,transparent 80%)}
+
+/* ── Nav ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:64px;background:rgba(3,5,8,0.82);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid var(--border)}
+.n-logo{font-size:1rem;font-weight:800;letter-spacing:-.3px;color:var(--text);display:flex;align-items:center;gap:10px;text-decoration:none}
+.n-dot{width:8px;height:8px;border-radius:50%;background:var(--rose);box-shadow:0 0 10px var(--rose);animation:hb-dot 1.2s ease-in-out infinite}
+@keyframes hb-dot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.7}}
+.n-links{display:flex;align-items:center;gap:4px}
+.n-links a{padding:6px 14px;border-radius:8px;font-size:.82rem;font-weight:500;color:var(--sub);text-decoration:none;transition:color .2s,background .2s}
+.n-links a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.n-cta{background:var(--rose)!important;color:#fff!important;font-weight:700!important;box-shadow:0 0 0 1px rgba(225,29,72,.5),0 4px 20px rgba(225,29,72,.3)}
+.n-burger{display:none;background:none;border:none;color:var(--text);cursor:pointer;padding:7px;border-radius:8px;flex-direction:column;gap:5px;align-items:center;justify-content:center;width:36px;height:36px}
+.n-burger span{display:block;width:18px;height:2px;background:currentColor;border-radius:2px;transition:transform .25s var(--r),opacity .25s}
+.n-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.n-burger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.n-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* ── Hero ── */
+.hero{padding:140px 80px 80px;position:relative;overflow:hidden;text-align:center}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(225,29,72,.10),transparent 50%);pointer-events:none}
+.hero-eye{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:20px;border:1px solid rgba(225,29,72,.28);background:rgba(225,29,72,.06);font-size:.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose2);margin-bottom:28px;animation:fadeUp .7s var(--r) both}
+.hero h1{font-size:clamp(2.6rem,5vw,4.2rem);font-weight:900;letter-spacing:-.05em;line-height:.96;animation:fadeUp .7s .1s var(--r) both;max-width:820px;margin:0 auto}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose2),#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{margin-top:22px;font-size:1.05rem;line-height:1.75;color:var(--sub);max-width:620px;margin-left:auto;margin-right:auto;animation:fadeUp .7s .18s var(--r) both}
+.hero-meta{margin-top:40px;display:flex;justify-content:center;flex-wrap:wrap;gap:10px;animation:fadeUp .7s .26s var(--r) both}
+.meta-pill{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:.78rem;color:var(--sub)}
+.meta-pill svg{color:var(--rose2);flex-shrink:0}
+.hero-stats{margin-top:52px;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:760px;margin-left:auto;margin-right:auto;border:1px solid var(--border);border-radius:18px;overflow:hidden;animation:fadeUp .7s .34s var(--r) both}
+.h-stat{padding:24px 28px;background:rgba(255,255,255,.025);text-align:center}
+.h-stat-n{font-size:2.2rem;font-weight:900;letter-spacing:-.05em;background:linear-gradient(135deg,var(--rose),var(--rose2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:6px}
+.h-stat-l{font-size:.68rem;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Layout ── */
+.section{padding:100px 80px;max-width:1280px;margin:0 auto}
+.rule{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0 80px}
+.s-eye{font-size:.68rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose);margin-bottom:12px}
+.s-num{font-size:.68rem;font-weight:700;letter-spacing:1px;color:rgba(225,29,72,.5);margin-bottom:4px;font-variant-numeric:tabular-nums}
+.s-title{font-size:clamp(1.8rem,2.8vw,2.4rem);font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-bottom:16px}
+.s-body{font-size:1rem;line-height:1.82;color:var(--sub);max-width:640px}
+
+/* ── Expert card ── */
+.expert-wrap{display:grid;grid-template-columns:320px 1fr;gap:52px;align-items:start;margin-top:48px}
+.expert-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;position:sticky;top:84px}
+.expert-card-top{padding:36px 32px 28px;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(to bottom,rgba(225,29,72,.05),transparent)}
+.expert-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(225,29,72,.2),rgba(251,113,133,.1));border:2px solid rgba(225,29,72,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--rose);overflow:hidden}
+.expert-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.expert-name a{color:inherit;text-decoration:none;border-bottom:1px solid rgba(225,29,72,.35);transition:border-color .2s,color .2s}
+.expert-name a:hover{color:var(--rose2);border-color:var(--rose2)}
+.expert-role{font-size:.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose2);margin-bottom:6px}
+.expert-name{font-size:1.1rem;font-weight:800;letter-spacing:-.02em;margin-bottom:10px}
+.expert-desc{font-size:.84rem;line-height:1.65;color:var(--sub)}
+.expert-card-body{padding:24px 28px;display:flex;flex-direction:column;gap:14px}
+.expert-row{display:flex;align-items:flex-start;gap:12px}
+.expert-row-icon{width:32px;height:32px;border-radius:8px;background:rgba(225,29,72,.08);border:1px solid rgba(225,29,72,.16);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--rose2)}
+.expert-row-k{font-size:.62rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-bottom:2px}
+.expert-row-v{font-size:.82rem;line-height:1.5;color:var(--sub)}
+
+.expert-body{display:flex;flex-direction:column;gap:24px}
+.expert-body p{font-size:1rem;line-height:1.82;color:var(--sub)}
+.expert-body p strong{color:var(--text);font-weight:600}
+.spec-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.spec-tag{padding:5px 13px;border-radius:20px;font-size:.72rem;font-weight:600;background:rgba(225,29,72,.07);border:1px solid rgba(225,29,72,.2);color:var(--rose2)}
+
+/* ── Protocol steps ── */
+.protocol-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:48px;border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.proto-cell{background:var(--card);padding:36px 32px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:background .25s;position:relative}
+.proto-cell:nth-child(even){border-right:none}
+.proto-cell:nth-last-child(-n+2){border-bottom:none}
+.proto-cell:hover{background:#0e1525}
+.proto-n{font-size:5rem;font-weight:900;letter-spacing:-.05em;color:rgba(255,255,255,.025);line-height:1;position:absolute;top:12px;right:18px}
+.proto-icon{width:44px;height:44px;border-radius:12px;background:rgba(225,29,72,.08);border:1px solid rgba(225,29,72,.16);display:flex;align-items:center;justify-content:center;margin-bottom:18px;color:var(--rose)}
+.proto-cell h4{font-size:.95rem;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
+.proto-cell p{font-size:.88rem;line-height:1.72;color:var(--sub)}
+
+.qs-list{margin-top:44px;display:flex;flex-direction:column;gap:10px}
+.q-item{display:flex;align-items:flex-start;gap:16px;padding:18px 22px;background:var(--card);border:1px solid var(--border);border-radius:14px;transition:background .2s,border-color .2s}
+.q-item:hover{background:#0e1525;border-color:rgba(225,29,72,.18)}
+.q-num{width:28px;height:28px;border-radius:8px;background:rgba(225,29,72,.1);border:1px solid rgba(225,29,72,.22);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:var(--rose);flex-shrink:0;margin-top:1px}
+.q-text{font-size:.92rem;line-height:1.6;color:var(--sub);font-style:italic}
+.q-text strong{color:var(--text);font-style:normal;font-weight:600}
+
+/* ── Feedback ── */
+.feedback-intro{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:48px;align-items:start}
+.fb-quote{padding:28px 32px 28px 28px;background:var(--card);border-radius:18px;border:1px solid var(--border);border-left:3px solid var(--rose);font-size:.97rem;line-height:1.82;color:var(--sub);font-style:italic;position:relative}
+.fb-quote strong{color:var(--text);font-style:normal}
+.fb-quote::before{content:'\201C';position:absolute;top:-10px;left:20px;font-size:4rem;color:rgba(225,29,72,.2);line-height:1;font-style:normal}
+.fb-right{display:flex;flex-direction:column;gap:14px}
+.fb-highlight{padding:18px 22px;background:var(--card);border:1px solid var(--border);border-radius:14px;display:flex;align-items:flex-start;gap:14px;transition:background .2s}
+.fb-highlight:hover{background:#0e1525}
+.fb-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.fb-dot.pos{background:#10b981;box-shadow:0 0 10px rgba(16,185,129,.4)}
+.fb-dot.gap{background:#f59e0b;box-shadow:0 0 10px rgba(245,158,11,.4)}
+.fb-dot.sug{background:var(--rose);box-shadow:0 0 10px rgba(225,29,72,.4)}
+.fb-hl-k{font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+.fb-hl-k.pos{color:#10b981}
+.fb-hl-k.gap{color:#f59e0b}
+.fb-hl-k.sug{color:var(--rose2)}
+.fb-hl-v{font-size:.86rem;line-height:1.6;color:var(--sub)}
+
+.fb-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:4px;border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.fb-card{background:var(--card);padding:32px 28px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;transition:background .3s}
+.fb-card:nth-child(3n){border-right:none}
+.fb-card:nth-last-child(-n+3){border-bottom:none}
+.fb-card:hover{background:#0e1525}
+.fb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac,var(--rose));opacity:0;transition:opacity .3s}
+.fb-card:hover::before{opacity:1}
+.fb-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;border:1px solid}
+.fb-card h4{font-size:.92rem;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
+.fb-card p{font-size:.84rem;line-height:1.72;color:var(--sub)}
+.fb-tag{display:inline-block;padding:3px 9px;border-radius:20px;font-size:.6rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-top:12px;border:1px solid}
+
+/* ── Takeaways ── */
+.takeaway-list{margin-top:52px;display:flex;flex-direction:column;gap:2px;border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.ta-row{display:grid;grid-template-columns:56px 1fr;gap:0;background:var(--card);border-bottom:1px solid var(--border);transition:background .25s}
+.ta-row:last-child{border-bottom:none}
+.ta-row:hover{background:#0e1525}
+.ta-n{display:flex;align-items:center;justify-content:center;padding:28px 0;border-right:1px solid var(--border);font-size:1.1rem;font-weight:900;color:rgba(225,29,72,.35);font-variant-numeric:tabular-nums}
+.ta-body{padding:24px 28px}
+.ta-title{font-size:.95rem;font-weight:700;letter-spacing:-.02em;margin-bottom:7px;color:var(--text)}
+.ta-desc{font-size:.88rem;line-height:1.72;color:var(--sub)}
+.ta-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:.6rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px;border:1px solid}
+.ta-badge.clinical{background:rgba(16,185,129,.08);color:#10b981;border-color:rgba(16,185,129,.2)}
+.ta-badge.design{background:rgba(99,102,241,.08);color:#818cf8;border-color:rgba(99,102,241,.2)}
+.ta-badge.technical{background:rgba(245,158,11,.08);color:#f59e0b;border-color:rgba(245,158,11,.2)}
+.ta-badge.strategic{background:rgba(225,29,72,.08);color:var(--rose2);border-color:rgba(225,29,72,.2)}
+
+/* ── Summary ── */
+.summary-wrap{margin-top:52px;padding:48px 52px;border-radius:22px;background:linear-gradient(135deg,rgba(225,29,72,.07),rgba(8,13,24,.9));border:1px solid rgba(225,29,72,.18);position:relative;overflow:hidden}
+.summary-wrap::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(225,29,72,.12),transparent 70%);pointer-events:none}
+.summary-wrap h3{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-bottom:16px}
+.summary-wrap p{font-size:1rem;line-height:1.82;color:var(--sub);max-width:780px}
+.summary-wrap p + p{margin-top:14px}
+.summary-wrap strong{color:var(--text);font-weight:600}
+.summary-actions{margin-top:32px;display:flex;gap:12px;flex-wrap:wrap}
+
+/* ── Buttons ── */
+.btn-solid{padding:12px 24px;border-radius:10px;background:var(--rose);color:#fff;font-size:.86rem;font-weight:700;text-decoration:none;box-shadow:0 4px 20px rgba(225,29,72,.35),0 0 0 1px rgba(225,29,72,.5);transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-solid:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(225,29,72,.5),0 0 0 1px rgba(225,29,72,.7)}
+.btn-outline{padding:11px 22px;border-radius:10px;border:1px solid var(--br2);color:var(--text);font-size:.86rem;font-weight:600;text-decoration:none;background:rgba(255,255,255,.03);transition:background .2s,border-color .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-outline:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.22)}
+
+/* ── Footer ── */
+footer{border-top:1px solid var(--border);padding:36px 80px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.f-logo{font-size:.9rem;font-weight:800;letter-spacing:-.02em}
+.f-logo span{color:var(--rose)}
+.f-links{display:flex;gap:20px}
+.f-links a{font-size:.78rem;color:var(--dim);text-decoration:none;transition:color .2s}
+.f-links a:hover{color:var(--text)}
+.f-copy{font-size:.74rem;color:var(--dim)}
+
+/* ── Reveal ── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--r),transform .7s var(--r)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  nav{padding:0 20px}
+  .n-links{display:none}
+  .n-burger{display:flex}
+  .n-links.open{display:flex;position:fixed;top:64px;left:0;right:0;flex-direction:column;gap:2px;background:rgba(3,5,8,.97);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:10px 16px 18px;z-index:199}
+  .n-links.open a{border-radius:10px;padding:12px 14px;font-size:.9rem;width:100%}
+  .hero{padding:100px 20px 60px}
+  .hero-stats{grid-template-columns:1fr 1fr 1fr}
+  .section{padding:64px 20px}
+  .rule{margin:0 20px}
+  .expert-wrap{grid-template-columns:1fr}
+  .expert-card{position:static}
+  .feedback-intro{grid-template-columns:1fr}
+  .fb-cards{grid-template-columns:1fr}
+  .fb-card{border-right:none!important;border-bottom:1px solid var(--border)!important}
+  .fb-card:last-child{border-bottom:none!important}
+  .protocol-grid{grid-template-columns:1fr}
+  .proto-cell{border-right:none!important}
+  .proto-cell:nth-last-child(-n+2){border-bottom:1px solid var(--border)!important}
+  .proto-cell:last-child{border-bottom:none!important}
+  .summary-wrap{padding:32px 24px}
+  footer{padding:28px 20px;flex-direction:column;align-items:flex-start}
+}
+@media(max-width:480px){
+  .hero{padding:88px 16px 48px}
+  .hero h1{font-size:2.2rem}
+  .hero-sub{font-size:.92rem}
+  .hero-stats{grid-template-columns:1fr}
+  .h-stat{border-bottom:1px solid var(--border)}
+  .h-stat:last-child{border-bottom:none}
+  .section{padding:48px 16px}
+  .rule{margin:0 16px}
+  .s-title{font-size:1.7rem}
+  .ta-body{padding:20px 18px}
+  .ta-n{padding:20px 0;font-size:.95rem}
+  .summary-wrap{padding:26px 18px}
+  .summary-wrap h3{font-size:1.25rem}
+  .qs-list .q-item{padding:14px 16px;gap:12px}
+  footer{padding:22px 16px}
+  .f-links{gap:14px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-mesh" aria-hidden="true">
+  <div class="bg-orb bg-o1"></div>
+  <div class="bg-orb bg-o2"></div>
+  <div class="bg-orb bg-o3"></div>
+</div>
+<div class="bg-grid" aria-hidden="true"></div>
+
+<nav>
+  <a href="../" class="n-logo"><div class="n-dot"></div>HeartWise</a>
+  <div class="n-links" id="nLinks">
+    <a href="../#problem">Problem</a>
+    <a href="../#product">Product</a>
+    <a href="../storyBoard/">Storyboard</a>
+    <a href="../#team">Team</a>
+    <a href="../Heartwise/" target="_blank" class="n-cta">Live Demo ↗</a>
+  </div>
+  <button class="n-burger" id="nBurger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-eye">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    Expert Session Write-Up
+  </div>
+  <h1>A Physician Reviewed<br><em>HeartWise</em></h1>
+  <p class="hero-sub">Remote prototype walkthrough and feedback conversation with a physician carrying cardiology experience. Here is what they found, what they liked, and what needs to improve.</p>
+  <div class="hero-meta">
+    <div class="meta-pill">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Physician / Cardiology Expert
+    </div>
+    <div class="meta-pill">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Remote Prototype Walkthrough
+    </div>
+    <div class="meta-pill">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Semi-Structured Think-Aloud
+    </div>
+    <div class="meta-pill">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      HeartWise  3D ECG Visualizer
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="h-stat"><div class="h-stat-n">12</div><div class="h-stat-l">ECG leads recommended</div></div>
+    <div class="h-stat"><div class="h-stat-n">6</div><div class="h-stat-l">Core feedback points</div></div>
+    <div class="h-stat"><div class="h-stat-n">5</div><div class="h-stat-l">Design takeaways</div></div>
+  </div>
+</div>
+
+<div class="rule"></div>
+
+<!-- ── §1 EXPERT DESCRIPTION ── -->
+<section class="section" id="expert">
+  <div class="reveal">
+    <div class="s-num">Section 01</div>
+    <div class="s-eye">Expert Description</div>
+    <h2 class="s-title">Who reviewed the prototype</h2>
+  </div>
+
+  <div class="expert-wrap">
+    <div class="expert-card reveal">
+      <div class="expert-card-top">
+        <div class="expert-avatar">
+          <img src="../Images/prashantRane.png" alt="Dr. Prashant Rane">
+        </div>
+        <div class="expert-role">Cardiologist</div>
+        <div class="expert-name"><a href="https://www.hexahealth.com/mumbai/doctor/dr-prashant-rane-internal-medicine-specialist" target="_blank" rel="noopener">Dr. Prashant Rane ↗</a></div>
+        <p class="expert-desc">Clinically familiar with ECG interpretation, cardiac anatomy, vascular territories, and patient education around cardiac conditions.</p>
+      </div>
+      <div class="expert-card-body">
+        <div class="expert-row">
+          <div class="expert-row-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div><div class="expert-row-k">Specialty</div><div class="expert-row-v">Cardiology &amp; General Medicine</div></div>
+        </div>
+        <div class="expert-row">
+          <div class="expert-row-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div><div class="expert-row-k">ECG Expertise</div><div class="expert-row-v">12-lead interpretation, PQRST, arrhythmia classification</div></div>
+        </div>
+        <div class="expert-row">
+          <div class="expert-row-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div><div class="expert-row-k">Relevance</div><div class="expert-row-v">Patient education, clinical training, triage support</div></div>
+        </div>
+        <div class="expert-row">
+          <div class="expert-row-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div><div class="expert-row-k">Format</div><div class="expert-row-v">Remote, concurrent think-aloud walkthrough</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="expert-body reveal d1">
+      <p>For this user session, I engaged a <strong>cardiologist</strong> as the main stakeholder for the HeartWise prototype. The expert is clinically familiar with ECG interpretation, heart anatomy, vascular territories, arrhythmias, and patient education around cardiac conditions.</p>
+      <p>Their expertise made them especially relevant because HeartWise is intended to translate heart rate and ECG-related information into clearer visual explanations for <strong>patients, clinicians, and medical learners</strong>.</p>
+      <p>The expert was able to evaluate the prototype from both a <strong>clinical and practical perspective</strong>: whether it would help patients understand cardiac problems, whether it could support doctors in explaining ECG-related findings, and what additional medical features would make the tool more accurate and useful.</p>
+      <div>
+        <p style="font-size:.78rem;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-bottom:10px">Areas of clinical expertise</p>
+        <div class="spec-tags">
+          <span class="spec-tag">ECG Interpretation</span>
+          <span class="spec-tag">Heart Anatomy</span>
+          <span class="spec-tag">Vascular Territories</span>
+          <span class="spec-tag">Arrhythmia Classification</span>
+          <span class="spec-tag">Patient Education</span>
+          <span class="spec-tag">Cardiac Conditions</span>
+          <span class="spec-tag">12-Lead ECG</span>
+          <span class="spec-tag">Triage</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- ── §2 INTERACTION PROTOCOL ── -->
+<section class="section" id="protocol">
+  <div class="reveal">
+    <div class="s-num">Section 02</div>
+    <div class="s-eye">Interaction Protocol</div>
+    <h2 class="s-title">How the session was conducted</h2>
+    <p class="s-body">A semi-structured interview combined with a live prototype walkthrough, using a concurrent think-aloud approach so the expert could flag issues in real time.</p>
+  </div>
+
+  <div class="protocol-grid reveal d1">
+    <div class="proto-cell">
+      <span class="proto-n">01</span>
+      <div class="proto-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      </div>
+      <h4>Prototype Introduction</h4>
+      <p>The session opened with a brief introduction to HeartWise: its purpose of converting ECG and heart-rate information into a more visual format using a 3D heart model and ECG-style display.</p>
+    </div>
+    <div class="proto-cell">
+      <span class="proto-n">02</span>
+      <div class="proto-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <h4>Think-Aloud Walkthrough</h4>
+      <p>The expert reacted to the prototype while viewing it live  a <strong>concurrent think-aloud</strong> approach. This allowed immediate identification of missing clinical details, such as ECG leads and vascular territories.</p>
+    </div>
+    <div class="proto-cell">
+      <span class="proto-n">03</span>
+      <div class="proto-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <h4>Open-Ended Questions</h4>
+      <p>Questions were open-ended and exploratory  appropriate because the prototype is in an early stage where qualitative feedback is more valuable than rigid usability tasks with fixed outcomes.</p>
+    </div>
+    <div class="proto-cell">
+      <span class="proto-n">04</span>
+      <div class="proto-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </div>
+      <h4>Remote Format</h4>
+      <p>The session was conducted remotely via a screen-shared prototype walkthrough. This matched the realistic use context where HeartWise might be accessed on any device or network environment.</p>
+    </div>
+  </div>
+
+  <div class="qs-list reveal d2">
+    <p style="font-size:.78rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:6px">Questions asked during the session</p>
+    <div class="q-item"><div class="q-num">Q1</div><p class="q-text">Do you see this being <strong>useful in your day-to-day clinical work</strong>?</p></div>
+    <div class="q-item"><div class="q-num">Q2</div><p class="q-text">Could this help doctors <strong>explain cardiac issues to patients</strong>?</p></div>
+    <div class="q-item"><div class="q-num">Q3</div><p class="q-text">What features would make this <strong>more clinically useful</strong>?</p></div>
+    <div class="q-item"><div class="q-num">Q4</div><p class="q-text">What is <strong>missing from the current ECG visualization</strong>?</p></div>
+    <div class="q-item"><div class="q-num">Q5</div><p class="q-text">How could the prototype <strong>support diagnosis or interpretation</strong> better?</p></div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- ── §3 FEEDBACK POINTS ── -->
+<section class="section" id="feedback">
+  <div class="reveal">
+    <div class="s-num">Section 03</div>
+    <div class="s-eye">Main Feedback Points</div>
+    <h2 class="s-title">What the expert told us</h2>
+  </div>
+
+  <div class="feedback-intro reveal d1">
+    <div class="fb-quote">
+      Physicians often use <strong>physical heart models</strong> to explain blood supply and anatomy to patients. A digital version that combines heart anatomy, blood supply, electrical activity, and ECG interpretation in one visual tool could help patients, doctors, students, and researchers understand cardiac concepts more easily.
+    </div>
+    <div class="fb-right">
+      <div class="fb-highlight">
+        <div class="fb-dot pos"></div>
+        <div><div class="fb-hl-k pos">Validated</div><div class="fb-hl-v">3D heart + ECG combination seen as genuinely useful for patient education and clinical explanation.</div></div>
+      </div>
+      <div class="fb-highlight">
+        <div class="fb-dot gap"></div>
+        <div><div class="fb-hl-k gap">Gap Identified</div><div class="fb-hl-v">Prototype shows only a single simplified ECG lead. Real interpretation requires all 12 leads.</div></div>
+      </div>
+      <div class="fb-highlight">
+        <div class="fb-dot sug"></div>
+        <div><div class="fb-hl-k sug">Opportunity</div><div class="fb-hl-v">Pairing with portable ECG input could make HeartWise highly valuable in low-resource settings.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fb-cards reveal d2" style="margin-top:48px">
+    <div class="fb-card" style="--ac:#10b981">
+      <div class="fb-icon" style="background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.2);color:#10b981">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <h4>12-Lead ECG Support</h4>
+      <p>The current prototype is too limited clinically because it shows only a single or simplified ECG view. Real ECG interpretation requires all 12 leads  Lead I, II, III, aVR, aVL, aVF, and V1–V6.</p>
+      <span class="fb-tag" style="background:rgba(16,185,129,.08);color:#10b981;border-color:rgba(16,185,129,.2)">Critical Gap</span>
+    </div>
+    <div class="fb-card" style="--ac:#6366f1">
+      <div class="fb-icon" style="background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.2);color:#818cf8">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <h4>Lead Selection &amp; Labelling</h4>
+      <p>The tool should show which ECG lead is currently displayed. The expert asked to see aVR specifically, which revealed the prototype does not yet support lead selection or lead-specific interpretation.</p>
+      <span class="fb-tag" style="background:rgba(99,102,241,.08);color:#818cf8;border-color:rgba(99,102,241,.2)">Design Gap</span>
+    </div>
+    <div class="fb-card" style="--ac:#f59e0b">
+      <div class="fb-icon" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);color:#f59e0b">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+      </div>
+      <h4>Automatic ECG Interpretation</h4>
+      <p>The tool should provide automatic ECG interpretation  indicating whether the ECG is normal or abnormal. This would be useful for cardiologists, general practitioners, and non-specialist doctors alike.</p>
+      <span class="fb-tag" style="background:rgba(245,158,11,.08);color:#f59e0b;border-color:rgba(245,158,11,.2)">Feature Request</span>
+    </div>
+    <div class="fb-card" style="--ac:var(--rose)">
+      <div class="fb-icon" style="background:rgba(225,29,72,.08);border-color:rgba(225,29,72,.18);color:var(--rose2)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <h4>Vascular Territory Mapping</h4>
+      <p>ECG findings should be mapped to anatomical regions and vascular territories. If a certain heart area is affected, the prototype should show which vascular territory is involved  making the connection visual and immediate.</p>
+      <span class="fb-tag" style="background:rgba(225,29,72,.08);color:var(--rose2);border-color:rgba(225,29,72,.2)">Enhancement</span>
+    </div>
+    <div class="fb-card" style="--ac:#06b6d4">
+      <div class="fb-icon" style="background:rgba(6,182,212,.08);border-color:rgba(6,182,212,.2);color:#22d3ee">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <h4>Arrhythmia Detection</h4>
+      <p>The tool should eventually identify different types of arrhythmias  not just general heart attack risk or heart rate abnormalities. A differential diagnosis support feature would suggest possible conditions when ECG changes are present.</p>
+      <span class="fb-tag" style="background:rgba(6,182,212,.08);color:#22d3ee;border-color:rgba(6,182,212,.2)">Future Feature</span>
+    </div>
+    <div class="fb-card" style="--ac:#10b981">
+      <div class="fb-icon" style="background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.2);color:#10b981">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <h4>Remote &amp; Low-Resource Access</h4>
+      <p>Portable ECG devices exist, but network availability can be a problem in remote areas. HeartWise could be especially valuable for timely diagnosis in low-resource or rural settings where specialist access is limited.</p>
+      <span class="fb-tag" style="background:rgba(16,185,129,.08);color:#10b981;border-color:rgba(16,185,129,.2)">Strategic Value</span>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- ── §4 TAKEAWAYS ── -->
+<section class="section" id="takeaways">
+  <div class="reveal">
+    <div class="s-num">Section 04</div>
+    <div class="s-eye">Design Takeaways</div>
+    <h2 class="s-title">What needs to change in the prototype</h2>
+    <p class="s-body">The biggest takeaway is that HeartWise has value as an educational visualization tool, but it needs more clinical depth to become useful in real medical workflows.</p>
+  </div>
+
+  <div class="takeaway-list reveal d1">
+    <div class="ta-row">
+      <div class="ta-n">01</div>
+      <div class="ta-body">
+        <div class="ta-badge technical">Technical</div>
+        <div class="ta-title">Implement 12-Lead ECG Visualization</div>
+        <p class="ta-desc">Move beyond a simplified heart-rate display. Adding selectable leads  Lead I, Lead II, Lead III, aVR, aVL, aVF, and V1–V6  would make the tool medically credible and useful for real clinical training and interpretation.</p>
+      </div>
+    </div>
+    <div class="ta-row">
+      <div class="ta-n">02</div>
+      <div class="ta-body">
+        <div class="ta-badge design">Design</div>
+        <div class="ta-title">Label the Active ECG Lead Clearly</div>
+        <p class="ta-desc">The interface should always show which ECG lead is currently displayed. Clinicians interpret different leads differently, and each lead corresponds to a different anatomical view of the heart. Clarity here is non-negotiable.</p>
+      </div>
+    </div>
+    <div class="ta-row">
+      <div class="ta-n">03</div>
+      <div class="ta-body">
+        <div class="ta-badge clinical">Clinical</div>
+        <div class="ta-title">Connect ECG Changes to Heart Anatomy</div>
+        <p class="ta-desc">The prototype should show which anatomical region or vascular territory is involved when an ECG change is present. This visual connection would support both patient education and clinician training in a way no static diagram can.</p>
+      </div>
+    </div>
+    <div class="ta-row">
+      <div class="ta-n">04</div>
+      <div class="ta-body">
+        <div class="ta-badge clinical">Clinical</div>
+        <div class="ta-title">Expand Interpretation  with Transparency</div>
+        <p class="ta-desc">Instead of only broad warnings like "heart attack risk," the tool should provide specific outputs: possible abnormality, affected region, and suggested differential diagnoses. But it must communicate uncertainty clearly and never overclaim diagnostic certainty.</p>
+      </div>
+    </div>
+    <div class="ta-row">
+      <div class="ta-n">05</div>
+      <div class="ta-body">
+        <div class="ta-badge strategic">Strategic</div>
+        <div class="ta-title">Design for Low-Resource and Remote Contexts</div>
+        <p class="ta-desc">Pairing HeartWise with portable ECG input and offline or low-bandwidth functionality could make it meaningful for general practitioners and community health workers who need support before a cardiologist is available. This is a high-impact opportunity.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- ── §5 SUMMARY ── -->
+<section class="section" id="summary">
+  <div class="reveal">
+    <div class="s-num">Section 05</div>
+    <div class="s-eye">Summary</div>
+    <h2 class="s-title">The expert validated the core direction</h2>
+  </div>
+
+  <div class="summary-wrap reveal d1">
+    <h3>Overall: HeartWise is on the right track.</h3>
+    <p>The expert validated the core direction of HeartWise as a <strong>visual explanation tool for cardiac education</strong>. The 3D heart model and ECG display were seen as helpful  especially for explaining anatomy, blood supply, and electrical activity to patients and learners.</p>
+    <p>However, the expert also made clear that the next version should include <strong>12-lead ECG support, lead-specific labelling, clinical interpretation, vascular territory mapping, and arrhythmia detection</strong>. These changes would make the prototype more accurate, useful, and aligned with real clinical practice.</p>
+    <p>The session also revealed a <strong>strategic opportunity</strong>: pairing HeartWise with portable ECG input and offline functionality could make it a meaningful tool in low-resource or rural settings  a context where the gap between available technology and specialist access is widest, and where the educational value of a well-designed visualization tool is greatest.</p>
+    <div class="summary-actions">
+      <a href="../Heartwise/" target="_blank" class="btn-solid">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Open Live Demo
+      </a>
+      <a href="../storyBoard/" class="btn-outline">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        View Storyboard
+      </a>
+      <a href="../" class="btn-outline">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Back to Home
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="f-logo">Heart<span>Wise</span></div>
+  <div class="f-links">
+    <a href="../">Home</a>
+    <a href="../storyBoard/">Storyboard</a>
+    <a href="#expert">Expert Session</a>
+    <a href="../Heartwise/" target="_blank">Demo ↗</a>
+  </div>
+  <div class="f-copy">&copy; 2026 · Design Innovations Group</div>
+</footer>
+
+<script>
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) e.target.classList.add('in');
+}), { threshold: .10 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Hamburger
+(function(){
+  var btn = document.getElementById('nBurger');
+  var links = document.getElementById('nLinks');
+  if (!btn || !links) return;
+  btn.addEventListener('click', function(){
+    var open = links.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open);
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      links.classList.remove('open');
+      btn.classList.remove('open');
+      btn.setAttribute('aria-expanded','false');
+    });
+  });
+})();
+</script>
+</body>
+</html>
