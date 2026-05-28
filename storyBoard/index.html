@@ -105,6 +105,10 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--rose),var(--rose
 .sb-video-container.video-started #sbVideoFrame{pointer-events:auto}
 .sb-sound-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:10;background:rgba(8,13,24,.72);backdrop-filter:blur(8px);border:1px solid rgba(225,29,72,.22);border-radius:20px;padding:5px 14px;font-size:.65rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose2);pointer-events:none;opacity:1;transition:opacity .6s .4s}
 .sb-video-container.sound-started .sb-sound-hint{opacity:0}
+.sb-mute-btn{position:absolute;top:12px;right:12px;z-index:20;display:none;align-items:center;gap:7px;padding:6px 13px 6px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.18);background:rgba(8,13,24,.72);backdrop-filter:blur(10px);cursor:pointer;font-size:.68rem;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:rgba(241,245,249,.8);transition:background .2s,border-color .2s;-webkit-tap-highlight-color:transparent}
+.sb-mute-btn:hover{background:rgba(8,13,24,.92);border-color:rgba(255,255,255,.32)}
+.sb-video-container.video-started .sb-mute-btn{display:flex}
+.sb-mute-btn svg{flex-shrink:0}
 .sb-caption{padding:20px 28px;border-top:1px solid var(--border);font-size:.85rem;line-height:1.72;color:var(--sub);font-style:italic;text-align:center}
 
 .pulse-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:20px;background:rgba(225,29,72,.06);border:1px solid rgba(225,29,72,.22);font-size:.68rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose2);margin-top:36px}
@@ -396,6 +400,13 @@ footer{border-top:1px solid var(--border);padding:40px 80px;display:flex;align-i
               style="position:absolute;inset:0;width:100%;height:100%;border:none;display:block;pointer-events:none;transition:opacity .4s;z-index:3"
               title="HeartWise thumbnail"></iframe>
       <div class="sb-tap-hint">Tap to play</div>
+      <button class="sb-mute-btn" id="sbMuteBtn" aria-label="Mute">
+        <!-- unmuted icon (shown when audio is playing) -->
+        <svg id="sbIconUnmuted" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+        <!-- muted icon (shown when muted) -->
+        <svg id="sbIconMuted" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        <span id="sbMuteLbl">Mute</span>
+      </button>
     </div>
   </div>
 </section>
@@ -580,6 +591,30 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   container.addEventListener('mouseenter', startVideo);
   container.addEventListener('touchend',   startVideo, { passive: true });
   container.addEventListener('click',      startVideo);
+})();
+
+// Mute / Unmute button
+(function() {
+  var btn        = document.getElementById('sbMuteBtn');
+  var iconOn     = document.getElementById('sbIconUnmuted');
+  var iconOff    = document.getElementById('sbIconMuted');
+  var lbl        = document.getElementById('sbMuteLbl');
+  var frame      = document.getElementById('sbVideoFrame');
+  var muted      = false;
+
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation(); // don't trigger startVideo again
+    muted = !muted;
+    iconOn.style.display  = muted ? 'none'  : 'block';
+    iconOff.style.display = muted ? 'block' : 'none';
+    lbl.textContent       = muted ? 'Unmute' : 'Mute';
+    btn.setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
+    try { frame.contentWindow.postMessage(muted ? 'hw-sound-mute' : 'hw-sound-unmute', '*'); } catch(ex) {}
+  });
+
+  btn.addEventListener('touchend', function(e) {
+    e.stopPropagation();
+  }, { passive: true });
 })();
 </script>
 </body>

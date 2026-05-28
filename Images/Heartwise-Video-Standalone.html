@@ -17,6 +17,30 @@
       This page requires JavaScript to display.
     </div>
   </noscript>
+  <script>
+    /* Mute/unmute bridge — patches AudioContext so parent can suspend/resume via postMessage */
+    (function() {
+      window.__hwAudioContexts = [];
+      var _AC = window.AudioContext || window.webkitAudioContext;
+      if (_AC) {
+        var _HW = function() {
+          var ctx = new _AC();
+          window.__hwAudioContexts.push(ctx);
+          return ctx;
+        };
+        _HW.prototype = _AC.prototype;
+        if (window.AudioContext) window.AudioContext = _HW;
+        if (window.webkitAudioContext) window.webkitAudioContext = _HW;
+      }
+      window.addEventListener('message', function(e) {
+        if (e.data === 'hw-sound-mute') {
+          window.__hwAudioContexts.forEach(function(c) { try { c.suspend(); } catch(x) {} });
+        } else if (e.data === 'hw-sound-unmute') {
+          window.__hwAudioContexts.forEach(function(c) { try { c.resume(); } catch(x) {} });
+        }
+      });
+    })();
+  </script>
 </head>
 <body>
   <div id="__bundler_thumbnail">
