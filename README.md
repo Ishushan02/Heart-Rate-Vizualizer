@@ -8,10 +8,15 @@ HeartWise shows an educational 10-minute acute MI cue based on the entered BPM a
 This is not a validated heart attack prediction model. A real Myocardial Infarction (MI) or arrhythmia classifier requires measured ECG data, previous clinical context, and often lab findings; the demo uses BPM plus a synthetic ECG visualization. PTB-XL and MIT-BIH are included as reference datasets for real ECG-based classification, while AHA/CDC guidance is used for heart-rate ranges and symptom warnings.
 
 PTB-XL/PhysioNet: https://physionet.org/content/ptb-xl/1.0.2/
+
 American Heart Association symptoms: https://www.heart.org/en/about-us/heart-attack-and-stroke-symptoms
+
 CDC heart attack guidance: https://www.cdc.gov/heart-disease/about/heart-attack.html
+
 MIT-BIH Arrhythmia Database for ECG rhythm-analysis context: https://physionet.org/physiobank/database/html/mitdbdir/intro.htm
+
 AHA heart-rate ranges, bradycardia/tachycardia definitions: https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/all-about-heart-rate-pulse
+
 AHA arrhythmia definitions: https://www.heart.org/en/health-topics/arrhythmia/about-arrhythmia
 
 ## Structure
