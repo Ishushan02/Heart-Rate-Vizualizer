@@ -53,8 +53,8 @@
           decodeAudioData: function(_, ok) { if (ok) ok(null); return Promise.resolve(null); }
         };
       }
-      // if (window.AudioContext) window.AudioContext = SilentAudioContext;
-      // if (window.webkitAudioContext) window.webkitAudioContext = SilentAudioContext;
+      if (window.AudioContext) window.AudioContext = SilentAudioContext;
+      if (window.webkitAudioContext) window.webkitAudioContext = SilentAudioContext;
     })();
   </script>
 </head>
