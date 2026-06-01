@@ -35,7 +35,7 @@
                  setTargetAtTime: noop, setValueCurveAtTime: noop };
       };
 
-      /* Pure no-op context — used as fallback and as the replacement constructor */
+      /* Pure no-op context  used as fallback and as the replacement constructor */
       function noopContext() {
         return {
           currentTime: 0, sampleRate: 44100, state: 'suspended',
@@ -81,7 +81,7 @@
         return noopContext();
       }
 
-      /* Install — use defineProperty so the bundled code can't overwrite it */
+      /* Install  use defineProperty so the bundled code can't overwrite it */
       function install(name) {
         var real = window[name];
         if (!real) return;
