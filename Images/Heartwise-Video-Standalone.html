@@ -18,27 +18,43 @@
     </div>
   </noscript>
   <script>
-    /* Mute/unmute bridge — patches AudioContext so parent can suspend/resume via postMessage */
+    /* Silence all Web Audio — replace AudioContext with a no-op shim */
     (function() {
-      window.__hwAudioContexts = [];
-      var _AC = window.AudioContext || window.webkitAudioContext;
-      if (_AC) {
-        var _HW = function() {
-          var ctx = new _AC();
-          window.__hwAudioContexts.push(ctx);
-          return ctx;
-        };
-        _HW.prototype = _AC.prototype;
-        if (window.AudioContext) window.AudioContext = _HW;
-        if (window.webkitAudioContext) window.webkitAudioContext = _HW;
+      var noop = function() {};
+      var noopP = function() { return Promise.resolve(); };
+      function silentNode(extra) {
+        return Object.assign({ connect: noop, disconnect: noop, start: noop, stop: noop }, extra || {});
       }
-      window.addEventListener('message', function(e) {
-        if (e.data === 'hw-sound-mute') {
-          window.__hwAudioContexts.forEach(function(c) { try { c.suspend(); } catch(x) {} });
-        } else if (e.data === 'hw-sound-unmute') {
-          window.__hwAudioContexts.forEach(function(c) { try { c.resume(); } catch(x) {} });
-        }
-      });
+      function SilentAudioContext() {
+        return {
+          currentTime: 0, sampleRate: 44100, state: 'running',
+          destination: silentNode(),
+          resume: noopP, suspend: noopP, close: noopP,
+          createGain: function() {
+            return silentNode({ gain: { value: 1, setValueAtTime: noop, linearRampToValueAtTime: noop, exponentialRampToValueAtTime: noop, cancelScheduledValues: noop } });
+          },
+          createOscillator: function() {
+            return silentNode({ type: 'sine', frequency: { value: 440, setValueAtTime: noop, linearRampToValueAtTime: noop, exponentialRampToValueAtTime: noop }, onended: null });
+          },
+          createBufferSource: function() {
+            return silentNode({ buffer: null, loop: false, loopStart: 0, loopEnd: 0, playbackRate: { value: 1, setValueAtTime: noop }, onended: null });
+          },
+          createBuffer: function(ch, len) {
+            return { duration: 0, length: len, numberOfChannels: ch, sampleRate: 44100, getChannelData: function() { return new Float32Array(len); }, copyFromChannel: noop, copyToChannel: noop };
+          },
+          createDynamicsCompressor: function() { return silentNode({ threshold: {value:0}, knee: {value:0}, ratio: {value:0}, attack: {value:0}, release: {value:0}, reduction: 0 }); },
+          createBiquadFilter: function() { return silentNode({ type: 'lowpass', frequency: { value: 350, setValueAtTime: noop }, Q: { value: 1, setValueAtTime: noop }, gain: { value: 0 } }); },
+          createAnalyser: function() { return silentNode({ fftSize: 2048, frequencyBinCount: 1024, getByteFrequencyData: noop, getFloatFrequencyData: noop, getByteTimeDomainData: noop }); },
+          createStereoPanner: function() { return silentNode({ pan: { value: 0, setValueAtTime: noop } }); },
+          createConvolver: function() { return silentNode({ buffer: null, normalize: true }); },
+          createDelay: function() { return silentNode({ delayTime: { value: 0, setValueAtTime: noop } }); },
+          createChannelMerger: function() { return silentNode(); },
+          createChannelSplitter: function() { return silentNode(); },
+          decodeAudioData: function(_, ok) { if (ok) ok(null); return Promise.resolve(null); }
+        };
+      }
+      if (window.AudioContext) window.AudioContext = SilentAudioContext;
+      if (window.webkitAudioContext) window.webkitAudioContext = SilentAudioContext;
     })();
   </script>
 </head>
