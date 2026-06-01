@@ -1,4 +1,4 @@
-# HeartWise
+# [HeartWise](https://ishushan02.github.io/Heart-Rate-Vizualizer/)
 
 A biomedical informatics project that turns raw heart rate numbers into real-time 3D cardiac visualization  making the heartbeat legible for patients and clinicians alike.
 
