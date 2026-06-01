@@ -608,14 +608,18 @@ document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
     const ctx=c.getContext('2d');
     ctx.scale(dpr,dpr);
     const BPM=72,BEAT_S=60/BPM;
-    const beatPx=W*0.56,SPEED=beatPx/BEAT_S;
+    const beatPx=W*0.32,SPEED=beatPx/BEAT_S;
     function ekg(x){
-      if(x<0.10)return Math.exp(-Math.pow((x-0.06)/0.022,2))*0.18;
-      if(x<0.22)return 0;
-      if(x<0.28){const t=(x-0.22)/0.06;return t<0.5?-0.28*t/0.5:0;}
-      if(x<0.40){const t=(x-0.28)/0.12;return t<0.5?-0.28+2.8*t:2.8-2.8*t;}
-      if(x<0.50){const t=(x-0.40)/0.10;return -0.38*(1-t);}
-      if(x<0.72)return 0.22*Math.exp(-Math.pow((x-0.60)/0.065,2));
+      // P wave — small gaussian bump
+      if(x>=0.08&&x<=0.26)return 0.20*Math.exp(-Math.pow((x-0.17)/0.030,2));
+      // Q — small negative half-sine dip
+      if(x>0.30&&x<=0.315){var t=(x-0.30)/0.015;return -0.14*Math.sin(t*Math.PI);}
+      // R — large positive half-sine spike
+      if(x>0.315&&x<=0.355){var t=(x-0.315)/0.040;return 1.00*Math.sin(t*Math.PI);}
+      // S — medium negative half-sine dip
+      if(x>0.355&&x<=0.390){var t=(x-0.355)/0.035;return -0.32*Math.sin(t*Math.PI);}
+      // T wave — medium gaussian bump
+      if(x>=0.44&&x<=0.74)return 0.26*Math.exp(-Math.pow((x-0.57)/0.062,2));
       return 0;
     }
     let offset=0,lastT=performance.now();
