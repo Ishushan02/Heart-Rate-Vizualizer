@@ -18,43 +18,87 @@
     </div>
   </noscript>
   <script>
-    /* Silence all Web Audio — replace AudioContext with a no-op shim */
-    (function() {
-      var noop = function() {};
-      var noopP = function() { return Promise.resolve(); };
+    /* Hard-silence all Web Audio in this page */
+    (function () {
+      var noop  = function () {};
+      var noopP = function () { return Promise.resolve(); };
+
+      /* Minimal no-op AudioNode returned by every create* call */
       function silentNode(extra) {
-        return Object.assign({ connect: noop, disconnect: noop, start: noop, stop: noop }, extra || {});
+        var n = { connect: noop, disconnect: noop, start: noop, stop: noop };
+        if (extra) for (var k in extra) n[k] = extra[k];
+        return n;
       }
-      function SilentAudioContext() {
+      var fakeP = function () {
+        return { value: 0, setValueAtTime: noop, linearRampToValueAtTime: noop,
+                 exponentialRampToValueAtTime: noop, cancelScheduledValues: noop,
+                 setTargetAtTime: noop, setValueCurveAtTime: noop };
+      };
+
+      /* Pure no-op context — used as fallback and as the replacement constructor */
+      function noopContext() {
         return {
-          currentTime: 0, sampleRate: 44100, state: 'running',
+          currentTime: 0, sampleRate: 44100, state: 'suspended',
           destination: silentNode(),
           resume: noopP, suspend: noopP, close: noopP,
-          createGain: function() {
-            return silentNode({ gain: { value: 1, setValueAtTime: noop, linearRampToValueAtTime: noop, exponentialRampToValueAtTime: noop, cancelScheduledValues: noop } });
-          },
-          createOscillator: function() {
-            return silentNode({ type: 'sine', frequency: { value: 440, setValueAtTime: noop, linearRampToValueAtTime: noop, exponentialRampToValueAtTime: noop }, onended: null });
-          },
-          createBufferSource: function() {
-            return silentNode({ buffer: null, loop: false, loopStart: 0, loopEnd: 0, playbackRate: { value: 1, setValueAtTime: noop }, onended: null });
-          },
-          createBuffer: function(ch, len) {
-            return { duration: 0, length: len, numberOfChannels: ch, sampleRate: 44100, getChannelData: function() { return new Float32Array(len); }, copyFromChannel: noop, copyToChannel: noop };
-          },
-          createDynamicsCompressor: function() { return silentNode({ threshold: {value:0}, knee: {value:0}, ratio: {value:0}, attack: {value:0}, release: {value:0}, reduction: 0 }); },
-          createBiquadFilter: function() { return silentNode({ type: 'lowpass', frequency: { value: 350, setValueAtTime: noop }, Q: { value: 1, setValueAtTime: noop }, gain: { value: 0 } }); },
-          createAnalyser: function() { return silentNode({ fftSize: 2048, frequencyBinCount: 1024, getByteFrequencyData: noop, getFloatFrequencyData: noop, getByteTimeDomainData: noop }); },
-          createStereoPanner: function() { return silentNode({ pan: { value: 0, setValueAtTime: noop } }); },
-          createConvolver: function() { return silentNode({ buffer: null, normalize: true }); },
-          createDelay: function() { return silentNode({ delayTime: { value: 0, setValueAtTime: noop } }); },
-          createChannelMerger: function() { return silentNode(); },
-          createChannelSplitter: function() { return silentNode(); },
-          decodeAudioData: function(_, ok) { if (ok) ok(null); return Promise.resolve(null); }
+          createGain:              function () { return silentNode({ gain: fakeP() }); },
+          createOscillator:        function () { return silentNode({ type: 'sine', frequency: fakeP(), detune: fakeP(), onended: null }); },
+          createBufferSource:      function () { return silentNode({ buffer: null, loop: false, loopStart: 0, loopEnd: 0, playbackRate: fakeP(), detune: fakeP(), onended: null }); },
+          createBuffer:            function (c, l, r) { return { duration: 0, length: l, numberOfChannels: c, sampleRate: r || 44100, getChannelData: function () { return new Float32Array(l); }, copyFromChannel: noop, copyToChannel: noop }; },
+          createDynamicsCompressor:function () { return silentNode({ threshold: fakeP(), knee: fakeP(), ratio: fakeP(), attack: fakeP(), release: fakeP(), reduction: 0 }); },
+          createBiquadFilter:      function () { return silentNode({ type: 'lowpass', frequency: fakeP(), Q: fakeP(), gain: fakeP() }); },
+          createAnalyser:          function () { return silentNode({ fftSize: 2048, frequencyBinCount: 1024, getByteFrequencyData: noop, getFloatFrequencyData: noop, getByteTimeDomainData: noop }); },
+          createStereoPanner:      function () { return silentNode({ pan: fakeP() }); },
+          createConvolver:         function () { return silentNode({ buffer: null, normalize: true }); },
+          createDelay:             function () { return silentNode({ delayTime: fakeP() }); },
+          createChannelMerger:     function () { return silentNode(); },
+          createChannelSplitter:   function () { return silentNode(); },
+          createWaveShaper:        function () { return silentNode({ curve: null, oversample: 'none' }); },
+          createPanner:            function () { return silentNode({ panningModel: 'equalpower', distanceModel: 'inverse', refDistance: 1 }); },
+          createScriptProcessor:   function () { return silentNode({ onaudioprocess: null }); },
+          createMediaElementSource:function () { return silentNode(); },
+          createMediaStreamSource: function () { return silentNode(); },
+          decodeAudioData:         function (_, ok) { if (ok) try { ok(null); } catch (e) {} return noopP(); }
         };
       }
-      if (window.AudioContext) window.AudioContext = SilentAudioContext;
-      if (window.webkitAudioContext) window.webkitAudioContext = SilentAudioContext;
+
+      /* The replacement constructor */
+      function SilentAudioContext() {
+        /* Try wrapping the real context so instanceof checks still pass */
+        var _Real = SilentAudioContext._real;
+        if (_Real) {
+          var ctx;
+          try { ctx = new _Real(); } catch (e) { ctx = null; }
+          if (ctx) {
+            try { ctx.suspend(); } catch (e) {}
+            /* Lock resume() so the animation can never re-enable audio */
+            try {
+              Object.defineProperty(ctx, 'resume', { value: noopP, writable: false, configurable: false });
+            } catch (e) { ctx.resume = noopP; }
+            return ctx;
+          }
+        }
+        return noopContext();
+      }
+
+      /* Install — use defineProperty so the bundled code can't overwrite it */
+      function install(name) {
+        var real = window[name];
+        if (!real) return;
+        SilentAudioContext._real = real;
+        if (real.prototype) SilentAudioContext.prototype = real.prototype;
+        try {
+          Object.defineProperty(window, name, {
+            get: function () { return SilentAudioContext; },
+            configurable: false, enumerable: true
+          });
+        } catch (e) {
+          try { window[name] = SilentAudioContext; } catch (e2) {}
+        }
+      }
+
+      install('AudioContext');
+      install('webkitAudioContext');
     })();
   </script>
 </head>
